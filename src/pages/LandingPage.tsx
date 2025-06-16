@@ -10,11 +10,13 @@ const FEEDBACK_OPTIONS = [
   { label: 'Terrible', emoji: '😡' },
 ];
 
-const SLIDER_COLOR = '#ff7a29'; // vibrant orange
-const SLIDER_BG = '#f3edea'; // light color
+const BAR_COLOR = '#20b2aa'; // teal for progress bar
+const BAR_BG = '#0e4747'; // darker teal for track background
+const THUMB_COLOR = '#20b2aa'; // thumb now matches the bar
 const SLIDER_THUMB_SIZE = 44;
 const SLIDER_TRACK_WIDTH = 14;
-const SLIDER_HEIGHT = 240;
+const SLIDER_HEIGHT = 352; // increased for perfect alignment
+const COLUMN_GAP = 24;
 
 const LandingPage: React.FC = () => {
   const [selected, setSelected] = useState(2); // Default to 'Okay'
@@ -30,23 +32,36 @@ const LandingPage: React.FC = () => {
         boxSizing: 'border-box',
       }}
     >
-      {/* Watermark */}
+      {/* Watermark: large, right-aligned, center-vertically for mobile */}
       <img
         src={logo}
         alt="Cafe LaVia watermark"
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none select-none"
-        style={{ width: '90%', maxWidth: 500, zIndex: 0 }}
+        className="pointer-events-none select-none"
+        style={{
+          position: 'absolute',
+          right: '-45%',
+          top: '50%',
+          width: '220vw',
+          height: 'auto',
+          opacity: 0.13,
+          zIndex: 0,
+          objectFit: 'contain',
+          objectPosition: 'right center',
+          transform: 'translateY(-50%)',
+        }}
       />
-      {/* Divider bar above logo */}
+      {/* Top progress bar (step indicator) */}
       <div className="w-full flex flex-col items-center z-10 mt-8 mb-2">
-        <div className="w-24 h-1.5 rounded-full mb-4" style={{ background: '#20b2aa' }} />
+        <div className="w-24 h-1.5 rounded-full mb-4 flex overflow-hidden" style={{ background: BAR_BG }}>
+          <div style={{ width: '25%', background: BAR_COLOR, height: '100%' }} />
+        </div>
         <img src={logo} alt="Cafe LaVia logo" className="h-20 object-contain mb-6" />
       </div>
       <h2 className="text-white text-xl text-center mb-10 font-normal z-10">How was your Experience?</h2>
-      <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 300 }}>
-        <div className="flex flex-row justify-center items-center w-full max-w-xs mx-auto gap-2" style={{height: SLIDER_HEIGHT + 60}}>
+      <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 360 }}>
+        <div className="flex flex-row justify-center items-center w-full max-w-xs mx-auto" style={{height: SLIDER_HEIGHT + 60, gap: COLUMN_GAP, alignItems: 'flex-start'}}>
           {/* Labels */}
-          <div className="flex flex-col justify-between h-full items-end pr-2" style={{minHeight: SLIDER_HEIGHT}}>
+          <div className="flex flex-col justify-between h-full items-end pr-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT}}>
             {FEEDBACK_OPTIONS.map(option => (
               <span
                 key={option.label}
@@ -58,8 +73,8 @@ const LandingPage: React.FC = () => {
             ))}
           </div>
           {/* Slider */}
-          <div className="relative flex flex-col items-center justify-between" style={{height: SLIDER_HEIGHT, minHeight: SLIDER_HEIGHT, minWidth: SLIDER_TRACK_WIDTH}}>
-            {/* Orange fill below thumb */}
+          <div className="relative flex flex-col items-center justify-between px-3" style={{height: SLIDER_HEIGHT, minHeight: SLIDER_HEIGHT, minWidth: SLIDER_TRACK_WIDTH, justifyContent: 'space-between'}}>
+            {/* Teal fill below thumb */}
             <div
               style={{
                 position: 'absolute',
@@ -68,7 +83,7 @@ const LandingPage: React.FC = () => {
                 height: `${fillPercent}%`,
                 bottom: 0,
                 transform: 'translateX(-50%)',
-                background: SLIDER_COLOR,
+                background: BAR_COLOR,
                 borderRadius: SLIDER_TRACK_WIDTH,
                 zIndex: 1,
                 transition: 'height 0.2s',
@@ -87,7 +102,7 @@ const LandingPage: React.FC = () => {
                 writingMode: 'vertical-lr',
                 height: SLIDER_HEIGHT,
                 width: SLIDER_TRACK_WIDTH,
-                background: SLIDER_BG,
+                background: BAR_BG,
                 borderRadius: 999,
                 zIndex: 2,
                 margin: 0,
@@ -116,7 +131,7 @@ const LandingPage: React.FC = () => {
                   width: SLIDER_THUMB_SIZE,
                   height: SLIDER_THUMB_SIZE,
                   borderRadius: '50%',
-                  background: SLIDER_COLOR,
+                  background: THUMB_COLOR,
                   border: '3px solid #fff',
                   display: 'flex',
                   alignItems: 'center',
@@ -131,7 +146,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
           {/* Emojis */}
-          <div className="flex flex-col justify-between h-full items-start pl-2" style={{minHeight: SLIDER_HEIGHT}}>
+          <div className="flex flex-col justify-between h-full items-start pl-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT}}>
             {FEEDBACK_OPTIONS.map((option, idx) => (
               <span
                 key={option.label}
@@ -171,7 +186,7 @@ const LandingPage: React.FC = () => {
           appearance: none;
           width: ${SLIDER_TRACK_WIDTH}px;
           height: ${SLIDER_HEIGHT}px;
-          background: ${SLIDER_BG};
+          background: ${BAR_BG};
           border-radius: 999px;
           margin: 0;
           padding: 0;
