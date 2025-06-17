@@ -77,15 +77,6 @@ const LandingPage: React.FC = () => {
   if (step === 0) {
     content = (
       <>
-        {/* Progress bar */}
-        <div className="w-full flex flex-col items-center z-10 mt-8 mb-2">
-          <div className="w-full max-w-lg flex justify-center">
-            <div className="w-40 sm:w-56 md:w-72 h-2 rounded-full mb-4 flex overflow-hidden" style={{ background: BAR_BG }}>
-              <div style={{ width: step === 0 ? '25%' : '50%', background: BAR_COLOR, height: '100%' }} />
-            </div>
-          </div>
-          <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-6" style={{ height: '6rem', maxHeight: '18vw', minHeight: '3.5rem', width: 'auto' }} />
-        </div>
         <h2 className="text-white text-xl text-center mb-10 font-normal z-10">How was your Experience?</h2>
         <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 360 }}>
           <div className="flex flex-row justify-center items-center w-full max-w-xs mx-auto" style={{height: SLIDER_HEIGHT + 60, gap: COLUMN_GAP, alignItems: 'flex-start'}}>
@@ -218,13 +209,6 @@ const LandingPage: React.FC = () => {
         <button onClick={handleBack} style={{ position: 'absolute', left: 16, top: 24, zIndex: 20, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M20 24L12 16L20 8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </button>
-        {/* Progress bar */}
-        <div className="w-full flex flex-col items-center z-10 mt-8 mb-2">
-          <div className="w-24 h-1.5 rounded-full mb-4 flex overflow-hidden" style={{ background: BAR_BG }}>
-            <div style={{ width: '50%', background: BAR_COLOR, height: '100%' }} />
-          </div>
-          <img src={logo} alt="Cafe LaVia logo" className="h-20 object-contain mb-6" />
-        </div>
         <h2 className="text-white text-xl text-center mb-6 font-normal z-10">Was everything perfetto?</h2>
         <div className="w-full max-w-md z-10 flex flex-col gap-4 items-center">
           <div className="w-full">
@@ -269,13 +253,6 @@ const LandingPage: React.FC = () => {
         <button onClick={handleBack} style={{ position: 'absolute', left: 16, top: 24, zIndex: 20, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M20 24L12 16L20 8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </button>
-        {/* Progress bar */}
-        <div className="w-full flex flex-col items-center z-10 mt-8 mb-2">
-          <div className="w-24 h-1.5 rounded-full mb-4 flex overflow-hidden" style={{ background: BAR_BG }}>
-            <div style={{ width: '50%', background: BAR_COLOR, height: '100%' }} />
-          </div>
-          <img src={logo} alt="Cafe LaVia logo" className="h-20 object-contain mb-6" />
-        </div>
         <h2 className="text-white text-xl text-center mb-6 font-normal z-10">What could we improve?</h2>
         <div className="w-full max-w-md z-10 flex flex-col gap-4 items-center">
           <div className="w-full">
@@ -326,7 +303,7 @@ const LandingPage: React.FC = () => {
           minHeight: '100dvh',
         }}
       >
-        {/* Watermark: inside content container, like GoodFeedbackPage */}
+        {/* Watermark */}
         <img
           src={logo}
           alt="Cafe LaVia watermark"
@@ -336,7 +313,7 @@ const LandingPage: React.FC = () => {
             right: 'auto',
             left: step === 0 ? '0%' : '-45%',
             top: '50%',
-            width: '140vw',
+            width: '190vw',
             height: 'auto',
             opacity: 0.13,
             zIndex: 0,
@@ -347,6 +324,15 @@ const LandingPage: React.FC = () => {
             transition: 'left 0.5s cubic-bezier(.77,0,.18,1)',
           }}
         />
+        {/* Static Logo */}
+        <div className="w-full flex flex-col items-center z-10 mt-8 mb-2">
+          <div className="w-full max-w-lg flex justify-center">
+            <div className="w-40 sm:w-56 md:w-72 h-2 rounded-full mb-4 flex overflow-hidden" style={{ background: BAR_BG }}>
+              <div style={{ width: step === 0 ? '25%' : '50%', background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
+            </div>
+          </div>
+          <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-6" style={{ height: '6rem', maxHeight: '18vw', minHeight: '3.5rem', width: 'auto' }} />
+        </div>
         {/* Content: slides left/right */}
         <div className="w-full flex flex-col items-center z-10 relative max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto" style={{...contentSlide, minHeight: '70vh'}}>
           {content}
