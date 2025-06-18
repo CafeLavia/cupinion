@@ -1,22 +1,32 @@
 import React, { useState } from 'react';
 import logo from '../assets/logo.png';
+import loveit from '../assets/loveit.png';
+import great from '../assets/great.png';
+import okay from '../assets/okay.png';
+import poor from '../assets/poor.png';
+import terribale from '../assets/terribale.png';
 import '../index.css';
 
+// Add Google Fonts import
+const fontStyle = `
+  @import url('https://fonts.googleapis.com/css2?family=Cherry+Swash:wght@400;700&display=swap');
+`;
+
 const FEEDBACK_OPTIONS = [
-  { label: 'Love it', emoji: '😍' },
-  { label: 'Great', emoji: '😊' },
-  { label: 'Okay', emoji: '😐' },
-  { label: 'Bad', emoji: '😕' },
-  { label: 'Terrible', emoji: '😡' },
+  { label: 'Love it', image: loveit },
+  { label: 'Great', image: great },
+  { label: 'Okay', image: okay },
+  { label: 'Bad', image: poor },
+  { label: 'Terrible', image: terribale },
 ];
 
 const BAR_COLOR = '#20b2aa';
 const BAR_BG = '#0e4747';
 const THUMB_COLOR = '#20b2aa';
-const SLIDER_THUMB_SIZE = 44;
-const SLIDER_TRACK_WIDTH = 14;
-const SLIDER_HEIGHT = 352;
-const COLUMN_GAP = 24;
+const SLIDER_THUMB_SIZE = 52;
+const SLIDER_TRACK_WIDTH = 16;
+const SLIDER_HEIGHT = 380;
+const COLUMN_GAP = 28;
 
 const GOOD_QUESTIONS = [
   'Food Quality',
@@ -77,7 +87,7 @@ const LandingPage: React.FC = () => {
   if (step === 0) {
     content = (
       <>
-        <h2 className="text-white text-xl text-center mb-10 font-normal z-10">How was your Experience?</h2>
+        <h2 className="text-white text-xl text-center mb-10 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>How was your Experience?</h2>
         <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 360 }}>
           <div className="flex flex-row justify-center items-center w-full max-w-xs mx-auto" style={{height: SLIDER_HEIGHT + 60, gap: COLUMN_GAP, alignItems: 'flex-start'}}>
             {/* Labels */}
@@ -85,8 +95,8 @@ const LandingPage: React.FC = () => {
               {FEEDBACK_OPTIONS.map(option => (
                 <span
                   key={option.label}
-                  className={`text-white text-lg text-right font-normal`}
-                  style={{ minHeight: 44, display: 'flex', alignItems: 'center', height: 44 }}
+                  className={`text-white text-xl text-right font-normal`}
+                  style={{ minHeight: 52, display: 'flex', alignItems: 'center', height: 52 }}
                 >
                   {option.label}
                 </span>
@@ -159,7 +169,7 @@ const LandingPage: React.FC = () => {
                     boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
                   }}
                 >
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg width="22" height="22" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="9" cy="9" r="5" stroke="white" strokeWidth="2" />
                   </svg>
                 </div>
@@ -168,13 +178,40 @@ const LandingPage: React.FC = () => {
             {/* Emojis */}
             <div className="flex flex-col justify-between h-full items-start pl-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT}}>
               {FEEDBACK_OPTIONS.map((option, idx) => (
-                <span
+                <div
                   key={option.label}
-                  className={`text-2xl transition-all duration-300 text-left ${selected === idx ? 'scale-110 opacity-100' : 'opacity-40 grayscale'}`}
-                  style={{ minHeight: 44, display: 'flex', alignItems: 'center', height: 44 }}
+                  className="transition-all duration-300"
+                  style={{ 
+                    minHeight: 52, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    height: 52,
+                    position: 'relative'
+                  }}
                 >
-                  {option.emoji}
-                </span>
+                  <img 
+                    src={option.image} 
+                    alt={option.label}
+                    className={`transition-all duration-300 ${selected === idx ? 'scale-125 opacity-100' : 'opacity-40 grayscale hover:scale-150 hover:opacity-70'}`}
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      objectFit: 'contain'
+                    }}
+                  />
+                  {selected !== idx && (
+                    <div 
+                      className="absolute left-0 top-0 w-full h-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300"
+                      style={{
+                        transform: 'translateX(15px)'
+                      }}
+                    >
+                      <span className="text-white text-base font-medium bg-black/50 px-3 py-1.5 rounded">
+                        {option.label}
+                      </span>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -209,7 +246,7 @@ const LandingPage: React.FC = () => {
         <button onClick={handleBack} style={{ position: 'absolute', left: 16, top: 24, zIndex: 20, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M20 24L12 16L20 8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </button>
-        <h2 className="text-white text-xl text-center mb-6 font-normal z-10">Was everything perfetto?</h2>
+        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>Was everything perfetto?</h2>
         <div className="w-full max-w-md z-10 flex flex-col gap-4 items-center">
           <div className="w-full">
             <label className="block text-white text-sm mb-2 font-semibold">Let us know what made your visit special.</label>
@@ -253,7 +290,7 @@ const LandingPage: React.FC = () => {
         <button onClick={handleBack} style={{ position: 'absolute', left: 16, top: 24, zIndex: 20, background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
           <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M20 24L12 16L20 8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
         </button>
-        <h2 className="text-white text-xl text-center mb-6 font-normal z-10">What could we improve?</h2>
+        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>What could we improve?</h2>
         <div className="w-full max-w-md z-10 flex flex-col gap-4 items-center">
           <div className="w-full">
             <label className="block text-white text-sm mb-2 font-semibold">Let us know what went wrong.</label>
@@ -293,6 +330,8 @@ const LandingPage: React.FC = () => {
 
   return (
     <>
+      {/* Add font style */}
+      <style>{fontStyle}</style>
       {/* Main content container */}
       <div
         className="min-h-screen w-full flex flex-col items-center px-2 sm:px-4 py-4 relative overflow-hidden"
