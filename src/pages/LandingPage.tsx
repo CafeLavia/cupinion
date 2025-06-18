@@ -44,13 +44,13 @@ const BAD_QUESTIONS = [
   'Other',
 ];
 
-// Update color map for higher contrast, mature colors
+// Update color map for solid fill colors (green at bottom, red at top)
 const FILL_COLORS = [
-  '#16a34a', // Love it - deep green
+  '#16a34a', // Love it - green (bottom)
   '#0e7490', // Great - teal blue
   '#eab308', // Okay - gold
   '#ea580c', // Bad - deep orange
-  '#dc2626', // Terrible - deep red
+  '#dc2626', // Terrible - red (top)
 ];
 
 const LandingPage: React.FC = () => {
@@ -128,8 +128,17 @@ const LandingPage: React.FC = () => {
                 </span>
               ))}
             </div>
-            {/* Completely custom slider bar, two stacked divs for fill and unfilled (white and gray) */}
-            <div className="relative flex flex-col items-center justify-between px-3 select-none" style={{height: SLIDER_HEIGHT, minHeight: SLIDER_HEIGHT, minWidth: SLIDER_TRACK_WIDTH, justifyContent: 'space-between', cursor: 'pointer'}} 
+            {/* Completely custom slider bar, two stacked divs for fill and unfilled (solid color and gray) */}
+            <div className="relative flex flex-col items-center justify-between px-3 select-none"
+              style={{
+                height: SLIDER_HEIGHT,
+                minHeight: SLIDER_HEIGHT,
+                minWidth: SLIDER_TRACK_WIDTH,
+                justifyContent: 'space-between',
+                cursor: 'pointer',
+                overflow: 'hidden',
+                borderRadius: 16,
+              }}
               onClick={e => {
                 // Calculate click position and set selected
                 const rect = e.currentTarget.getBoundingClientRect();
@@ -139,7 +148,21 @@ const LandingPage: React.FC = () => {
                 setSelected(idx);
               }}
             >
-              {/* Top (unfilled, gray) part */}
+              {/* Gradient background: always full height */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: '50%',
+                  top: 0,
+                  width: SLIDER_TRACK_WIDTH,
+                  height: '100%',
+                  background: 'linear-gradient(to bottom, #16a34a 0%, #eab308 50%, #dc2626 100%)',
+                  transform: 'translateX(-50%)',
+                  zIndex: 1,
+                  pointerEvents: 'none',
+                }}
+              />
+              {/* Gray overlay: covers unfilled portion from the top */}
               <div
                 style={{
                   position: 'absolute',
@@ -148,31 +171,11 @@ const LandingPage: React.FC = () => {
                   width: SLIDER_TRACK_WIDTH,
                   height: `${100 - fillPercent}%`,
                   background: '#78717c',
-                  borderTopLeftRadius: 16,
-                  borderTopRightRadius: 16,
-                  borderBottomLeftRadius: 0,
-                  borderBottomRightRadius: 0,
-                  transform: 'translateX(-50%)',
-                  zIndex: 1,
-                  transition: 'height 0.2s',
-                }}
-              />
-              {/* Bottom (filled, white) part */}
-              <div
-                style={{
-                  position: 'absolute',
-                  left: '50%',
-                  bottom: 0,
-                  width: SLIDER_TRACK_WIDTH,
-                  height: `${fillPercent}%`,
-                  background: '#fff',
-                  borderBottomLeftRadius: 16,
-                  borderBottomRightRadius: 16,
-                  borderTopLeftRadius: fillPercent === 100 ? 16 : 0,
-                  borderTopRightRadius: fillPercent === 100 ? 16 : 0,
+                  opacity: 0.85,
                   transform: 'translateX(-50%)',
                   zIndex: 2,
                   transition: 'height 0.2s',
+                  pointerEvents: 'none',
                 }}
               />
             </div>
