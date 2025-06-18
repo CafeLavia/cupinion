@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from '../assets/logo.png';
 import loveit from '../assets/loveit.png';
 import great from '../assets/great.png';
@@ -24,7 +24,7 @@ const BAR_COLOR = '#20b2aa';
 const BAR_BG = '#0e4747';
 const THUMB_COLOR = '#20b2aa';
 const SLIDER_THUMB_SIZE = 52;
-const SLIDER_TRACK_WIDTH = 16;
+const SLIDER_TRACK_WIDTH = 32;
 const SLIDER_HEIGHT = 380;
 const COLUMN_GAP = 28;
 
@@ -44,14 +44,40 @@ const BAD_QUESTIONS = [
   'Other',
 ];
 
+// Update color map for higher contrast, mature colors
+const FILL_COLORS = [
+  '#16a34a', // Love it - deep green
+  '#0e7490', // Great - teal blue
+  '#eab308', // Okay - gold
+  '#ea580c', // Bad - deep orange
+  '#dc2626', // Terrible - deep red
+];
+
 const LandingPage: React.FC = () => {
   const [step, setStep] = useState(0); // 0: initial, 1: good, 2: bad
   const [selected, setSelected] = useState(2); // Default to 'Okay'
   const [direction, setDirection] = useState<'left' | 'right'>('left');
   const [animating, setAnimating] = useState(false);
+  const [autoScrollDone, setAutoScrollDone] = useState(false);
 
-  // For slider
+  // Fill shrinks from top down as selected increases (Love it = full, Terrible = almost empty)
   const fillPercent = ((FEEDBACK_OPTIONS.length - 1 - selected) / (FEEDBACK_OPTIONS.length - 1)) * 100;
+
+  // Auto-animate slider on mount
+  useEffect(() => {
+    if (step === 0 && !autoScrollDone) {
+      let up = 0;
+      let down = FEEDBACK_OPTIONS.length - 1;
+      setSelected(down);
+      setTimeout(() => {
+        setSelected(up);
+        setTimeout(() => {
+          setSelected(2); // Return to default
+          setAutoScrollDone(true);
+        }, 600);
+      }, 600);
+    }
+  }, [step, autoScrollDone]);
 
   // Animation helpers
   const goToStep = (nextStep: number, dir: 'left' | 'right') => {
@@ -102,78 +128,53 @@ const LandingPage: React.FC = () => {
                 </span>
               ))}
             </div>
-            {/* Slider */}
-            <div className="relative flex flex-col items-center justify-between px-3" style={{height: SLIDER_HEIGHT, minHeight: SLIDER_HEIGHT, minWidth: SLIDER_TRACK_WIDTH, justifyContent: 'space-between'}}>
-              {/* Teal fill below thumb */}
+            {/* Completely custom slider bar, two stacked divs for fill and unfilled (white and gray) */}
+            <div className="relative flex flex-col items-center justify-between px-3 select-none" style={{height: SLIDER_HEIGHT, minHeight: SLIDER_HEIGHT, minWidth: SLIDER_TRACK_WIDTH, justifyContent: 'space-between', cursor: 'pointer'}} 
+              onClick={e => {
+                // Calculate click position and set selected
+                const rect = e.currentTarget.getBoundingClientRect();
+                const y = e.clientY - rect.top;
+                const percent = y / SLIDER_HEIGHT;
+                const idx = Math.round(percent * (FEEDBACK_OPTIONS.length - 1));
+                setSelected(idx);
+              }}
+            >
+              {/* Top (unfilled, gray) part */}
               <div
                 style={{
                   position: 'absolute',
                   left: '50%',
+                  top: 0,
                   width: SLIDER_TRACK_WIDTH,
-                  height: `${fillPercent}%`,
-                  bottom: 0,
+                  height: `${100 - fillPercent}%`,
+                  background: '#78717c',
+                  borderTopLeftRadius: 16,
+                  borderTopRightRadius: 16,
+                  borderBottomLeftRadius: 0,
+                  borderBottomRightRadius: 0,
                   transform: 'translateX(-50%)',
-                  background: BAR_COLOR,
-                  borderRadius: SLIDER_TRACK_WIDTH,
                   zIndex: 1,
                   transition: 'height 0.2s',
                 }}
               />
-              {/* Slider input */}
-              <input
-                type="range"
-                min={0}
-                max={FEEDBACK_OPTIONS.length - 1}
-                value={selected}
-                onChange={e => setSelected(Number(e.target.value))}
-                className="custom-vertical-slider"
-                style={{
-                  WebkitAppearance: 'slider-vertical',
-                  writingMode: 'vertical-lr',
-                  height: SLIDER_HEIGHT,
-                  width: SLIDER_TRACK_WIDTH,
-                  background: BAR_BG,
-                  borderRadius: 999,
-                  zIndex: 2,
-                  margin: 0,
-                  padding: 0,
-                  display: 'block',
-                }}
-              />
-              {/* Custom thumb icon overlay */}
+              {/* Bottom (filled, white) part */}
               <div
                 style={{
                   position: 'absolute',
                   left: '50%',
-                  top: `calc(${((selected) / (FEEDBACK_OPTIONS.length - 1)) * 100}% - ${SLIDER_THUMB_SIZE / 2}px)`,
-                  transform: 'translate(-50%, 0)',
-                  width: SLIDER_THUMB_SIZE,
-                  height: SLIDER_THUMB_SIZE,
-                  pointerEvents: 'none',
-                  zIndex: 3,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  bottom: 0,
+                  width: SLIDER_TRACK_WIDTH,
+                  height: `${fillPercent}%`,
+                  background: '#fff',
+                  borderBottomLeftRadius: 16,
+                  borderBottomRightRadius: 16,
+                  borderTopLeftRadius: fillPercent === 100 ? 16 : 0,
+                  borderTopRightRadius: fillPercent === 100 ? 16 : 0,
+                  transform: 'translateX(-50%)',
+                  zIndex: 2,
+                  transition: 'height 0.2s',
                 }}
-              >
-                <div
-                  style={{
-                    width: SLIDER_THUMB_SIZE,
-                    height: SLIDER_THUMB_SIZE,
-                    borderRadius: '50%',
-                    background: THUMB_COLOR,
-                    border: '3px solid #fff',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
-                  }}
-                >
-                  <svg width="22" height="22" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="9" cy="9" r="5" stroke="white" strokeWidth="2" />
-                  </svg>
-                </div>
-              </div>
+              />
             </div>
             {/* Emojis */}
             <div className="flex flex-col justify-between h-full items-start pl-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT}}>
