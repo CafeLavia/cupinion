@@ -310,18 +310,18 @@ const LandingPage: React.FC = () => {
           className="pointer-events-none select-none"
           style={{
             position: 'absolute',
+            left: step === 0 ? '0%' : '-100%',
             right: 'auto',
-            left: step === 0 ? '0%' : '-45%',
             top: '50%',
             width: '190vw',
             height: 'auto',
             opacity: 0.13,
             zIndex: 0,
             objectFit: 'contain',
-            objectPosition: 'left center',
+            objectPosition: step === 1 ? 'right center' : 'left center',
             transform: 'translateY(-50%)',
             maxWidth: 'none',
-            transition: 'left 0.5s cubic-bezier(.77,0,.18,1)',
+            transition: 'left 0.8s cubic-bezier(.77,0,.18,1), right 0.8s cubic-bezier(.77,0,.18,1), object-position 0.8s cubic-bezier(.77,0,.18,1)',
           }}
         />
         {/* Static Logo */}
