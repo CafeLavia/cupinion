@@ -10,6 +10,7 @@ import '../index.css';
 // Add Google Fonts import
 const fontStyle = `
   @import url('https://fonts.googleapis.com/css2?family=Cherry+Swash:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Quattrocento+Sans:wght@400;700&display=swap');
 `;
 
 const FEEDBACK_OPTIONS = [
@@ -26,7 +27,7 @@ const THUMB_COLOR = '#20b2aa';
 const SLIDER_THUMB_SIZE = 52;
 const SLIDER_TRACK_WIDTH = 32;
 const SLIDER_HEIGHT = 380;
-const COLUMN_GAP = 28;
+const COLUMN_GAP = 40;
 
 const GOOD_QUESTIONS = [
   'Food Quality',
@@ -117,12 +118,12 @@ const LandingPage: React.FC = () => {
         <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 360 }}>
           <div className="flex flex-row justify-center items-center w-full max-w-xs mx-auto" style={{height: SLIDER_HEIGHT + 60, gap: COLUMN_GAP, alignItems: 'flex-start'}}>
             {/* Labels */}
-            <div className="flex flex-col justify-between h-full items-end pr-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT}}>
+            <div className="flex flex-col justify-between h-full items-center pr-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT}}>
               {FEEDBACK_OPTIONS.map(option => (
                 <span
                   key={option.label}
-                  className={`text-white text-xl text-right font-normal`}
-                  style={{ minHeight: 52, display: 'flex', alignItems: 'center', height: 52 }}
+                  className={`text-white text-xl text-center font-normal`}
+                  style={{ minHeight: 52, display: 'flex', alignItems: 'center', height: 52, fontFamily: "'Quattrocento Sans', sans-serif" }}
                 >
                   {option.label}
                 </span>
