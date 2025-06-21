@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import logo from '../assets/logo.png';
 import loveit from '../assets/loveit.png';
 import great from '../assets/great.png';
@@ -27,7 +27,7 @@ const THUMB_COLOR = '#20b2aa';
 const SLIDER_THUMB_SIZE = 52;
 const SLIDER_TRACK_WIDTH = 32;
 const SLIDER_HEIGHT = 380;
-const COLUMN_GAP = 40;
+const COLUMN_GAP = 56;
 
 const GOOD_QUESTIONS = [
   'Food Quality',
@@ -60,9 +60,11 @@ const LandingPage: React.FC = () => {
   const [direction, setDirection] = useState<'left' | 'right'>('left');
   const [animating, setAnimating] = useState(false);
   const [autoScrollDone, setAutoScrollDone] = useState(false);
+  const sliderRef = useRef<HTMLDivElement>(null);
 
-  // Fill shrinks from top down as selected increases (Love it = full, Terrible = almost empty)
-  const fillPercent = ((FEEDBACK_OPTIONS.length - 1 - selected) / (FEEDBACK_OPTIONS.length - 1)) * 100;
+  // Fill is scaled to be 5% at minimum (Terrible) and 100% at maximum (Love it)
+  const basePercent = (FEEDBACK_OPTIONS.length - 1 - selected) / (FEEDBACK_OPTIONS.length - 1);
+  const fillPercent = 5 + basePercent * 95;
 
   // Auto-animate slider on mount
   useEffect(() => {
@@ -79,6 +81,41 @@ const LandingPage: React.FC = () => {
       }, 600);
     }
   }, [step, autoScrollDone]);
+
+  const handleInteractionUpdate = (clientY: number) => {
+    if (!sliderRef.current) return;
+    const rect = sliderRef.current.getBoundingClientRect();
+    const y = clientY - rect.top;
+    const percent = Math.max(0, Math.min(1, y / rect.height));
+    const newIndex = Math.round(percent * (FEEDBACK_OPTIONS.length - 1));
+    setSelected(newIndex);
+  };
+
+  const handleInteractionStart = (e: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    // Prevent default behavior like text selection during drag
+    e.preventDefault();
+
+    const moveHandler = (moveEvent: MouseEvent | TouchEvent) => {
+      const clientY = 'touches' in moveEvent ? moveEvent.touches[0].clientY : moveEvent.clientY;
+      handleInteractionUpdate(clientY);
+    };
+
+    const endHandler = () => {
+      window.removeEventListener('mousemove', moveHandler as any);
+      window.removeEventListener('mouseup', endHandler);
+      window.removeEventListener('touchmove', moveHandler as any);
+      window.removeEventListener('touchend', endHandler);
+    };
+
+    window.addEventListener('mousemove', moveHandler as any);
+    window.addEventListener('mouseup', endHandler);
+    window.addEventListener('touchmove', moveHandler as any);
+    window.addEventListener('touchend', endHandler);
+
+    // Set initial value on click/touch
+    const startClientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    handleInteractionUpdate(startClientY);
+  };
 
   // Animation helpers
   const goToStep = (nextStep: number, dir: 'left' | 'right') => {
@@ -116,9 +153,9 @@ const LandingPage: React.FC = () => {
       <>
         <h2 className="text-white text-xl text-center mb-10 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>How was your Experience?</h2>
         <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 360 }}>
-          <div className="flex flex-row justify-center items-center w-full max-w-xs mx-auto" style={{height: SLIDER_HEIGHT + 60, gap: COLUMN_GAP, alignItems: 'flex-start'}}>
+          <div className="flex flex-row justify-center items-center mx-auto" style={{height: SLIDER_HEIGHT + 60, gap: COLUMN_GAP, alignItems: 'flex-start', width: '90%', maxWidth: '32rem'}}>
             {/* Labels */}
-            <div className="flex flex-col justify-between h-full items-center pr-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT}}>
+            <div className="flex flex-col justify-between h-full items-center pr-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT, flex: 1}}>
               {FEEDBACK_OPTIONS.map(option => (
                 <span
                   key={option.label}
@@ -130,7 +167,9 @@ const LandingPage: React.FC = () => {
               ))}
             </div>
             {/* Completely custom slider bar, two stacked divs for fill and unfilled (solid color and gray) */}
-            <div className="relative flex flex-col items-center justify-between px-3 select-none"
+            <div
+              ref={sliderRef}
+              className="relative flex flex-col items-center justify-between px-3 select-none"
               style={{
                 height: SLIDER_HEIGHT,
                 minHeight: SLIDER_HEIGHT,
@@ -140,14 +179,8 @@ const LandingPage: React.FC = () => {
                 overflow: 'hidden',
                 borderRadius: 16,
               }}
-              onClick={e => {
-                // Calculate click position and set selected
-                const rect = e.currentTarget.getBoundingClientRect();
-                const y = e.clientY - rect.top;
-                const percent = y / SLIDER_HEIGHT;
-                const idx = Math.round(percent * (FEEDBACK_OPTIONS.length - 1));
-                setSelected(idx);
-              }}
+              onMouseDown={handleInteractionStart}
+              onTouchStart={handleInteractionStart}
             >
               {/* Gradient background: always full height */}
               <div
@@ -181,7 +214,7 @@ const LandingPage: React.FC = () => {
               />
             </div>
             {/* Emojis */}
-            <div className="flex flex-col justify-between h-full items-start pl-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT}}>
+            <div className="flex flex-col justify-between h-full items-center pl-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT, flex: 1}}>
               {FEEDBACK_OPTIONS.map((option, idx) => (
                 <div
                   key={option.label}
@@ -221,7 +254,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="w-full flex flex-col items-center z-10 mb-2 mt-8" style={{ marginTop: '3.5rem', marginBottom: '2.5rem' }}>
+        <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '4rem' }}>
           <button
             style={{
               background: '#20b2aa',
@@ -339,7 +372,7 @@ const LandingPage: React.FC = () => {
       <style>{fontStyle}</style>
       {/* Main content container */}
       <div
-        className="min-h-screen w-full flex flex-col items-center px-2 sm:px-4 py-4 relative overflow-hidden"
+        className="min-h-screen w-full flex flex-col items-center px-4 sm:px-6 py-4 relative overflow-hidden"
         style={{
           background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)',
           boxSizing: 'border-box',
@@ -353,7 +386,7 @@ const LandingPage: React.FC = () => {
           alt="Cafe LaVia watermark"
           className="pointer-events-none select-none"
           style={{
-            position: 'absolute',
+            position: 'fixed',
             left: step === 0 ? '0%' : '-100%',
             right: 'auto',
             top: '50%',
@@ -362,7 +395,7 @@ const LandingPage: React.FC = () => {
             opacity: 0.13,
             zIndex: 0,
             objectFit: 'contain',
-            objectPosition: step === 1 ? 'right center' : 'left center',
+            objectPosition: step !== 0 ? 'right center' : 'left center',
             transform: 'translateY(-50%)',
             maxWidth: 'none',
             transition: 'left 0.8s cubic-bezier(.77,0,.18,1), right 0.8s cubic-bezier(.77,0,.18,1), object-position 0.8s cubic-bezier(.77,0,.18,1)',
@@ -375,10 +408,10 @@ const LandingPage: React.FC = () => {
               <div style={{ width: step === 0 ? '25%' : '50%', background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
             </div>
           </div>
-          <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-6" style={{ height: '6rem', maxHeight: '18vw', minHeight: '3.5rem', width: 'auto' }} />
+          <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-6" style={{ height: '8rem', maxHeight: '25vw', minHeight: '5rem', width: 'auto' }} />
         </div>
         {/* Content: slides left/right */}
-        <div className="w-full flex flex-col items-center z-10 relative max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto" style={{...contentSlide, minHeight: '70vh'}}>
+        <div className="w-full flex flex-col items-center z-10 relative max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto flex-1" style={{...contentSlide}}>
           {content}
         </div>
         {/* Custom slider styles and responsive tweaks */}
