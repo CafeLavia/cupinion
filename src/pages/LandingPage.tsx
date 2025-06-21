@@ -5,6 +5,12 @@ import great from '../assets/great.png';
 import okay from '../assets/okay.png';
 import poor from '../assets/poor.png';
 import terribale from '../assets/terribale.png';
+import badfeed from '../assets/badfeed.png';
+import goodfeed from '../assets/goodfeed.png';
+import google from '../assets/google.png';
+import tripadvisor from '../assets/tripadvisor.png';
+import whatsapp from '../assets/whatsapp.png';
+import background2 from '../assets/background2.png';
 import '../index.css';
 
 // Add Google Fonts import
@@ -54,7 +60,7 @@ const FILL_COLORS = [
 ];
 
 const LandingPage: React.FC = () => {
-  const [step, setStep] = useState(0); // 0: initial, 1: good, 2: bad
+  const [step, setStep] = useState(0); // 0: initial, 1: good, 2: bad, 3: thank you (good), 4: thank you (bad)
   const [selected, setSelected] = useState(2); // Default to 'Okay'
   const [direction, setDirection] = useState<'left' | 'right'>('left');
   const [animating, setAnimating] = useState(false);
@@ -142,7 +148,38 @@ const LandingPage: React.FC = () => {
     }
   };
   const handleBack = () => {
-    goToStep(0, 'right');
+    if (step === 3) {
+      goToStep(1, 'right');
+    } else if (step === 4) {
+      goToStep(2, 'right');
+    } else {
+      goToStep(0, 'right');
+    }
+  };
+
+  const handleGoodSubmit = () => {
+    // Here you would typically handle form submission
+    // For example, send data to a server
+    console.log({
+      email,
+      goodFeedback,
+      billFile
+    });
+    // Then proceed to the thank you page
+    goToStep(3, 'left');
+  };
+
+  const handleBadSubmit = () => {
+    // Here you would typically handle form submission
+    // For example, send data to a server
+    console.log({
+      email,
+      selectedCategories,
+      badFeedbackText,
+      billFile
+    });
+    // Then proceed to the thank you page
+    goToStep(4, 'left');
   };
 
   // Content slide: next content slides in from the right
@@ -157,15 +194,15 @@ const LandingPage: React.FC = () => {
   if (step === 0) {
     content = (
       <>
-        <h2 className="text-white text-xl text-center mb-10 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>How was your Experience?</h2>
+        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>How was your Experience?</h2>
         <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 360 }}>
           <div className="flex flex-row justify-center items-center mx-auto" style={{height: SLIDER_HEIGHT + 60, gap: COLUMN_GAP, alignItems: 'flex-start', width: '90%', maxWidth: '32rem'}}>
             {/* Labels */}
             <div className="flex flex-col justify-between h-full items-center pr-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT, flex: 1}}>
-              {FEEDBACK_OPTIONS.map(option => (
+              {FEEDBACK_OPTIONS.map((option, idx) => (
                 <span
                   key={option.label}
-                  className={`text-white text-xl text-center font-normal`}
+                  className={`text-white text-xl text-center transition-all duration-300 ${selected === idx ? 'scale-105 opacity-100 font-bold' : 'opacity-60 font-normal'} hover:opacity-100 hover:scale-110`}
                   style={{ minHeight: 52, display: 'flex', alignItems: 'center', height: 52, fontFamily: "'Quattrocento Sans', sans-serif" }}
                 >
                   {option.label}
@@ -357,6 +394,7 @@ const LandingPage: React.FC = () => {
             }}
             onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
             onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
+            onClick={handleGoodSubmit}
           >
             SUBMIT
           </button>
@@ -381,7 +419,7 @@ const LandingPage: React.FC = () => {
 
     content = (
       <>
-        <h2 className="text-white text-2xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           What aspect of our service<br/>didn't meet expectations?
         </h2>
 
@@ -477,13 +515,110 @@ const LandingPage: React.FC = () => {
             }}
             onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
             onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
+            onClick={handleBadSubmit}
           >
             SUBMIT
           </button>
         </div>
       </>
     );
+  } else if (step === 3) {
+    // Thank you page for good feedback
+    content = (
+      <>
+        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+          Thanks a Latte for Your<br/>Awesome Feedback!
+        </h2>
+
+        <div className="w-full flex justify-center items-center my-4 z-10">
+            <img 
+                src={goodfeed} 
+                alt="Awesome feedback" 
+                className="w-48 h-48"
+                style={{
+                    filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))'
+                }}
+            />
+        </div>
+
+        <p className="text-white/80 text-lg text-center my-6 z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+          Your feedback helps us serve you better every day.
+        </p>
+
+        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: 'auto', marginBottom: '4rem', maxWidth: '24rem' }}>
+          <a
+            href="https://g.co/kgs/TZVQBZA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-white text-gray-800 font-bold text-lg py-4 px-6 rounded-lg flex items-center justify-center gap-3 transition-transform hover:scale-105"
+          >
+            <img src={google} alt="Google logo" className="w-6 h-6" />
+            Review us on Google
+          </a>
+          <a
+            href="https://www.tripadvisor.com/UserReviewEdit-g304138-d25416219-Cafe_Lavia-Kandy_Kandy_District_Central_Province.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-[#34E0A1] text-black font-bold text-lg py-4 px-6 rounded-lg flex items-center justify-center gap-3 transition-transform hover:scale-105"
+          >
+            <img src={tripadvisor} alt="TripAdvisor logo" className="w-6 h-6" />
+            Review us on TripAdvisor
+          </a>
+        </div>
+      </>
+    );
+  } else if (step === 4) {
+    // Thank you page for bad feedback
+    content = (
+      <>
+        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+          Thanks for Helping Us<br/>Brew a Better Experience!
+        </h2>
+
+        <div className="w-full flex justify-center items-center my-4 z-10">
+            <img 
+                src={badfeed} 
+                alt="Sad feedback" 
+                className="w-48 h-48"
+                style={{
+                    filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))'
+                }}
+            />
+        </div>
+
+        <p className="text-white/80 text-lg text-center my-6 z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+          Thank you for sharing – we'll use<br/>this to improve your next visit.
+        </p>
+
+        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: 'auto', marginBottom: '4rem', maxWidth: '24rem' }}>
+          <a
+            href="https://wa.me/94000000000" // Replace with actual WhatsApp number
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-[#25D366] text-white font-bold text-lg py-4 px-6 rounded-lg flex items-center justify-center gap-3 transition-transform hover:scale-105"
+          >
+            <img src={whatsapp} alt="WhatsApp logo" className="w-7 h-7" />
+            Chat with us on WhatsApp
+          </a>
+        </div>
+      </>
+    );
   }
+
+  const getProgressBarWidth = () => {
+    switch (step) {
+      case 0:
+        return '25%';
+      case 1:
+      case 2:
+        return '50%';
+      case 3:
+      case 4:
+        return '100%';
+      default:
+        return '25%';
+    }
+  };
 
   return (
     <>
@@ -511,13 +646,30 @@ const LandingPage: React.FC = () => {
             top: '50%',
             width: '190vw',
             height: 'auto',
-            opacity: 0.13,
+            opacity: (step === 3 || step === 4) ? 0 : 0.13,
             zIndex: 0,
             objectFit: 'contain',
             objectPosition: step !== 0 ? 'right center' : 'left center',
             transform: 'translateY(-50%)',
             maxWidth: 'none',
-            transition: 'left 0.8s cubic-bezier(.77,0,.18,1), right 0.8s cubic-bezier(.77,0,.18,1), object-position 0.8s cubic-bezier(.77,0,.18,1)',
+            transition: 'left 0.8s cubic-bezier(.77,0,.18,1), right 0.8s cubic-bezier(.77,0,.18,1), object-position 0.8s cubic-bezier(.77,0,.18,1), opacity 0.5s ease-in-out',
+          }}
+        />
+        {/* Watermark for Thank You Pages */}
+        <img
+          src={background2}
+          alt="Thank you background"
+          className="pointer-events-none select-none"
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100vw',
+            height: '100vh',
+            objectFit: 'cover',
+            opacity: (step === 3 || step === 4) ? 0.07 : 0,
+            zIndex: 0,
+            transition: 'opacity 0.8s ease-in-out',
           }}
         />
         {/* Static Logo and Progress Bar */}
@@ -535,7 +687,7 @@ const LandingPage: React.FC = () => {
                 </button>
             )}
             <div className="w-40 sm:w-56 md:w-72 h-2 rounded-full flex overflow-hidden" style={{ background: BAR_BG }}>
-                <div style={{ width: step === 0 ? '25%' : '50%', background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
+                <div style={{ width: getProgressBarWidth(), background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
             </div>
           </div>
           <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-6" style={{ height: '8rem', maxHeight: '25vw', minHeight: '5rem', width: 'auto' }} />
