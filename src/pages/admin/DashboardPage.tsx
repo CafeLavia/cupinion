@@ -101,8 +101,8 @@ const DashboardPage: React.FC = () => {
                 {/* Stat Cards */}
                 <StatCard title="Total Feedback" value="559" icon={MessageSquare} color="#3b82f6" details="+20.1% from last month" />
                 <StatCard title="Positive Feedback" value="530" icon={ThumbsUp} color="#16a34a" details="94.8% of total" />
-                <StatCard title="Negative Feedback" value="29" icon={ThumbsDown} color="#dc2626" details="5.2% of total" />
-                <StatCard title="Offers Redeemed" value="78" icon={Gift} color="#8b5cf6" details="+5 since yesterday" />
+                <StatCard title="Offers Generated" value="247" icon={Gift} color="#8b5cf6" details="+12 since yesterday" />
+                <StatCard title="Offers Redeemed" value="156" icon={CheckCircle} color="#16a34a" details="63.2% redemption rate" />
                 
                 {/* Recent Feedback List */}
                 <div className="lg:col-span-4">

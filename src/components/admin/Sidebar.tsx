@@ -97,8 +97,16 @@ const Sidebar: React.FC = () => {
           {isSectionOpen('offers') && (
             <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
               <NavLink to="/admin/offers" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
+                <Gift className="w-4 h-4 mr-3" />
+                Feedback Offers
+              </NavLink>
+              <NavLink to="/admin/offers/redeem" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
                 <CheckSquare className="w-4 h-4 mr-3" />
-                Offers
+                Redeem Offers
+              </NavLink>
+              <NavLink to="/admin/offers/settings" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
+                <Settings className="w-4 h-4 mr-3" />
+                Offer Settings
               </NavLink>
             </div>
           )}
