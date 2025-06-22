@@ -1,5 +1,5 @@
 import React from 'react';
-import { ThumbsUp, ThumbsDown, MessageSquare, CheckCircle, XCircle } from 'lucide-react';
+import { ThumbsUp, ThumbsDown, MessageSquare, CheckCircle, XCircle, Gift } from 'lucide-react';
 
 // --- Re-usable Stat Card Component ---
 const StatCard = ({ title, value, icon: Icon, color, details }: { title: string, value: string, icon: React.ElementType, color: string, details: string }) => (
@@ -97,19 +97,20 @@ const DashboardPage: React.FC = () => {
             </div>
 
             {/* Main Content Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {/* Stat Cards */}
                 <StatCard title="Total Feedback" value="559" icon={MessageSquare} color="#3b82f6" details="+20.1% from last month" />
                 <StatCard title="Positive Feedback" value="530" icon={ThumbsUp} color="#16a34a" details="94.8% of total" />
                 <StatCard title="Negative Feedback" value="29" icon={ThumbsDown} color="#dc2626" details="5.2% of total" />
+                <StatCard title="Offers Redeemed" value="78" icon={Gift} color="#8b5cf6" details="+5 since yesterday" />
                 
                 {/* Recent Feedback List */}
-                <div className="lg:col-span-3">
+                <div className="lg:col-span-4">
                     <RecentFeedback />
                 </div>
                 
                 {/* Feedback Distribution */}
-                <div className="lg:col-span-3">
+                <div className="lg:col-span-4">
                     <FeedbackDistribution />
                 </div>
             </div>
