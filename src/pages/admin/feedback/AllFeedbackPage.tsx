@@ -27,16 +27,18 @@ const AllFeedbackPage: React.FC = () => {
   }, []);
 
   const feedbackData = [
-    { id: 'FBK-001', user: 'user1@example.com', rating: 'Great', type: 'Good', date: '2023-10-27', status: 'Reviewed' },
-    { id: 'FBK-002', user: 'user2@example.com', rating: 'Poor', type: 'Bad', date: '2023-10-26', status: 'Pending' },
-    { id: 'FBK-003', user: 'user3@example.com', rating: 'Love it', type: 'Good', date: '2023-10-25', status: 'Reviewed' },
-    { id: 'FBK-004', user: 'user4@example.com', rating: 'Okay', type: 'Good', date: '2023-10-24', status: 'Reviewed' },
-    { id: 'FBK-005', user: 'user5@example.com', rating: 'Terrible', type: 'Bad', date: '2023-10-23', status: 'Pending' },
+    { id: 'FBK-001', tableId: 'TBL-001', user: 'user1@example.com', rating: 'Great', type: 'Good', date: '2023-10-27', status: 'Reviewed' },
+    { id: 'FBK-002', tableId: 'TBL-003', user: 'user2@example.com', rating: 'Poor', type: 'Bad', date: '2023-10-26', status: 'Pending' },
+    { id: 'FBK-003', tableId: 'TBL-002', user: 'user3@example.com', rating: 'Love it', type: 'Good', date: '2023-10-25', status: 'Reviewed' },
+    { id: 'FBK-004', tableId: 'TBL-005', user: 'user4@example.com', rating: 'Okay', type: 'Good', date: '2023-10-24', status: 'Reviewed' },
+    { id: 'FBK-005', tableId: 'TBL-001', user: 'user5@example.com', rating: 'Terrible', type: 'Bad', date: '2023-10-23', status: 'Pending' },
   ];
 
   const filteredData = useMemo(() => {
     return feedbackData.filter(item => {
-      const searchMatch = item.user.toLowerCase().includes(searchTerm.toLowerCase()) || item.id.toLowerCase().includes(searchTerm.toLowerCase());
+      const searchMatch = item.user.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         item.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.tableId.toLowerCase().includes(searchTerm.toLowerCase());
       const ratingMatch = filters.rating === 'All' || item.rating === filters.rating;
       const typeMatch = filters.type === 'All' || item.type === filters.type;
       const statusMatch = filters.status === 'All' || item.status === filters.status;
@@ -109,6 +111,7 @@ const AllFeedbackPage: React.FC = () => {
               <tr>
                 <th scope="col" className="p-4"><input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" /></th>
                 <th scope="col" className="px-6 py-3 font-medium">ID</th>
+                <th scope="col" className="px-6 py-3 font-medium">Table ID</th>
                 <th scope="col" className="px-6 py-3 font-medium">User</th>
                 <th scope="col" className="px-6 py-3 font-medium">Rating</th>
                 <th scope="col" className="px-6 py-3 font-medium">Type</th>
@@ -122,6 +125,7 @@ const AllFeedbackPage: React.FC = () => {
                 <tr key={item.id} className="bg-white border-b">
                   <td className="w-4 p-4"><input type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500" /></td>
                   <td className="px-6 py-4 font-semibold text-gray-700">{item.id}</td>
+                  <td className="px-6 py-4 text-gray-600 font-medium">{item.tableId}</td>
                   <td className="px-6 py-4 text-gray-600">{item.user}</td>
                   <td className="px-6 py-4 text-gray-600">{item.rating}</td>
                   <td className="px-6 py-4">
