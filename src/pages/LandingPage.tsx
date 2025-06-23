@@ -14,6 +14,7 @@ import whatsapp from '../assets/whatsapp.png';
 import background2 from '../assets/background2.png';
 import '../index.css';
 import { FeedbackService } from '../services/feedbackService';
+import imageCompression from 'browser-image-compression';
 
 // Add Google Fonts import
 const fontStyle = `
@@ -180,12 +181,20 @@ const LandingPage: React.FC = () => {
     setSubmitting(true);
 
     try {
+      let compressedFile = billFile;
+      if (billFile) {
+        compressedFile = await imageCompression(billFile, {
+          maxSizeMB: 0.25,
+          maxWidthOrHeight: 1200,
+          useWebWorker: true,
+        });
+      }
       await FeedbackService.submitFeedback({
         table_number: tableNumber,
         rating: FEEDBACK_OPTIONS[selected].label,
         customer_email: email || undefined,
         details: { notes: goodFeedback },
-        billFile: billFile,
+        billFile: compressedFile,
       });
       goToStep(3, 'left');
     } catch (err: any) {
@@ -204,6 +213,14 @@ const LandingPage: React.FC = () => {
     setSubmitting(true);
 
     try {
+      let compressedFile = billFile;
+      if (billFile) {
+        compressedFile = await imageCompression(billFile, {
+          maxSizeMB: 0.25,
+          maxWidthOrHeight: 1200,
+          useWebWorker: true,
+        });
+      }
       await FeedbackService.submitFeedback({
         table_number: tableNumber,
         rating: FEEDBACK_OPTIONS[selected].label,
@@ -212,7 +229,7 @@ const LandingPage: React.FC = () => {
           categories: selectedCategories,
           notes: badFeedbackText,
         },
-        billFile: billFile,
+        billFile: compressedFile,
       });
       goToStep(4, 'left');
     } catch (err: any) {

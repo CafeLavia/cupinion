@@ -61,4 +61,70 @@ export class FeedbackService {
       throw new Error('Failed to submit feedback.');
     }
   }
+
+  /**
+   * Update admin notes for a feedback entry
+   */
+  static async updateAdminNotes(feedbackId: string, adminNotes: string): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('feedback')
+        .update({ admin_notes: adminNotes })
+        .eq('id', feedbackId);
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating admin notes:', error);
+      throw new Error('Failed to update admin notes.');
+    }
+  }
+
+  /**
+   * Fetch all feedback from the database (no join)
+   */
+  static async fetchAllFeedback(): Promise<any[]> {
+    try {
+      const { data, error } = await supabase
+        .from('feedback')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching feedback:', error);
+      throw new Error('Failed to fetch feedback.');
+    }
+  }
+
+  /**
+   * Fetch all QR codes from the database
+   */
+  static async fetchAllQRCodes(): Promise<any[]> {
+    try {
+      const { data, error } = await supabase
+        .from('qr_codes')
+        .select('table_number, location')
+        .order('table_number', { ascending: true });
+      if (error) throw error;
+      return data || [];
+    } catch (error) {
+      console.error('Error fetching QR codes:', error);
+      throw new Error('Failed to fetch QR codes.');
+    }
+  }
+
+  /**
+   * Update status for a feedback entry
+   */
+  static async updateStatus(feedbackId: string, status: string): Promise<void> {
+    try {
+      const { error } = await supabase
+        .from('feedback')
+        .update({ status })
+        .eq('id', feedbackId);
+      if (error) throw error;
+    } catch (error) {
+      console.error('Error updating feedback status:', error);
+      throw new Error('Failed to update feedback status.');
+    }
+  }
 } 
