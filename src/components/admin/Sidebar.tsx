@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   MessageSquare,
@@ -16,11 +16,14 @@ import {
   Mail,
   Info,
   Link,
-  HelpCircle
+  HelpCircle,
+  LogOut
 } from 'lucide-react';
+import { AuthService } from '../../services/authService';
 
 const Sidebar: React.FC = () => {
   const [openSections, setOpenSections] = useState<string[]>(['feedback', 'offers', 'analytics', 'settings']);
+  const navigate = useNavigate();
 
   const toggleSection = (section: string) => {
     setOpenSections(prev =>
@@ -35,6 +38,16 @@ const Sidebar: React.FC = () => {
   const baseLinkClasses = "flex items-center w-full px-3 py-2 text-xs font-medium rounded-md";
   const linkClasses = `${baseLinkClasses} text-gray-400 hover:bg-gray-700 hover:text-white`;
   const activeLinkClasses = "bg-gray-700 text-white";
+
+  const handleLogout = async () => {
+    const { error } = await AuthService.signOut();
+    if (error) {
+      console.error('Error logging out:', error);
+      // Optionally, show an error message to the user
+    } else {
+      navigate('/admin/login');
+    }
+  };
 
   return (
     <div className="w-64 bg-[#2C3E50] text-white flex flex-col">
@@ -164,6 +177,15 @@ const Sidebar: React.FC = () => {
           )}
         </div>
       </nav>
+      <div className="px-4 py-4 border-t border-gray-700">
+        <button
+          onClick={handleLogout}
+          className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
+        >
+          <LogOut className="w-5 h-5 mr-3" />
+          Logout
+        </button>
+      </div>
     </div>
   );
 };

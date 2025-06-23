@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import loveit from '../assets/loveit.png';
 import great from '../assets/great.png';
@@ -12,6 +13,7 @@ import tripadvisor from '../assets/tripadvisor.png';
 import whatsapp from '../assets/whatsapp.png';
 import background2 from '../assets/background2.png';
 import '../index.css';
+import { FeedbackService } from '../services/feedbackService';
 
 // Add Google Fonts import
 const fontStyle = `
@@ -71,6 +73,18 @@ const LandingPage: React.FC = () => {
   const [badFeedbackText, setBadFeedbackText] = useState('');
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [billFile, setBillFile] = useState<File | null>(null);
+  const [tableNumber, setTableNumber] = useState<number | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const tableParam = searchParams.get('table');
+    if (tableParam && !isNaN(parseInt(tableParam, 10))) {
+      setTableNumber(parseInt(tableParam, 10));
+    }
+  }, [searchParams]);
 
   const isBillUploadRequired = email.trim() !== '';
 
@@ -157,29 +171,55 @@ const LandingPage: React.FC = () => {
     }
   };
 
-  const handleGoodSubmit = () => {
-    // Here you would typically handle form submission
-    // For example, send data to a server
-    console.log({
-      email,
-      goodFeedback,
-      billFile
-    });
-    // Then proceed to the thank you page
-    goToStep(3, 'left');
+  const handleGoodSubmit = async () => {
+    if (isBillUploadRequired && !billFile) {
+      setError('Please upload a bill to proceed.');
+      return;
+    }
+    setError(null);
+    setSubmitting(true);
+
+    try {
+      await FeedbackService.submitFeedback({
+        table_number: tableNumber,
+        rating: FEEDBACK_OPTIONS[selected].label,
+        customer_email: email || undefined,
+        details: { notes: goodFeedback },
+        billFile: billFile,
+      });
+      goToStep(3, 'left');
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleBadSubmit = () => {
-    // Here you would typically handle form submission
-    // For example, send data to a server
-    console.log({
-      email,
-      selectedCategories,
-      badFeedbackText,
-      billFile
-    });
-    // Then proceed to the thank you page
-    goToStep(4, 'left');
+  const handleBadSubmit = async () => {
+    if (isBillUploadRequired && !billFile) {
+      setError('Please upload a bill to proceed.');
+      return;
+    }
+    setError(null);
+    setSubmitting(true);
+
+    try {
+      await FeedbackService.submitFeedback({
+        table_number: tableNumber,
+        rating: FEEDBACK_OPTIONS[selected].label,
+        customer_email: email || undefined,
+        details: {
+          categories: selectedCategories,
+          notes: badFeedbackText,
+        },
+        billFile: billFile,
+      });
+      goToStep(4, 'left');
+    } catch (err: any) {
+      setError(err.message || 'An unexpected error occurred.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   // Content slide: next content slides in from the right
@@ -618,6 +658,16 @@ const LandingPage: React.FC = () => {
       default:
         return '25%';
     }
+  };
+
+  // Add error display to your form steps
+  const renderError = () => {
+    if (!error) return null;
+    return (
+      <div className="text-red-500 bg-red-100 p-3 rounded-md my-4 text-center">
+        {error}
+      </div>
+    );
   };
 
   return (
