@@ -15,6 +15,7 @@ import background2 from '../assets/background2.png';
 import '../index.css';
 import { FeedbackService } from '../services/feedbackService';
 import imageCompression from 'browser-image-compression';
+import OfferPDFDownload from '../components/OfferPDFDownload';
 
 // Add Google Fonts import
 const fontStyle = `
@@ -77,6 +78,7 @@ const LandingPage: React.FC = () => {
   const [tableNumber, setTableNumber] = useState<number | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [submittedFeedback, setSubmittedFeedback] = useState<any>(null);
 
   const [searchParams] = useSearchParams();
 
@@ -189,13 +191,14 @@ const LandingPage: React.FC = () => {
           useWebWorker: true,
         });
       }
-      await FeedbackService.submitFeedback({
+      const feedback = await FeedbackService.submitFeedback({
         table_number: tableNumber,
         rating: FEEDBACK_OPTIONS[selected].label,
         customer_email: email || undefined,
         details: { notes: goodFeedback },
         billFile: compressedFile,
       });
+      setSubmittedFeedback(feedback);
       goToStep(3, 'left');
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
@@ -221,7 +224,7 @@ const LandingPage: React.FC = () => {
           useWebWorker: true,
         });
       }
-      await FeedbackService.submitFeedback({
+      const feedback = await FeedbackService.submitFeedback({
         table_number: tableNumber,
         rating: FEEDBACK_OPTIONS[selected].label,
         customer_email: email || undefined,
@@ -231,6 +234,7 @@ const LandingPage: React.FC = () => {
         },
         billFile: compressedFile,
       });
+      setSubmittedFeedback(feedback);
       goToStep(4, 'left');
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
@@ -581,6 +585,9 @@ const LandingPage: React.FC = () => {
     );
   } else if (step === 3) {
     // Thank you page for good feedback
+    const customTimestamp = submittedFeedback?.created_at ? new Date(submittedFeedback.created_at).toLocaleString() : new Date().toLocaleString();
+    const offerValue = '10%'; // Replace with real offer percentage from backend
+    const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
         <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
@@ -602,7 +609,18 @@ const LandingPage: React.FC = () => {
           Your feedback helps us serve you better every day.
         </p>
 
-        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: 'auto', marginBottom: '4rem', maxWidth: '24rem' }}>
+        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: 'auto', marginBottom: '2rem', maxWidth: '24rem' }}>
+          {submittedFeedback?.custom_id && (
+            <OfferPDFDownload
+              feedbackId={submittedFeedback.custom_id}
+              offerValue={offerValue}
+              timestamp={customTimestamp}
+              verificationUrl={verificationUrl}
+            />
+          )}
+        </div>
+
+        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: '0', marginBottom: '4rem', maxWidth: '24rem' }}>
           <a
             href="https://g.co/kgs/TZVQBZA"
             target="_blank"
@@ -626,6 +644,9 @@ const LandingPage: React.FC = () => {
     );
   } else if (step === 4) {
     // Thank you page for bad feedback
+    const customTimestamp = submittedFeedback?.created_at ? new Date(submittedFeedback.created_at).toLocaleString() : new Date().toLocaleString();
+    const offerValue = '10%'; // Replace with real offer percentage from backend
+    const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
         <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
@@ -647,7 +668,18 @@ const LandingPage: React.FC = () => {
           Thank you for sharing – we'll use<br/>this to improve your next visit.
         </p>
 
-        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: 'auto', marginBottom: '4rem', maxWidth: '24rem' }}>
+        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: 'auto', marginBottom: '2rem', maxWidth: '24rem' }}>
+          {submittedFeedback?.custom_id && (
+            <OfferPDFDownload
+              feedbackId={submittedFeedback.custom_id}
+              offerValue={offerValue}
+              timestamp={customTimestamp}
+              verificationUrl={verificationUrl}
+            />
+          )}
+        </div>
+
+        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: '0', marginBottom: '4rem', maxWidth: '24rem' }}>
           <a
             href="https://wa.me/94000000000" // Replace with actual WhatsApp number
             target="_blank"

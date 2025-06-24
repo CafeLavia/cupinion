@@ -217,7 +217,7 @@ const AllFeedbackPage: React.FC = () => {
               <tbody>
                 {filteredData.map((item) => (
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
-                    <td className="px-4 py-3 font-semibold text-gray-800">{item.feedback_id || `FD-${String(item.table_number).padStart(2, '0')}-${item.id.slice(-4).toUpperCase()}`}</td>
+                    <td className="px-4 py-3 font-semibold text-gray-800">{item.custom_id || item.id}</td>
                     <td className="px-4 py-3 text-gray-700">{item.table_number}</td>
                     <td className="px-4 py-3 text-gray-700">{item.location || '-'}</td>
                     <td className="px-4 py-3 text-gray-700">{item.customer_email}</td>
@@ -321,7 +321,7 @@ const AllFeedbackPage: React.FC = () => {
                   <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onClick={() => setDetailsModal(null)}><X className="w-6 h-6" /></button>
                   <h2 className="text-xl font-bold mb-4">Feedback Details</h2>
                   <div className="space-y-2">
-                    <div><span className="font-semibold">Feedback ID:</span> {detailsModal.feedback_id || `FD-${String(detailsModal.table_number).padStart(2, '0')}-${detailsModal.id.slice(-4).toUpperCase()}`}</div>
+                    <div><span className="font-semibold">Feedback ID:</span> {detailsModal.custom_id || detailsModal.id}</div>
                     <div><span className="font-semibold">Table:</span> {detailsModal.table_number}</div>
                     <div><span className="font-semibold">Location:</span> {detailsModal.location || '-'}</div>
                     <div><span className="font-semibold">User:</span> {detailsModal.customer_email}</div>
