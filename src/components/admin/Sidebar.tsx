@@ -185,6 +185,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
               {sidebarLink('/admin/analytics/ratings', <PieChart className="w-4 h-4 mr-3" />, 'Rating Distribution')}
               {sidebarLink('/admin/analytics/trends', <TrendingUp className="w-4 h-4 mr-3" />, 'Feedback Trends')}
               {sidebarLink('/admin/analytics/emails', <Mail className="w-4 h-4 mr-3" />, 'Email Stats')}
+              {sidebarLink('/admin/analytics/all-emails', <Mail className="w-4 h-4 mr-3" />, 'All Emails')}
             </div>
           )}
         </div>

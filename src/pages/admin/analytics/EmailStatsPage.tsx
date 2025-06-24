@@ -1,31 +1,164 @@
-import React, { useState } from 'react';
-import { Mail, BarChart, TrendingUp, Users, Calendar, Target } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Mail, TrendingUp, Calendar, Target, Download } from 'lucide-react';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { ChevronsUpDown } from 'lucide-react';
+import { FeedbackService } from '../../../services/feedbackService';
 
-const emailCollectionData = [
-  { month: 'Jan', collected: 120, totalVisitors: 800, rate: 15.0 },
-  { month: 'Feb', collected: 95, totalVisitors: 750, rate: 12.7 },
-  { month: 'Mar', collected: 140, totalVisitors: 900, rate: 15.6 },
-  { month: 'Apr', collected: 110, totalVisitors: 850, rate: 12.9 },
-  { month: 'May', collected: 160, totalVisitors: 1000, rate: 16.0 },
-  { month: 'Jun', collected: 145, totalVisitors: 950, rate: 15.3 },
+const RATING_LABELS = [
+  { name: 'Love it', value: 'loveit', color: '#16a34a' },
+  { name: 'Great', value: 'great', color: '#0e7490' },
+  { name: 'Okay', value: 'okay', color: '#eab308' },
+  { name: 'Poor', value: 'poor', color: '#ea580c' },
+  { name: 'Terrible', value: 'terrible', color: '#dc2626' },
 ];
 
-const emailSourceData = [
-  { name: 'QR Code Scan', value: 65, color: '#16a34a' },
-  { name: 'Direct Input', value: 20, color: '#0e7490' },
-  { name: 'Social Media', value: 10, color: '#eab308' },
-  { name: 'Other', value: 5, color: '#ea580c' },
-];
+function normalizeRating(rating: string) {
+  return rating ? rating.replace(/\s+/g, '').toLowerCase() : '';
+}
+
+function formatDate(dateStr: string) {
+  const d = new Date(dateStr);
+  return d.toLocaleDateString();
+}
 
 const EmailStatsPage: React.FC = () => {
-  const [timeRange, setTimeRange] = useState('month');
+  const [feedback, setFeedback] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month');
+  const [emailDateStart, setEmailDateStart] = useState('');
+  const [emailDateEnd, setEmailDateEnd] = useState('');
 
-  const totalEmails = emailCollectionData.reduce((acc, item) => acc + item.collected, 0);
-  const totalVisitors = emailCollectionData.reduce((acc, item) => acc + item.totalVisitors, 0);
-  const avgCollectionRate = ((totalEmails / totalVisitors) * 100).toFixed(1);
-  const monthlyGrowth = ((emailCollectionData[5].collected - emailCollectionData[0].collected) / emailCollectionData[0].collected * 100).toFixed(1);
+  useEffect(() => {
+    setLoading(true);
+    setError('');
+    FeedbackService.fetchAllFeedback()
+      .then((data) => {
+        setFeedback(data);
+        setLoading(false);
+      })
+      .catch((e) => {
+        setError('Failed to load feedback');
+        setLoading(false);
+      });
+  }, []);
+
+  // Filter feedback by time range for stats/charts
+  function getDateRange(timeRange: string) {
+    const now = new Date();
+    let start: Date;
+    if (timeRange === 'week') {
+      start = new Date(now);
+      start.setDate(now.getDate() - 7);
+    } else if (timeRange === 'month') {
+      start = new Date(now);
+      start.setMonth(now.getMonth() - 1);
+    } else if (timeRange === 'quarter') {
+      start = new Date(now);
+      start.setMonth(now.getMonth() - 3);
+    } else if (timeRange === 'year') {
+      start = new Date(now);
+      start.setFullYear(now.getFullYear() - 1);
+    } else {
+      start = new Date(0);
+    }
+    return { start, end: now };
+  }
+
+  const filteredFeedback = React.useMemo(() => {
+    if (!feedback.length) return [];
+    const { start, end } = getDateRange(timeRange);
+    return feedback.filter(f => {
+      const d = new Date(f.created_at);
+      return d >= start && d <= end;
+    });
+  }, [feedback, timeRange]);
+
+  // Emails only
+  const emails = filteredFeedback.filter(f => f.customer_email && f.customer_email.trim() !== '');
+  const totalEmails = emails.length;
+  const totalFeedback = filteredFeedback.length;
+  const collectionRate = totalFeedback ? ((totalEmails / totalFeedback) * 100).toFixed(1) : '0.0';
+
+  // Weekly growth: compare this week vs previous week
+  const now = new Date();
+  const startThisWeek = new Date(now);
+  startThisWeek.setDate(now.getDate() - 7);
+  const startPrevWeek = new Date(now);
+  startPrevWeek.setDate(now.getDate() - 14);
+  const endPrevWeek = new Date(now);
+  endPrevWeek.setDate(now.getDate() - 8);
+  const emailsThisWeek = feedback.filter(f => {
+    const d = new Date(f.created_at);
+    return d >= startThisWeek && d <= now && f.customer_email && f.customer_email.trim() !== '';
+  }).length;
+  const emailsPrevWeek = feedback.filter(f => {
+    const d = new Date(f.created_at);
+    return d >= startPrevWeek && d <= endPrevWeek && f.customer_email && f.customer_email.trim() !== '';
+  }).length;
+  const weeklyGrowth = emailsPrevWeek > 0 ? (((emailsThisWeek - emailsPrevWeek) / emailsPrevWeek) * 100).toFixed(1) : (emailsThisWeek > 0 ? '100.0' : '0.0');
+
+  // Trends: emails per week
+  function groupByWeek(data: any[]) {
+    const groups: Record<string, any[]> = {};
+    data.forEach(fb => {
+      const date = new Date(fb.created_at);
+      const year = date.getFullYear();
+      const week = Math.ceil(((Number(date) - Number(new Date(date.getFullYear(), 0, 1))) / 86400000 + new Date(date.getFullYear(), 0, 1).getDay() + 1) / 7);
+      const key = `${year}-W${week}`;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(fb);
+    });
+    return groups;
+  }
+  const trendsData = React.useMemo(() => {
+    const groups = groupByWeek(filteredFeedback);
+    return Object.entries(groups).map(([week, items]) => {
+      const emails = items.filter(f => f.customer_email && f.customer_email.trim() !== '').length;
+      const rate = items.length ? (emails / items.length) * 100 : 0;
+      return { week, emails, rate: +rate.toFixed(1) };
+    }).sort((a, b) => a.week.localeCompare(b.week));
+  }, [filteredFeedback]);
+
+  // Pie chart: emails by rating
+  const reviewTypeData = React.useMemo(() => {
+    const counts: Record<string, number> = {};
+    emails.forEach(f => {
+      const r = normalizeRating(f.rating);
+      counts[r] = (counts[r] || 0) + 1;
+    });
+    return RATING_LABELS.map(r => ({
+      name: r.name,
+      value: counts[r.value] || 0,
+      color: r.color,
+    })).filter(r => r.value > 0);
+  }, [emails]);
+
+  // Email list table: show only emails collected today
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const filteredEmailList = React.useMemo(() => {
+    return emails.filter(f => {
+      const d = new Date(f.created_at);
+      d.setHours(0,0,0,0);
+      return d.getTime() === today.getTime();
+    });
+  }, [emails]);
+
+  // Download CSV (no date)
+  function downloadCSV() {
+    const rows = [
+      ['Email', 'Rating'],
+      ...emails.map(f => [f.customer_email, f.rating]),
+    ];
+    const csv = rows.map(r => r.map(x => `"${x}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'emails.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   return (
     <div>
@@ -34,7 +167,7 @@ const EmailStatsPage: React.FC = () => {
         <div className="flex items-center space-x-2">
           <select 
             value={timeRange} 
-            onChange={(e) => setTimeRange(e.target.value)}
+            onChange={(e) => setTimeRange(e.target.value as any)}
             className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
           >
             <option value="week">Last Week</option>
@@ -46,7 +179,7 @@ const EmailStatsPage: React.FC = () => {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex items-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center bg-blue-100">
@@ -54,11 +187,10 @@ const EmailStatsPage: React.FC = () => {
             </div>
             <div className="ml-4">
               <h4 className="text-gray-500 text-sm font-medium">Total Emails Collected</h4>
-              <p className="text-3xl font-bold text-gray-800">{totalEmails.toLocaleString()}</p>
+              <p className="text-3xl font-bold text-gray-800">{totalEmails}</p>
             </div>
           </div>
         </div>
-
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex items-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center bg-green-100">
@@ -66,31 +198,18 @@ const EmailStatsPage: React.FC = () => {
             </div>
             <div className="ml-4">
               <h4 className="text-gray-500 text-sm font-medium">Collection Rate</h4>
-              <p className="text-3xl font-bold text-gray-800">{avgCollectionRate}%</p>
+              <p className="text-3xl font-bold text-gray-800">{collectionRate}%</p>
             </div>
           </div>
         </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-md">
-          <div className="flex items-center">
-            <div className="w-16 h-16 rounded-full flex items-center justify-center bg-purple-100">
-              <Users className="w-8 h-8 text-purple-600" />
-            </div>
-            <div className="ml-4">
-              <h4 className="text-gray-500 text-sm font-medium">Total Visitors</h4>
-              <p className="text-3xl font-bold text-gray-800">{totalVisitors.toLocaleString()}</p>
-            </div>
-          </div>
-        </div>
-
         <div className="bg-white p-6 rounded-lg shadow-md">
           <div className="flex items-center">
             <div className="w-16 h-16 rounded-full flex items-center justify-center bg-orange-100">
               <TrendingUp className="w-8 h-8 text-orange-600" />
             </div>
             <div className="ml-4">
-              <h4 className="text-gray-500 text-sm font-medium">Monthly Growth</h4>
-              <p className="text-3xl font-bold text-gray-800">+{monthlyGrowth}%</p>
+              <h4 className="text-gray-500 text-sm font-medium">Weekly Growth</h4>
+              <p className="text-3xl font-bold text-gray-800">{parseFloat(weeklyGrowth) > 0 ? '+' : ''}{weeklyGrowth}%</p>
             </div>
           </div>
         </div>
@@ -101,26 +220,26 @@ const EmailStatsPage: React.FC = () => {
         <div className="bg-white p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Email Collection Trends</h2>
           <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={emailCollectionData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+            <LineChart data={trendsData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
+              <XAxis dataKey="week" />
               <YAxis yAxisId="left" />
               <YAxis yAxisId="right" orientation="right" />
               <Tooltip />
               <Legend />
-              <Line yAxisId="left" type="monotone" dataKey="collected" stroke="#3b82f6" strokeWidth={2} name="Emails Collected" />
+              <Line yAxisId="left" type="monotone" dataKey="emails" stroke="#3b82f6" strokeWidth={2} name="Emails Collected" />
               <Line yAxisId="right" type="monotone" dataKey="rate" stroke="#16a34a" strokeWidth={2} name="Collection Rate %" />
             </LineChart>
           </ResponsiveContainer>
         </div>
 
-        {/* Email Source Distribution */}
+        {/* Review Type Distribution */}
         <div className="bg-white p-6 rounded-lg shadow-md">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Email Source Distribution</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Review Type Distribution</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
-                data={emailSourceData}
+                data={reviewTypeData}
                 cx="50%"
                 cy="50%"
                 innerRadius={60}
@@ -128,7 +247,7 @@ const EmailStatsPage: React.FC = () => {
                 paddingAngle={5}
                 dataKey="value"
               >
-                {emailSourceData.map((entry, index) => (
+                {reviewTypeData.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
@@ -136,82 +255,51 @@ const EmailStatsPage: React.FC = () => {
             </PieChart>
           </ResponsiveContainer>
           <div className="grid grid-cols-2 gap-4 mt-4">
-            {emailSourceData.map((item) => (
+            {reviewTypeData.map((item) => (
               <div key={item.name} className="flex items-center">
                 <div className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: item.color }}></div>
-                <span className="text-sm text-gray-600">{item.name}: {item.value}%</span>
+                <span className="text-sm text-gray-600">{item.name}: {item.value}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Detailed Statistics */}
+      {/* Email List Table - Today Only */}
       <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Detailed Statistics</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">{emailCollectionData[5].collected}</div>
-            <div className="text-sm text-gray-600">This Month</div>
-          </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">{emailCollectionData[5].rate}%</div>
-            <div className="text-sm text-gray-600">Current Rate</div>
-          </div>
-          <div className="text-center p-4 bg-gray-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">{Math.round(totalEmails / 6)}</div>
-            <div className="text-sm text-gray-600">Avg. per Month</div>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
+          <h2 className="text-lg font-semibold text-gray-900">Today's Collected Emails</h2>
+          <div className="flex gap-2 items-center">
+            <button onClick={downloadCSV} className="flex items-center px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+              <Download className="w-4 h-4 mr-2" /> Download CSV
+            </button>
+            <a href="/admin/analytics/all-emails" className="ml-4 text-blue-600 hover:underline text-sm">View All</a>
           </div>
         </div>
-      </div>
-
-      {/* Performance Insights */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Performance Insights</h2>
-        <div className="space-y-4">
-          <div className="flex items-center justify-between p-4 bg-green-50 rounded-lg">
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
-              <div>
-                <div className="font-medium text-gray-800">Best Performing Month</div>
-                <div className="text-sm text-gray-600">May with {emailCollectionData[4].collected} emails collected</div>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-green-600">{emailCollectionData[4].rate}%</div>
-              <div className="text-xs text-gray-500">Collection Rate</div>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between p-4 bg-yellow-50 rounded-lg">
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-yellow-500 rounded-full mr-3"></div>
-              <div>
-                <div className="font-medium text-gray-800">Growth Opportunity</div>
-                <div className="text-sm text-gray-600">February had lowest collection rate at {emailCollectionData[1].rate}%</div>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-yellow-600">-2.3%</div>
-              <div className="text-xs text-gray-500">vs Average</div>
-            </div>
-          </div>
-          
-          <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg">
-            <div className="flex items-center">
-              <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
-              <div>
-                <div className="font-medium text-gray-800">QR Code Effectiveness</div>
-                <div className="text-sm text-gray-600">65% of emails collected through QR code scans</div>
-              </div>
-            </div>
-            <div className="text-right">
-              <div className="text-lg font-bold text-blue-600">65%</div>
-              <div className="text-xs text-gray-500">Primary Source</div>
-            </div>
-          </div>
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-sm text-left rounded-lg overflow-hidden shadow">
+            <thead className="bg-gray-100">
+              <tr>
+                <th className="px-6 py-3 font-semibold text-gray-700">Email</th>
+                <th className="px-6 py-3 font-semibold text-gray-700">Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredEmailList.map((f, idx) => (
+                <tr key={idx} className="border-b hover:bg-blue-50 transition">
+                  <td className="px-6 py-3">{f.customer_email}</td>
+                  <td className="px-6 py-3">{f.rating}</td>
+                </tr>
+              ))}
+              {filteredEmailList.length === 0 && (
+                <tr><td colSpan={2} className="px-6 py-6 text-center text-gray-400">No emails collected today.</td></tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
+      {loading && <div className="mt-8 text-center text-gray-500">Loading...</div>}
+      {error && <div className="mt-8 text-center text-red-500">{error}</div>}
     </div>
   );
 };
