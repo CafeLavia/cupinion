@@ -87,6 +87,7 @@ const LandingPage: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submittedFeedback, setSubmittedFeedback] = useState<any>(null);
+  const [offerPercentage, setOfferPercentage] = useState<number>(0);
 
   const [searchParams] = useSearchParams();
 
@@ -207,6 +208,8 @@ const LandingPage: React.FC = () => {
         billFile: compressedFile,
       });
       setSubmittedFeedback(feedback);
+      const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
+      setOfferPercentage(percent);
       goToStep(3, 'left');
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
@@ -243,6 +246,8 @@ const LandingPage: React.FC = () => {
         billFile: compressedFile,
       });
       setSubmittedFeedback(feedback);
+      const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
+      setOfferPercentage(percent);
       goToStep(4, 'left');
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
@@ -594,7 +599,6 @@ const LandingPage: React.FC = () => {
   } else if (step === 3) {
     // Thank you page for good feedback
     const customTimestamp = submittedFeedback?.created_at ? new Date(submittedFeedback.created_at).toLocaleString() : new Date().toLocaleString();
-    const offerValue = '10%'; // Replace with real offer percentage from backend
     const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
@@ -621,7 +625,7 @@ const LandingPage: React.FC = () => {
           {isValidEmail(submittedFeedback?.customer_email) && submittedFeedback?.rating !== 'Poor' && submittedFeedback?.rating !== 'Terrible' && (
             <OfferPDFDownload
               feedbackId={submittedFeedback.custom_id}
-              offerValue={offerValue}
+              offerValue={`${offerPercentage}%`}
               timestamp={customTimestamp}
               verificationUrl={verificationUrl}
             />
@@ -653,7 +657,6 @@ const LandingPage: React.FC = () => {
   } else if (step === 4) {
     // Thank you page for bad feedback
     const customTimestamp = submittedFeedback?.created_at ? new Date(submittedFeedback.created_at).toLocaleString() : new Date().toLocaleString();
-    const offerValue = '10%'; // Replace with real offer percentage from backend
     const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
@@ -680,7 +683,7 @@ const LandingPage: React.FC = () => {
           {isValidEmail(submittedFeedback?.customer_email) && submittedFeedback?.rating !== 'Poor' && submittedFeedback?.rating !== 'Terrible' && (
             <OfferPDFDownload
               feedbackId={submittedFeedback.custom_id}
-              offerValue={offerValue}
+              offerValue={`${offerPercentage}%`}
               timestamp={customTimestamp}
               verificationUrl={verificationUrl}
             />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -20,10 +20,12 @@ import {
   LogOut
 } from 'lucide-react';
 import { AuthService } from '../../services/authService';
+import { supabase } from '../../services/supabaseClient';
 
 const Sidebar: React.FC = () => {
   const [openSections, setOpenSections] = useState<string[]>(['feedback', 'offers', 'analytics', 'settings']);
   const navigate = useNavigate();
+  const [role, setRole] = useState<string | null>(null);
 
   const toggleSection = (section: string) => {
     setOpenSections(prev =>
@@ -48,6 +50,22 @@ const Sidebar: React.FC = () => {
       navigate('/admin/login');
     }
   };
+
+  useEffect(() => {
+    // Fetch user role from Supabase profiles (mocked for now)
+    const fetchRole = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        if (!error && data) setRole(data.role);
+      }
+    };
+    fetchRole();
+  }, []);
 
   return (
     <div className="w-64 bg-[#2C3E50] text-white flex flex-col">
@@ -109,18 +127,27 @@ const Sidebar: React.FC = () => {
           </button>
           {isSectionOpen('offers') && (
             <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
-              <NavLink to="/admin/offers" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                <Gift className="w-4 h-4 mr-3" />
-                Feedback Offers
-              </NavLink>
-              <NavLink to="/admin/offers/redeem" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                <CheckSquare className="w-4 h-4 mr-3" />
-                Redeem Offers
-              </NavLink>
-              <NavLink to="/admin/offers/settings" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                <Settings className="w-4 h-4 mr-3" />
-                Offer Settings
-              </NavLink>
+              {/* Feedback Offers: manager, super_admin */}
+              {(role === 'manager' || role === 'super_admin') && (
+                <NavLink to="/admin/offers" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
+                  <Gift className="w-4 h-4 mr-3" />
+                  Feedback Offers
+                </NavLink>
+              )}
+              {/* Redeem Offers: staff, manager, super_admin */}
+              {(role === 'staff' || role === 'manager' || role === 'super_admin') && (
+                <NavLink to="/admin/offers/redeem" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
+                  <CheckSquare className="w-4 h-4 mr-3" />
+                  Redeem Offers
+                </NavLink>
+              )}
+              {/* Offer Settings: super_admin only */}
+              {role === 'super_admin' && (
+                <NavLink to="/admin/offers/settings" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
+                  <Settings className="w-4 h-4 mr-3" />
+                  Offer Settings
+                </NavLink>
+              )}
             </div>
           )}
         </div>

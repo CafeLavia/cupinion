@@ -193,4 +193,18 @@ export class FeedbackService {
       throw new Error('Failed to create offer claim.');
     }
   }
+
+  /**
+   * Fetch offer percentage for a given rating
+   */
+  static async fetchOfferPercentage(rating: string): Promise<number> {
+    const key = rating.toLowerCase().replace(/ /g, '_');
+    const { data, error } = await supabase
+      .from('offer_configs')
+      .select('offer_percentage')
+      .eq('key', key)
+      .single();
+    if (error) return 0;
+    return data?.offer_percentage || 0;
+  }
 } 
