@@ -63,6 +63,14 @@ const FILL_COLORS = [
   '#dc2626', // Terrible - red (top)
 ];
 
+// Add email validation helper
+const isValidEmail = (email: string | undefined) => {
+  if (!email) return false;
+  const trimmed = email.trim();
+  // Simple regex: must have @ and a dot after @
+  return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(trimmed);
+};
+
 const LandingPage: React.FC = () => {
   const [step, setStep] = useState(0); // 0: initial, 1: good, 2: bad, 3: thank you (good), 4: thank you (bad)
   const [selected, setSelected] = useState(2); // Default to 'Okay'
@@ -610,7 +618,7 @@ const LandingPage: React.FC = () => {
         </p>
 
         <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: 'auto', marginBottom: '2rem', maxWidth: '24rem' }}>
-          {submittedFeedback?.custom_id && (
+          {isValidEmail(submittedFeedback?.customer_email) && submittedFeedback?.rating !== 'Poor' && submittedFeedback?.rating !== 'Terrible' && (
             <OfferPDFDownload
               feedbackId={submittedFeedback.custom_id}
               offerValue={offerValue}
@@ -669,7 +677,7 @@ const LandingPage: React.FC = () => {
         </p>
 
         <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: 'auto', marginBottom: '2rem', maxWidth: '24rem' }}>
-          {submittedFeedback?.custom_id && (
+          {isValidEmail(submittedFeedback?.customer_email) && submittedFeedback?.rating !== 'Poor' && submittedFeedback?.rating !== 'Terrible' && (
             <OfferPDFDownload
               feedbackId={submittedFeedback.custom_id}
               offerValue={offerValue}
