@@ -13,6 +13,7 @@ import OfferSettingsPage from '../pages/admin/offers/OfferSettingsPage';
 import RatingDistributionPage from '../pages/admin/analytics/RatingDistributionPage';
 import FeedbackTrendsPage from '../pages/admin/analytics/FeedbackTrendsPage';
 import EmailStatsPage from '../pages/admin/analytics/EmailStatsPage';
+import AllRedemptionsPage from '../pages/admin/offers/AllRedemptionsPage';
 
 const router = createBrowserRouter([
   {
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
           { path: 'offers', element: <FeedbackOffersPage /> },
           { path: 'offers/redeem', element: <OfferRedeemPage /> },
           { path: 'offers/settings', element: <OfferSettingsPage /> },
+          { path: 'offers/all-redemptions', element: <AllRedemptionsPage /> },
           { path: 'analytics/ratings', element: <RatingDistributionPage /> },
           { path: 'analytics/trends', element: <FeedbackTrendsPage /> },
           { path: 'analytics/emails', element: <EmailStatsPage /> },

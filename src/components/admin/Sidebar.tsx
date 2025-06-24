@@ -17,7 +17,8 @@ import {
   Info,
   Link,
   HelpCircle,
-  LogOut
+  LogOut,
+  CheckCircle
 } from 'lucide-react';
 import { AuthService } from '../../services/authService';
 import { supabase } from '../../services/supabaseClient';
@@ -160,6 +161,9 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
               {/* Offer Settings: super_admin and manager */}
               {(role === 'super_admin' || role === 'manager') &&
                 sidebarLink('/admin/offers/settings', <Settings className="w-4 h-4 mr-3" />, 'Offer Settings')}
+              {/* All Redemptions: super_admin and manager */}
+              {(role === 'super_admin' || role === 'manager') &&
+                sidebarLink('/admin/offers/all-redemptions', <CheckCircle className="w-4 h-4 mr-3" />, 'All Redemptions')}
             </div>
           )}
         </div>
