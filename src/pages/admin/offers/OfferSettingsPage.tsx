@@ -14,8 +14,29 @@ const OfferSettingsPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+  const [roleLoading, setRoleLoading] = useState(true);
 
   useEffect(() => {
+    // Fetch user role from Supabase profiles
+    const fetchRole = async () => {
+      setRoleLoading(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        if (!error && data) setRole(data.role);
+      }
+      setRoleLoading(false);
+    };
+    fetchRole();
+  }, []);
+
+  useEffect(() => {
+    if (!role || (role !== 'super_admin' && role !== 'manager')) return;
     const fetchConfigs = async () => {
       setLoading(true);
       setError(null);
@@ -34,7 +55,7 @@ const OfferSettingsPage: React.FC = () => {
       }
     };
     fetchConfigs();
-  }, []);
+  }, [role]);
 
   const handleChange = (key: string, value: string) => {
     setPercentages(prev => ({ ...prev, [key]: Number(value) }));
@@ -56,6 +77,13 @@ const OfferSettingsPage: React.FC = () => {
       setTimeout(() => setSuccess(false), 2000);
     }
   };
+
+  if (roleLoading) {
+    return <div className="flex justify-center items-center min-h-[70vh] bg-gray-50"><div className="text-gray-400">Loading...</div></div>;
+  }
+  if (role !== 'super_admin' && role !== 'manager') {
+    return <div className="flex justify-center items-center min-h-[70vh] bg-gray-50"><div className="text-red-500 text-xl font-bold">Not authorized</div></div>;
+  }
 
   return (
     <div className="flex justify-center items-center min-h-[70vh] bg-gray-50">

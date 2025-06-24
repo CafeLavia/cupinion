@@ -141,8 +141,8 @@ const Sidebar: React.FC = () => {
                   Redeem Offers
                 </NavLink>
               )}
-              {/* Offer Settings: super_admin only */}
-              {role === 'super_admin' && (
+              {/* Offer Settings: super_admin and manager */}
+              {(role === 'super_admin' || role === 'manager') && (
                 <NavLink to="/admin/offers/settings" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
                   <Settings className="w-4 h-4 mr-3" />
                   Offer Settings
