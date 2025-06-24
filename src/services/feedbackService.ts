@@ -158,12 +158,19 @@ export class FeedbackService {
   /**
    * Check if a bill or feedback has already been claimed
    */
-  static async checkOfferClaim({ feedbackId, billNumber }: { feedbackId: string, billNumber: string }): Promise<any> {
+  static async checkOfferClaim({ feedbackId, billNumber }: { feedbackId?: string, billNumber?: string }): Promise<any> {
     try {
-      const { data, error } = await supabase
-        .from('offer_claims')
-        .select('*')
-        .or(`feedback_id.eq.${feedbackId},bill_number.eq.${billNumber}`);
+      let query = supabase.from('offer_claims').select('*');
+      if (billNumber && !feedbackId) {
+        query = query.eq('bill_number', billNumber);
+      } else if (feedbackId && !billNumber) {
+        query = query.eq('feedback_id', feedbackId);
+      } else if (feedbackId && billNumber) {
+        query = query.or(`feedback_id.eq.${feedbackId},bill_number.eq.${billNumber}`);
+      } else {
+        throw new Error('No search criteria provided');
+      }
+      const { data, error } = await query;
       if (error) throw error;
       return data && data.length > 0 ? data[0] : null;
     } catch (error) {

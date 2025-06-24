@@ -13,6 +13,7 @@
     "@supabase/supabase-js": "^2.50.0",
     "@tailwindcss/vite": "^4.1.10",
     "@types/qrcode": "^1.5.5",
+    "@types/react-qr-reader": "^2.1.7",
     "@types/recharts": "^1.8.29",
     "browser-image-compression": "^2.0.2",
     "jspdf": "^3.0.1",
@@ -21,6 +22,7 @@
     "qrcode.react": "^4.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-qr-reader": "^3.0.0-beta-1",
     "react-router-dom": "^7.6.2",
     "recharts": "^2.15.4",
     "tailwindcss": "^4.1.10"

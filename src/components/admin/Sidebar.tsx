@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
   MessageSquare,
@@ -22,7 +22,13 @@ import {
 import { AuthService } from '../../services/authService';
 import { supabase } from '../../services/supabaseClient';
 
-const Sidebar: React.FC = () => {
+// Add props to Sidebar for mobile toggle
+interface SidebarProps {
+  sidebarOpen: boolean;
+  setSidebarOpen: (open: boolean) => void;
+}
+
+const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const [openSections, setOpenSections] = useState<string[]>(['feedback', 'offers', 'analytics', 'settings']);
   const navigate = useNavigate();
   const [role, setRole] = useState<string | null>(null);
@@ -67,9 +73,33 @@ const Sidebar: React.FC = () => {
     fetchRole();
   }, []);
 
+  // Helper for sidebar links
+  const sidebarLink = (to: string, icon: React.ReactNode, label: string, exact: boolean = false) => (
+    <NavLink
+      to={to}
+      end={exact}
+      className={({ isActive }) =>
+        isActive
+          ? 'bg-[#34495E] text-white flex items-center w-full px-3 py-2 text-xs font-medium rounded-md'
+          : 'hover:bg-[#34495E] text-white/80 flex items-center w-full px-3 py-2 text-xs font-medium rounded-md'
+      }
+      onClick={() => {
+        if (window.innerWidth < 768) setSidebarOpen(false);
+      }}
+    >
+      {icon}
+      {label}
+    </NavLink>
+  );
+
   return (
-    <div className="w-64 bg-[#2C3E50] text-white flex flex-col">
-      <div className="h-16 flex items-center justify-center text-2xl font-bold border-b border-gray-700 shrink-0">
+    <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-[linear-gradient(to_bottom,#186863_0%,#084040_50%,#011217_100%)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-200 md:relative md:translate-x-0 md:block`}>
+      {/* Close button for mobile */}
+      <button className="absolute top-4 right-4 md:hidden" onClick={() => setSidebarOpen(false)}>
+        {/* Close icon (X) */}
+        <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+      <div className="h-16 flex items-center justify-center text-2xl font-bold border-b border-gray-700 shrink-0 text-white">
         Cafe LaVia
       </div>
       <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
@@ -101,14 +131,8 @@ const Sidebar: React.FC = () => {
           </button>
           {isSectionOpen('feedback') && (
             <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
-              <NavLink to="/admin/feedback" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                <FileText className="w-4 h-4 mr-3" />
-                All Feedback
-              </NavLink>
-              <NavLink to="/admin/feedback/export" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                <Download className="w-4 h-4 mr-3" />
-                Export Data
-              </NavLink>
+              {sidebarLink('/admin/feedback', <FileText className="w-4 h-4 mr-3" />, 'All Feedback', true)}
+              {sidebarLink('/admin/feedback/export', <Download className="w-4 h-4 mr-3" />, 'Export Data')}
             </div>
           )}
         </div>
@@ -128,26 +152,14 @@ const Sidebar: React.FC = () => {
           {isSectionOpen('offers') && (
             <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
               {/* Feedback Offers: manager, super_admin */}
-              {(role === 'manager' || role === 'super_admin') && (
-                <NavLink to="/admin/offers" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                  <Gift className="w-4 h-4 mr-3" />
-                  Feedback Offers
-                </NavLink>
-              )}
+              {(role === 'manager' || role === 'super_admin') &&
+                sidebarLink('/admin/offers', <Gift className="w-4 h-4 mr-3" />, 'Feedback Offers', true)}
               {/* Redeem Offers: staff, manager, super_admin */}
-              {(role === 'staff' || role === 'manager' || role === 'super_admin') && (
-                <NavLink to="/admin/offers/redeem" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                  <CheckSquare className="w-4 h-4 mr-3" />
-                  Redeem Offers
-                </NavLink>
-              )}
+              {(role === 'staff' || role === 'manager' || role === 'super_admin') &&
+                sidebarLink('/admin/offers/redeem', <CheckSquare className="w-4 h-4 mr-3" />, 'Redeem Offers')}
               {/* Offer Settings: super_admin and manager */}
-              {(role === 'super_admin' || role === 'manager') && (
-                <NavLink to="/admin/offers/settings" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                  <Settings className="w-4 h-4 mr-3" />
-                  Offer Settings
-                </NavLink>
-              )}
+              {(role === 'super_admin' || role === 'manager') &&
+                sidebarLink('/admin/offers/settings', <Settings className="w-4 h-4 mr-3" />, 'Offer Settings')}
             </div>
           )}
         </div>
@@ -166,18 +178,9 @@ const Sidebar: React.FC = () => {
           </button>
           {isSectionOpen('analytics') && (
             <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
-              <NavLink to="/admin/analytics/ratings" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                <PieChart className="w-4 h-4 mr-3" />
-                Rating Distribution
-              </NavLink>
-              <NavLink to="/admin/analytics/trends" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                <TrendingUp className="w-4 h-4 mr-3" />
-                Feedback Trends
-              </NavLink>
-              <NavLink to="/admin/analytics/emails" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                <Mail className="w-4 h-4 mr-3" />
-                Email Stats
-              </NavLink>
+              {sidebarLink('/admin/analytics/ratings', <PieChart className="w-4 h-4 mr-3" />, 'Rating Distribution')}
+              {sidebarLink('/admin/analytics/trends', <TrendingUp className="w-4 h-4 mr-3" />, 'Feedback Trends')}
+              {sidebarLink('/admin/analytics/emails', <Mail className="w-4 h-4 mr-3" />, 'Email Stats')}
             </div>
           )}
         </div>
@@ -196,10 +199,7 @@ const Sidebar: React.FC = () => {
           </button>
           {isSectionOpen('settings') && (
             <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
-               <NavLink to="/admin/settings" className={({isActive}) => isActive ? `${linkClasses} ${activeLinkClasses}`: linkClasses}>
-                 <Settings className="w-4 h-4 mr-3" />
-                Configuration
-              </NavLink>
+              {sidebarLink('/admin/settings', <Settings className="w-4 h-4 mr-3" />, 'Configuration')}
             </div>
           )}
         </div>
