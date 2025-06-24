@@ -241,53 +241,20 @@ const SettingsPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
         <h1 className="text-2xl font-bold text-gray-800">Settings & Configuration</h1>
       </div>
 
-      {/* Offer Settings */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex items-center mb-4">
-          <Percent className="w-6 h-6 mr-3 text-blue-600" />
-          <h2 className="text-lg font-semibold text-gray-900">Offer Settings</h2>
-        </div>
-        <div className="space-y-4">
-          <div>
-            <label htmlFor="discount-rate" className="block text-sm font-medium text-gray-700">
-              Default Discount Rate
-            </label>
-            <div className="mt-1 flex rounded-md shadow-sm">
-              <input
-                type="number"
-                name="discount-rate"
-                id="discount-rate"
-                value={discountRate}
-                onChange={(e) => setDiscountRate(e.target.value)}
-                className="block w-full rounded-none rounded-l-md border-gray-300 sm:text-sm p-2 border"
-                placeholder="10"
-              />
-              <span className="inline-flex items-center rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 text-gray-500 sm:text-sm">
-                %
-              </span>
-            </div>
-            <p className="mt-2 text-xs text-gray-500">The default discount percentage for new offers.</p>
-          </div>
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700">
-            Save Changes
-          </button>
-        </div>
-      </div>
-
       {/* QR Code Management */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
-        <div className="flex items-center justify-between mb-4">
+      <div className="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
           <div className="flex items-center">
             <QrCode className="w-6 h-6 mr-3 text-blue-600" />
             <h2 className="text-lg font-semibold text-gray-900">Table QR Codes</h2>
           </div>
           <button
             onClick={openCreateModal}
-            className="flex items-center px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700"
+            className="flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 w-full sm:w-auto mt-2 sm:mt-0"
           >
             <Plus className="w-4 h-4 mr-2" />
             Create New QR Code
@@ -301,85 +268,37 @@ const SettingsPage: React.FC = () => {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Table #
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Location
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Created
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Actions
-                  </th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Table #</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                  <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {qrCodes.map((qrCode) => (
-                  <tr key={qrCode.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {qrCode.table_number}
+                  <tr key={qrCode.id} className="hover:bg-blue-50 transition">
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{qrCode.table_number}</td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">{qrCode.location || '-'}</td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${qrCode.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>{qrCode.is_active ? 'Active' : 'Inactive'}</span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {qrCode.location || '-'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        qrCode.is_active 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-red-100 text-red-800'
-                      }`}>
-                        {qrCode.is_active ? 'Active' : 'Inactive'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(qrCode.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                      <button
-                        onClick={() => downloadQRCode(qrCode)}
-                        className="text-blue-600 hover:text-blue-900"
-                        title="Download QR Code"
-                      >
-                        <Download className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => openEditModal(qrCode)}
-                        className="text-green-600 hover:text-green-900"
-                        title="Edit QR Code"
-                      >
-                        <Edit className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => toggleQRCodeStatus(qrCode.id, qrCode.is_active)}
-                        className={`${qrCode.is_active ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'}`}
-                        title={qrCode.is_active ? 'Deactivate' : 'Activate'}
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => deleteQRCode(qrCode.id)}
-                        className="text-red-600 hover:text-red-900"
-                        title="Delete QR Code"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(qrCode.created_at).toLocaleDateString()}</td>
+                    <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2 flex flex-wrap gap-2">
+                      <button onClick={() => downloadQRCode(qrCode)} className="text-blue-600 hover:text-blue-900" title="Download QR Code"><Download className="w-4 h-4" /></button>
+                      <button onClick={() => openEditModal(qrCode)} className="text-green-600 hover:text-green-900" title="Edit QR Code"><Edit className="w-4 h-4" /></button>
+                      <button onClick={() => toggleQRCodeStatus(qrCode.id, qrCode.is_active)} className={`${qrCode.is_active ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'}`} title={qrCode.is_active ? 'Deactivate' : 'Activate'}><Eye className="w-4 h-4" /></button>
+                      <button onClick={() => deleteQRCode(qrCode.id)} className="text-red-600 hover:text-red-900" title="Delete QR Code"><Trash2 className="w-4 h-4" /></button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             {qrCodes.length === 0 && (
-              <div className="text-center py-8 text-gray-500">
-                No QR codes found. Create your first one!
-              </div>
+              <div className="text-center py-8 text-gray-500">No QR codes found. Create your first one!</div>
             )}
           </div>
         )}
