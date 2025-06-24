@@ -123,11 +123,11 @@ const OfferRedeemPage: React.FC = () => {
                 <h1 className="text-2xl font-bold text-gray-800">Redeem Offers</h1>
                 <p className="text-gray-600 mt-1">Scan QR or enter feedback ID and bill number to redeem customer offers</p>
             </div>
-            {/* QR Scanner Button */}
-            <div className="flex items-center gap-3 mb-2">
+            {/* QR Scanner Button and Search Row */}
+            <div className="flex flex-col gap-2 mb-2 md:flex-row md:items-center md:gap-3">
                 <button
                     onClick={() => setShowQRScanner((v) => !v)}
-                    className="flex items-center px-4 py-2 bg-teal-600 text-white rounded-md font-semibold hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+                    className="w-full md:w-auto flex items-center px-4 py-2 bg-teal-600 text-white rounded-md font-semibold hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
                 >
                     <QrCode className="w-5 h-5 mr-2" />
                     {showQRScanner ? 'Close Scanner' : 'Scan QR Code'}
@@ -138,12 +138,12 @@ const OfferRedeemPage: React.FC = () => {
                     value={feedbackId}
                     onChange={(e) => setFeedbackId(e.target.value)}
                     placeholder="Enter feedback code (e.g. FD-XXXXXX)"
-                    className="ml-4 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64"
+                    className="w-full md:w-64 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
                 <button
                     onClick={handleSearch}
                     disabled={isSearching || !feedbackId.trim()}
-                    className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                    className="w-full md:w-auto px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
                     {isSearching ? (
                         <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto" />
@@ -167,8 +167,8 @@ const OfferRedeemPage: React.FC = () => {
             )}
             {/* Search Results */}
             {searchResult && (
-                <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                    <div className="p-6 border-b border-gray-200 flex items-center justify-between">
+                <div className="bg-white rounded-lg shadow-md overflow-hidden w-full max-w-sm mx-auto">
+                    <div className="p-4 border-b border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-2">
                         <h2 className="text-lg font-semibold text-gray-900">Bill Verification</h2>
                         {claimStatus && (
                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(claimStatus)}`}>
@@ -177,10 +177,10 @@ const OfferRedeemPage: React.FC = () => {
                             </span>
                         )}
                     </div>
-                    <div className="p-6 flex flex-col items-center">
+                    <div className="p-4 flex flex-col items-center gap-4">
                         {/* Bill Image Display */}
                         {searchResult.bill_image_url && (
-                            <div className="mb-4 flex flex-col items-center">
+                            <div className="flex flex-col items-center w-full">
                                 <div className="text-sm text-gray-700 mb-2">Bill Image</div>
                                 <img
                                     src={searchResult.bill_image_url}
@@ -191,7 +191,7 @@ const OfferRedeemPage: React.FC = () => {
                             </div>
                         )}
                         {/* Feedback Custom ID */}
-                        <div className="mb-4 w-full flex flex-col items-center">
+                        <div className="w-full flex flex-col items-center">
                             <div className="text-sm text-gray-700 mb-1">Feedback Code</div>
                             <div className="text-lg font-mono font-bold text-gray-900 bg-gray-100 px-4 py-2 rounded">
                                 {searchResult.custom_id || '-'}
@@ -200,7 +200,7 @@ const OfferRedeemPage: React.FC = () => {
                         {/* Offer Percentage */}
                         <OfferPercentageDisplay rating={searchResult.rating} />
                         {/* Bill Number Input and Claim Check */}
-                        <div className="w-full max-w-xs">
+                        <div className="w-full">
                             <label htmlFor="billNumber" className="block text-sm font-medium text-gray-700 mb-2">
                                 Bill Number
                             </label>
@@ -245,11 +245,11 @@ const OfferRedeemPage: React.FC = () => {
                             {error && <div className="text-red-600 text-sm mt-2">{error}</div>}
                         </div>
                         {/* Mark as Claimed Button */}
-                        <div className="mt-6 flex justify-end w-full max-w-xs">
+                        <div className="mt-4 flex justify-end w-full">
                             <button
                                 onClick={handleRedeem}
                                 disabled={claimStatus !== 'Not Redeemed' || isRedeeming || !billNumber.trim()}
-                                className="px-6 py-2 bg-green-600 text-white rounded-md font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed w-full"
+                                className="w-full px-6 py-2 bg-green-600 text-white rounded-md font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
                             >
                                 {isRedeeming ? 'Processing...' : 'Mark as Claimed'}
                             </button>

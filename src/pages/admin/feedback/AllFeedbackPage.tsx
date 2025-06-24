@@ -19,6 +19,8 @@ const AllFeedbackPage: React.FC = () => {
   const [qrCodes, setQrCodes] = useState<any[]>([]);
   const [detailsModal, setDetailsModal] = useState<any | null>(null);
   const [dropdownPos, setDropdownPos] = useState<{ top: number; left: number } | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 10;
 
   const filterRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -84,6 +86,13 @@ const AllFeedbackPage: React.FC = () => {
     });
   }, [searchTerm, filters, feedbackData]);
 
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredData.slice(start, start + pageSize);
+  }, [filteredData, currentPage]);
+
+  const totalPages = Math.ceil(filteredData.length / pageSize);
+
   const handleFilterChange = (filterName: string, value: string) => {
     setFilters(prev => ({ ...prev, [filterName]: value }));
   };
@@ -135,26 +144,29 @@ const AllFeedbackPage: React.FC = () => {
     }
   };
 
+  // Reset to first page when filters/search change
+  useEffect(() => { setCurrentPage(1); }, [searchTerm, filters]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">All Feedback</h1>
       <div className="flex-1 flex flex-col bg-white p-6 rounded-xl shadow-lg min-h-[500px]">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
-          <div className="relative w-full max-w-sm">
+        <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between mb-4">
+          <div className="relative w-full md:max-w-sm">
             <Search className="w-5 h-5 text-gray-400 absolute top-1/2 left-3 transform -translate-y-1/2" />
             <input type="text" placeholder="Search by user, feedback ID, or table..."
               className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-200"
               value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div className="flex items-center space-x-2">
-            <div className="relative" ref={filterRef}>
-              <button onClick={() => setFilterOpen(!isFilterOpen)} className="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50">
+          <div className="flex flex-col gap-2 w-full md:w-auto md:flex-row md:items-center md:gap-2">
+            <div className="relative w-full md:w-auto" ref={filterRef}>
+              <button onClick={() => setFilterOpen(!isFilterOpen)} className="flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 w-full md:w-auto">
                 <Filter className="w-4 h-4 mr-2" />
                 Filter
               </button>
               {isFilterOpen && (
-                <div className="absolute top-full right-0 mt-2 w-80 bg-white rounded-lg shadow-xl z-30 border p-4">
+                <div className="absolute top-full left-0 md:right-0 mt-2 w-full md:w-80 bg-white rounded-lg shadow-xl z-30 border p-4 max-w-xs md:max-w-none md:left-auto">
                   <h4 className="text-sm font-semibold mb-3">Filter Options</h4>
                   <div className="space-y-4">
                     <div>
@@ -172,12 +184,12 @@ const AllFeedbackPage: React.FC = () => {
                         ))}
                       </select>
                     </div>
-                    <div className="flex gap-2">
-                      <div>
+                    <div className="flex flex-col md:flex-row gap-2">
+                      <div className="w-full">
                         <label className="block text-xs font-medium text-gray-600 mb-1">Start Date</label>
                         <input type="date" value={filters.startDate} onChange={e => handleFilterChange('startDate', e.target.value)} className="w-full border-gray-300 rounded-md text-sm p-2 border" />
                       </div>
-                      <div>
+                      <div className="w-full">
                         <label className="block text-xs font-medium text-gray-600 mb-1">End Date</label>
                         <input type="date" value={filters.endDate} onChange={e => handleFilterChange('endDate', e.target.value)} className="w-full border-gray-300 rounded-md text-sm p-2 border" />
                       </div>
@@ -187,7 +199,7 @@ const AllFeedbackPage: React.FC = () => {
                 </div>
               )}
             </div>
-            <button onClick={() => navigate('/admin/feedback/export')} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700">
+            <button onClick={() => navigate('/admin/feedback/export')} className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 w-full md:w-auto">
               Export
             </button>
           </div>
@@ -207,6 +219,7 @@ const AllFeedbackPage: React.FC = () => {
                   <th className="px-4 py-3">Location</th>
                   <th className="px-4 py-3">User</th>
                   <th className="px-4 py-3">Rating</th>
+                  <th className="px-4 py-3">Comment</th>
                   <th className="px-4 py-3">Date</th>
                   <th className="px-4 py-3">Bill</th>
                   <th className="px-4 py-3">Admin Notes</th>
@@ -215,13 +228,14 @@ const AllFeedbackPage: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((item) => (
+                {paginatedData.map((item) => (
                   <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
                     <td className="px-4 py-3 font-semibold text-gray-800">{item.custom_id || item.id}</td>
                     <td className="px-4 py-3 text-gray-700">{item.table_number}</td>
                     <td className="px-4 py-3 text-gray-700">{item.location || '-'}</td>
                     <td className="px-4 py-3 text-gray-700">{item.customer_email}</td>
                     <td className="px-4 py-3 text-gray-700">{item.rating}</td>
+                    <td className="px-4 py-3 text-gray-700">{item.details && item.details.notes ? item.details.notes : ''}</td>
                     <td className="px-4 py-3 text-gray-700">{item.created_at ? new Date(item.created_at).toLocaleString() : ''}</td>
                     <td className="px-4 py-3">
                       {item.bill_image_url ? (
@@ -317,7 +331,7 @@ const AllFeedbackPage: React.FC = () => {
             {/* Details modal */}
             {detailsModal && (
               <div className="fixed inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-50">
-                <div className="bg-white rounded-xl shadow-2xl p-8 max-w-xl w-full relative border border-gray-200">
+                <div className="bg-white rounded-xl shadow-2xl p-4 md:p-8 w-full max-w-xl md:max-w-2xl relative border border-gray-200 overflow-y-auto max-h-[90vh]">
                   <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-700" onClick={() => setDetailsModal(null)}><X className="w-6 h-6" /></button>
                   <h2 className="text-xl font-bold mb-4">Feedback Details</h2>
                   <div className="space-y-2">
@@ -326,6 +340,7 @@ const AllFeedbackPage: React.FC = () => {
                     <div><span className="font-semibold">Location:</span> {detailsModal.location || '-'}</div>
                     <div><span className="font-semibold">User:</span> {detailsModal.customer_email}</div>
                     <div><span className="font-semibold">Rating:</span> {detailsModal.rating}</div>
+                    <div><span className="font-semibold">Comment:</span> {detailsModal.details && detailsModal.details.notes ? detailsModal.details.notes : '-'}</div>
                     <div><span className="font-semibold">Date:</span> {detailsModal.created_at ? new Date(detailsModal.created_at).toLocaleString() : ''}</div>
                     <div><span className="font-semibold">Status:</span> {detailsModal.status}</div>
                     <div><span className="font-semibold">Admin Notes:</span> {detailsModal.admin_notes || '-'}</div>
@@ -342,7 +357,9 @@ const AllFeedbackPage: React.FC = () => {
                     {detailsModal.bill_image_url && (
                       <div>
                         <span className="font-semibold">Bill Image:</span>
-                        <img src={detailsModal.bill_image_url} alt="Bill" className="w-full h-auto rounded mt-2" />
+                        <div className="w-full flex justify-center items-center mt-2">
+                          <img src={detailsModal.bill_image_url} alt="Bill" className="max-w-full max-h-[50vh] rounded object-contain border" style={{ display: 'block' }} />
+                        </div>
                       </div>
                     )}
                   </div>
@@ -353,10 +370,25 @@ const AllFeedbackPage: React.FC = () => {
           )}
         </div>
         <div className="flex items-center justify-between mt-4">
-          <span className="text-sm text-gray-700">Showing <span className="font-semibold">{filteredData.length > 0 ? 1 : 0}</span> to <span className="font-semibold">{filteredData.length}</span> of <span className="font-semibold">{feedbackData.length}</span> entries</span>
+          <span className="text-sm text-gray-700">
+            Showing <span className="font-semibold">{filteredData.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}</span> to <span className="font-semibold">{Math.min(currentPage * pageSize, filteredData.length)}</span> of <span className="font-semibold">{filteredData.length}</span> entries
+          </span>
           <div className="flex items-center space-x-2">
-            <button className="px-3 py-1.5 border rounded-lg text-sm hover:bg-gray-100 disabled:opacity-50" disabled>Previous</button>
-            <button className="px-3 py-1.5 border rounded-lg text-sm hover:bg-gray-100 disabled:opacity-50" disabled>Next</button>
+            <button
+              className="px-3 py-1.5 border rounded-lg text-sm hover:bg-gray-100 disabled:opacity-50"
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+            >
+              Previous
+            </button>
+            <span className="text-sm">Page {currentPage} of {totalPages}</span>
+            <button
+              className="px-3 py-1.5 border rounded-lg text-sm hover:bg-gray-100 disabled:opacity-50"
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages || totalPages === 0}
+            >
+              Next
+            </button>
           </div>
         </div>
       </div>

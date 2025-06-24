@@ -86,7 +86,7 @@ const OfferSettingsPage: React.FC = () => {
   }
 
   return (
-    <div className="flex justify-center items-center min-h-[70vh] bg-gray-50">
+    <div className="flex justify-center items-center min-h-[70vh] bg-white">
       <div className="bg-white rounded-2xl shadow-xl p-10 w-full max-w-lg border border-gray-100">
         <h1 className="text-3xl font-extrabold text-gray-900 mb-2 text-center tracking-tight">Offer Percentages</h1>
         <p className="text-gray-500 mb-8 text-center">Set the discount percentage for each positive feedback rating. These values will be used for customer offers.</p>
@@ -96,7 +96,7 @@ const OfferSettingsPage: React.FC = () => {
           <form onSubmit={e => { e.preventDefault(); handleSave(); }}>
             <div className="space-y-6 mb-6">
               {RATINGS.map(rating => (
-                <div key={rating.key} className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 hover:shadow-sm transition-shadow">
+                <div key={rating.key} className="flex items-center justify-between px-4 py-3">
                   <label className="text-lg font-medium text-gray-800">{rating.label}</label>
                   <div className="flex items-center gap-2">
                     <input
