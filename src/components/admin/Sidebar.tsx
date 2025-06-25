@@ -37,8 +37,8 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const toggleSection = (section: string) => {
     setOpenSections(prev =>
       prev.includes(section)
-        ? prev.filter(s => s !== section)
-        : [...prev, section]
+        ? [] // Close all if clicking the open one
+        : [section] // Only open the clicked section
     );
   };
 
