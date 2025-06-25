@@ -77,7 +77,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-const FEEDBACK_COOLDOWN = 60 * 1000; // 1 minute in ms
+const FEEDBACK_COOLDOWN = 300 * 1000; // 5 minute in ms
 
 const LandingPage: React.FC = () => {
   const [step, setStep] = useState(0); // 0: initial, 1: good, 2: bad, 3: thank you (good), 4: thank you (bad)
