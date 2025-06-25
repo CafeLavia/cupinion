@@ -3,7 +3,7 @@ import { Search, CheckCircle, XCircle, Clock, Download, Mail, QrCode } from 'luc
 import PDFGenerator from '../../../components/PDFGenerator';
 import { FeedbackService } from '../../../services/feedbackService';
 import { supabase } from '../../../services/supabaseClient';
-import { QrReader } from 'react-qr-reader';
+import Html5QrScanner from '../../../components/Html5QrScanner';
 
 const OfferRedeemPage: React.FC = () => {
     const [feedbackId, setFeedbackId] = useState('');
@@ -157,9 +157,20 @@ const OfferRedeemPage: React.FC = () => {
             {showQRScanner && (
                 <div className="w-full max-w-xs mx-auto mb-4 rounded-lg overflow-hidden border border-gray-300 bg-white shadow-lg">
                     <div style={{ width: '100%' }}>
-                        <QrReader
-                            constraints={{ facingMode: 'environment' }}
-                            onResult={handleScan}
+                        <Html5QrScanner
+                            onScan={(result) => {
+                                // Try to extract feedback ID from URL or plain code
+                                let code = result;
+                                const match = code.match(/fid=([A-Za-z0-9\-]+)/);
+                                if (match) code = match[1];
+                                setFeedbackId(code);
+                                setShowQRScanner(false);
+                            }}
+                            onError={(err) => {
+                                setError(err?.message || 'QR scan error');
+                            }}
+                            width={250}
+                            height={250}
                         />
                     </div>
                     <div className="p-2 text-center text-xs text-gray-600">Point camera at the QR code on the customer PDF/phone</div>
