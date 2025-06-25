@@ -17,6 +17,8 @@ const UserPermissionsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [inviteForm, setInviteForm] = useState({ full_name: '', email: '', password: '' });
+  const [inviteLoading, setInviteLoading] = useState(false);
 
   useEffect(() => {
     const fetchManagers = async () => {
@@ -57,12 +59,81 @@ const UserPermissionsPage: React.FC = () => {
     setTimeout(() => setToast(null), 2500);
   };
 
+  const handleInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setInviteLoading(true);
+    setToast(null);
+    try {
+      // 1. Create user in Supabase Auth
+      const { data: userData, error: authError } = await supabase.auth.signUp({
+        email: inviteForm.email,
+        password: inviteForm.password,
+      });
+      if (authError || !userData.user) throw authError || new Error('No user returned');
+      // 2. Insert into profiles table
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          id: userData.user.id,
+          full_name: inviteForm.full_name,
+          email: inviteForm.email,
+          role: 'manager',
+          view_only: false,
+        }, { onConflict: 'id' });
+      if (profileError) throw profileError;
+      setToast({ type: 'success', message: 'Manager added successfully!' });
+      setInviteForm({ full_name: '', email: '', password: '' });
+    } catch (err: any) {
+      setToast({ type: 'error', message: err?.message || 'Failed to add manager.' });
+    }
+    setInviteLoading(false);
+    setTimeout(() => setToast(null), 2500);
+  };
+
   if (loading) return <div className="flex justify-center items-center min-h-[40vh]"><div className="text-gray-400">Loading...</div></div>;
   if (error) return <div className="text-red-500 text-center py-8">{error}</div>;
 
   return (
     <div className="p-6 max-w-3xl mx-auto">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">Manager Permissions</h2>
+      {/* Invite Manager Form */}
+      <form onSubmit={handleInvite} className="mb-6 flex flex-col md:flex-row gap-3 items-center bg-gray-50 p-4 rounded-lg border border-gray-200 shadow-sm">
+        <input
+          type="text"
+          placeholder="Full Name"
+          value={inviteForm.full_name}
+          onChange={e => setInviteForm(f => ({ ...f, full_name: e.target.value }))}
+          className="px-4 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-200 text-sm w-full md:w-1/4"
+          required
+          disabled={inviteLoading}
+        />
+        <input
+          type="email"
+          placeholder="Email"
+          value={inviteForm.email}
+          onChange={e => setInviteForm(f => ({ ...f, email: e.target.value }))}
+          className="px-4 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-200 text-sm w-full md:w-1/4"
+          required
+          disabled={inviteLoading}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={inviteForm.password}
+          onChange={e => setInviteForm(f => ({ ...f, password: e.target.value }))}
+          className="px-4 py-2 rounded border border-gray-300 focus:ring-2 focus:ring-blue-200 text-sm w-full md:w-1/4"
+          required
+          disabled={inviteLoading}
+        />
+        <button
+          type="submit"
+          className="px-6 py-2 bg-blue-600 text-white rounded font-semibold hover:bg-blue-700 transition disabled:opacity-50"
+          disabled={inviteLoading || !inviteForm.full_name || !inviteForm.email || !inviteForm.password}
+        >
+          {inviteLoading ? 'Adding...' : 'Add Manager'}
+        </button>
+      </form>
+      {/* Toast message */}
       {toast && (
         <div className={`mb-4 px-4 py-2 rounded text-white font-medium ${toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>{toast.message}</div>
       )}
