@@ -33,10 +33,12 @@ const AllRedemptionsPage: React.FC = () => {
             customer: fb?.customer_email || '-',
             offer: fb?.rating ? `${fb.rating} Feedback Reward` : '-',
             redeemedAt: c.claimed_at ? new Date(c.claimed_at).toLocaleString() : '-',
+            redeemedAtRaw: c.claimed_at || '',
             staff: staff?.full_name || staff?.username || '-',
             status: 'Redeemed',
           };
-        });
+        })
+        .sort((a: any, b: any) => new Date(b.redeemedAtRaw).getTime() - new Date(a.redeemedAtRaw).getTime());
       // Filter by search
       const filtered = redeemed.filter((r: any) =>
         r.customer.toLowerCase().includes(search.toLowerCase()) ||
