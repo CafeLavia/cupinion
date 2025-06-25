@@ -13,7 +13,9 @@ interface Profile {
 }
 
 const UserPermissionsPage: React.FC = () => {
+  const [tab, setTab] = useState<'manager' | 'super_admin'>('manager');
   const [managers, setManagers] = useState<Profile[]>([]);
+  const [superAdmins, setSuperAdmins] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -37,7 +39,21 @@ const UserPermissionsPage: React.FC = () => {
       }
       setLoading(false);
     };
+    const fetchSuperAdmins = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('id, username, full_name, email, view_only, role, avatar_url')
+        .eq('role', 'super_admin');
+      if (error) {
+        setError(error.message);
+      } else {
+        setSuperAdmins(data || []);
+      }
+      setLoading(false);
+    };
     fetchManagers();
+    fetchSuperAdmins();
   }, []);
 
   const handleToggleViewOnly = async (id: string, current: boolean) => {
@@ -80,25 +96,25 @@ const UserPermissionsPage: React.FC = () => {
           id: userData.user.id,
           full_name: inviteForm.full_name,
           email: inviteForm.email,
-          role: 'manager',
+          role: tab === 'manager' ? 'manager' : 'super_admin',
           view_only: false,
         }, { onConflict: 'id' });
       if (profileError) throw profileError;
-      setToast({ type: 'success', message: 'Manager added successfully! Please log in again as admin.' });
+      setToast({ type: 'success', message: `${tab === 'manager' ? 'Manager' : 'Super Admin'} added successfully! Please log in again as admin.` });
       setInviteForm({ full_name: '', email: '', password: '' });
       setTimeout(async () => {
         await supabase.auth.signOut();
         navigate('/admin/login');
       }, 1500);
     } catch (err: any) {
-      setToast({ type: 'error', message: err?.message || 'Failed to add manager.' });
+      setToast({ type: 'error', message: err?.message || `Failed to add ${tab === 'manager' ? 'manager' : 'super admin'}.` });
     }
     setInviteLoading(false);
     setTimeout(() => setToast(null), 2500);
   };
 
-  const handleDeleteManager = async (id: string, email: string) => {
-    if (!window.confirm('Are you sure you want to delete this manager? This action cannot be undone.')) return;
+  const handleDelete = async (id: string, email: string) => {
+    if (!window.confirm(`Are you sure you want to delete this ${tab === 'manager' ? 'manager' : 'super admin'}? This action cannot be undone.`)) return;
     setDeletingId(id);
     setToast(null);
     try {
@@ -107,10 +123,14 @@ const UserPermissionsPage: React.FC = () => {
       // 2. Delete from profiles table
       const { error } = await supabase.from('profiles').delete().eq('id', id);
       if (error) throw error;
-      setManagers(prev => prev.filter(m => m.id !== id));
-      setToast({ type: 'success', message: 'Manager deleted successfully.' });
+      if (tab === 'manager') {
+        setManagers(prev => prev.filter(m => m.id !== id));
+      } else {
+        setSuperAdmins(prev => prev.filter(m => m.id !== id));
+      }
+      setToast({ type: 'success', message: `${tab === 'manager' ? 'Manager' : 'Super Admin'} deleted successfully.` });
     } catch (err: any) {
-      setToast({ type: 'error', message: err?.message || 'Failed to delete manager.' });
+      setToast({ type: 'error', message: err?.message || `Failed to delete ${tab === 'manager' ? 'manager' : 'super admin'}.` });
     }
     setDeletingId(null);
     setTimeout(() => setToast(null), 2500);
@@ -122,9 +142,23 @@ const UserPermissionsPage: React.FC = () => {
   return (
     <div className="w-full flex flex-col items-center px-2 md:px-0">
       <div className="w-full max-w-5xl bg-white rounded-2xl shadow-lg p-8 mt-8">
-        <h2 className="text-3xl font-bold mb-2 text-gray-900">Manager Permissions</h2>
-        <p className="text-gray-500 mb-6">Add, view, and manage manager accounts. Toggle view-only mode for each manager.</p>
-        {/* Invite Manager Form */}
+        <div className="flex gap-4 mb-6">
+          <button
+            className={`px-4 py-2 rounded-lg font-semibold text-base ${tab === 'manager' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+            onClick={() => setTab('manager')}
+          >
+            Managers
+          </button>
+          <button
+            className={`px-4 py-2 rounded-lg font-semibold text-base ${tab === 'super_admin' ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+            onClick={() => setTab('super_admin')}
+          >
+            Super Admins
+          </button>
+        </div>
+        <h2 className="text-3xl font-bold mb-2 text-gray-900">{tab === 'manager' ? 'Manager Permissions' : 'Super Admin Permissions'}</h2>
+        <p className="text-gray-500 mb-6">Add, view, and manage {tab === 'manager' ? 'manager' : 'super admin'} accounts. {tab === 'manager' ? 'Toggle view-only mode for each manager.' : ''}</p>
+        {/* Invite Form */}
         <form onSubmit={handleInvite} className="mb-8 w-full flex flex-col md:flex-row gap-3 items-center bg-gray-50 p-4 rounded-xl border border-gray-200 shadow-sm">
           <input
             type="text"
@@ -158,7 +192,7 @@ const UserPermissionsPage: React.FC = () => {
             className="px-8 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition disabled:opacity-50 text-base"
             disabled={inviteLoading || !inviteForm.full_name || !inviteForm.email || !inviteForm.password}
           >
-            {inviteLoading ? 'Adding...' : 'Add Manager'}
+            {inviteLoading ? 'Adding...' : `Add ${tab === 'manager' ? 'Manager' : 'Super Admin'}`}
           </button>
         </form>
         {/* Toast message */}
@@ -173,43 +207,47 @@ const UserPermissionsPage: React.FC = () => {
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Name</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Email</th>
                 <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Username</th>
-                <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">View Only</th>
+                {tab === 'manager' && <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">View Only</th>}
+                <th className="px-6 py-4 text-center text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-100">
-              {managers.map((manager) => (
-                <tr key={manager.id} className="hover:bg-gray-50 transition">
+              {(tab === 'manager' ? managers : superAdmins).map((user) => (
+                <tr key={user.id} className="hover:bg-gray-50 transition">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {manager.avatar_url ? (
-                      <img src={manager.avatar_url} alt={manager.full_name} className="w-10 h-10 rounded-full object-cover border" />
+                    {user.avatar_url ? (
+                      <img src={user.avatar_url} alt={user.full_name} className="w-10 h-10 rounded-full object-cover border" />
                     ) : (
                       <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-bold">
-                        {manager.full_name ? manager.full_name[0] : manager.username?.[0] || '?'}
+                        {user.full_name ? user.full_name[0] : user.username?.[0] || '?'}
                       </div>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{manager.full_name}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-700">{manager.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-700">{manager.username}</td>
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{user.full_name}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-700">{user.email}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-700">{user.username}</td>
+                  {tab === 'manager' && (
+                    <td className="px-6 py-4 whitespace-nowrap text-center">
+                      <button
+                        onClick={() => handleToggleViewOnly(user.id, user.view_only)}
+                        disabled={updatingId === user.id}
+                        className={`relative inline-flex items-center h-7 rounded-full w-14 transition-colors focus:outline-none ${user.view_only ? 'bg-green-500' : 'bg-gray-300'} ${updatingId === user.id ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-90'}`}
+                        aria-pressed={user.view_only}
+                      >
+                        <span
+                          className={`inline-block w-7 h-7 transform bg-white rounded-full shadow transition-transform ${user.view_only ? 'translate-x-7' : 'translate-x-0'}`}
+                        />
+                      </button>
+                      <span className="ml-2 text-xs font-semibold text-gray-600">{user.view_only ? 'Enabled' : 'Disabled'}</span>
+                    </td>
+                  )}
                   <td className="px-6 py-4 whitespace-nowrap text-center">
                     <button
-                      onClick={() => handleToggleViewOnly(manager.id, manager.view_only)}
-                      disabled={updatingId === manager.id}
-                      className={`relative inline-flex items-center h-7 rounded-full w-14 transition-colors focus:outline-none ${manager.view_only ? 'bg-green-500' : 'bg-gray-300'} ${updatingId === manager.id ? 'opacity-60 cursor-not-allowed' : 'hover:opacity-90'}`}
-                      aria-pressed={manager.view_only}
-                    >
-                      <span
-                        className={`inline-block w-7 h-7 transform bg-white rounded-full shadow transition-transform ${manager.view_only ? 'translate-x-7' : 'translate-x-0'}`}
-                      />
-                    </button>
-                    <span className="ml-2 text-xs font-semibold text-gray-600">{manager.view_only ? 'Enabled' : 'Disabled'}</span>
-                    {/* Delete button for super_admin */}
-                    <button
-                      onClick={() => handleDeleteManager(manager.id, manager.email)}
-                      disabled={deletingId === manager.id}
+                      onClick={() => handleDelete(user.id, user.email)}
+                      disabled={deletingId === user.id}
                       className="ml-4 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition disabled:opacity-50 text-xs font-semibold"
                     >
-                      {deletingId === manager.id ? 'Deleting...' : 'Delete'}
+                      {deletingId === user.id ? 'Deleting...' : 'Delete'}
                     </button>
                   </td>
                 </tr>

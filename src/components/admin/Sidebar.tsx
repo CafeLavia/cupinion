@@ -182,9 +182,9 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
               {isSectionOpen('settings') && (
                 <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
                   {sidebarLink('/admin/settings', <Settings className="w-4 h-4 mr-3" />, 'Configuration')}
-                  {/* User Permissions: only for super_admin */}
+                  {/* Manager Management: only for super_admin */}
                   {role === 'super_admin' &&
-                    sidebarLink('/admin/settings/user-permissions', <Settings className="w-4 h-4 mr-3" />, 'User Permissions')}
+                    sidebarLink('/admin/settings/user-permissions', <Settings className="w-4 h-4 mr-3" />, 'Manager Management')}
                   {/* Manage Staff: super_admin and manager (not view_only) */}
                   {(role === 'super_admin' || role === 'manager') &&
                     sidebarLink('/admin/settings/manage-staff', <Settings className="w-4 h-4 mr-3" />, 'Manage Staff')}
