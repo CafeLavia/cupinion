@@ -214,4 +214,17 @@ export class FeedbackService {
     if (error) return 0;
     return data?.offer_percentage || 0;
   }
+}
+
+export async function validateTable(table_number: string | number) {
+  const { data, error } = await supabase
+    .from('qr_codes')
+    .select('is_active')
+    .eq('table_number', table_number)
+    .single();
+
+  if (error || !data || !data.is_active) {
+    return false;
+  }
+  return true;
 } 

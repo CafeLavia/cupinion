@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import loveit from '../assets/loveit.png';
 import great from '../assets/great.png';
@@ -17,6 +17,7 @@ import '../index.css';
 import { FeedbackService } from '../services/feedbackService';
 import imageCompression from 'browser-image-compression';
 import OfferPDFDownload from '../components/OfferPDFDownload';
+import { validateTable } from "../services/feedbackService";
 
 // Add Google Fonts import
 const fontStyle = `
@@ -72,6 +73,10 @@ const isValidEmail = (email: string | undefined) => {
   return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(trimmed);
 };
 
+function useQuery() {
+  return new URLSearchParams(useLocation().search);
+}
+
 const LandingPage: React.FC = () => {
   const [step, setStep] = useState(0); // 0: initial, 1: good, 2: bad, 3: thank you (good), 4: thank you (bad)
   const [selected, setSelected] = useState(2); // Default to 'Okay'
@@ -91,13 +96,23 @@ const LandingPage: React.FC = () => {
   const [offerPercentage, setOfferPercentage] = useState<number>(0);
 
   const [searchParams] = useSearchParams();
+  const query = useQuery();
+  const [isValid, setIsValid] = useState<null | boolean>(null);
+  const table = query.get("table");
 
   useEffect(() => {
-    const tableParam = searchParams.get('table');
-    if (tableParam && !isNaN(parseInt(tableParam, 10))) {
-      setTableNumber(parseInt(tableParam, 10));
+    if (!table) {
+      setIsValid(false);
+      return;
     }
-  }, [searchParams]);
+    validateTable(table).then(setIsValid);
+  }, [table]);
+
+  useEffect(() => {
+    if (table && !isNaN(parseInt(table, 10))) {
+      setTableNumber(parseInt(table, 10));
+    }
+  }, [table]);
 
   const isBillUploadRequired = email.trim() !== '';
 
@@ -742,6 +757,9 @@ const LandingPage: React.FC = () => {
       </div>
     );
   };
+
+  if (isValid === null) return <div>Loading...</div>;
+  if (!isValid) return <div>Invalid or inactive table QR. Please scan the QR code on your table.</div>;
 
   return (
     <>
