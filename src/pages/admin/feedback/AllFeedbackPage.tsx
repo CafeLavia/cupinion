@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Filter, MoreHorizontal, X, Image as ImageIcon, Save, Info, CheckCircle } from 'lucide-react';
 import { FeedbackService } from '../../../services/feedbackService';
 import { createPortal } from 'react-dom';
+import { useUserRole } from '../../../hooks/useUserRole';
 
 const AllFeedbackPage: React.FC = () => {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ const AllFeedbackPage: React.FC = () => {
 
   const filterRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const { viewOnly } = useUserRole();
 
   // Get unique table numbers for filter dropdown
   const tableNumbers = useMemo(() => {
@@ -248,20 +251,28 @@ const AllFeedbackPage: React.FC = () => {
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        <textarea
-                          className="border border-gray-300 rounded-md text-sm p-1 w-32 focus:ring-2 focus:ring-blue-200"
-                          rows={1}
-                          value={editingNotes[item.id] !== undefined ? editingNotes[item.id] : (item.admin_notes || '')}
-                          onChange={e => handleNotesChange(item.id, e.target.value)}
-                        />
-                        <button
-                          title="Save Notes"
-                          className="text-blue-600 hover:text-blue-800 disabled:opacity-50"
-                          disabled={savingNotes[item.id] || (editingNotes[item.id] === item.admin_notes)}
-                          onClick={() => handleSaveNotes(item.id)}
-                        >
-                          <Save className="w-4 h-4" />
-                        </button>
+                        {viewOnly ? (
+                          <span className="text-gray-400">{item.admin_notes || '-'}</span>
+                        ) : (
+                          <textarea
+                            className="border border-gray-300 rounded-md text-sm p-1 w-32 focus:ring-2 focus:ring-blue-200"
+                            rows={1}
+                            value={editingNotes[item.id] !== undefined ? editingNotes[item.id] : (item.admin_notes || '')}
+                            onChange={e => handleNotesChange(item.id, e.target.value)}
+                          />
+                        )}
+                        {viewOnly ? (
+                          <span className="text-gray-400">-</span>
+                        ) : (
+                          <button
+                            title="Save Notes"
+                            className="text-blue-600 hover:text-blue-800 disabled:opacity-50"
+                            disabled={savingNotes[item.id] || (editingNotes[item.id] === item.admin_notes)}
+                            onClick={() => handleSaveNotes(item.id)}
+                          >
+                            <Save className="w-4 h-4" />
+                          </button>
+                        )}
                       </div>
                     </td>
                     <td className="px-4 py-3">
@@ -295,14 +306,20 @@ const AllFeedbackPage: React.FC = () => {
                             >
                               <Info className="w-4 h-4" /> View Details
                             </button>
-                            {item.status !== 'Reviewed' && (
-                              <button
-                                className="block w-full text-left px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 flex items-center gap-2"
-                                onClick={() => { handleMarkReviewed(item.id); setActiveMenu(null); setDropdownPos(null); }}
-                                disabled={savingNotes[item.id]}
-                              >
-                                <CheckCircle className="w-4 h-4" /> Mark as Reviewed
-                              </button>
+                            {viewOnly ? (
+                              <span className="text-gray-400">-</span>
+                            ) : (
+                              <>
+                              {item.status !== 'Reviewed' && (
+                                <button
+                                  className="block w-full text-left px-4 py-2 text-sm text-blue-700 hover:bg-blue-50 flex items-center gap-2"
+                                  onClick={() => { handleMarkReviewed(item.id); setActiveMenu(null); setDropdownPos(null); }}
+                                  disabled={savingNotes[item.id]}
+                                >
+                                  <CheckCircle className="w-4 h-4" /> Mark as Reviewed
+                                </button>
+                              )}
+                              </>
                             )}
                           </div>,
                           document.body

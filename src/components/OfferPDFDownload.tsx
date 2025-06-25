@@ -1,6 +1,7 @@
 import React, { useRef } from 'react';
 import jsPDF from 'jspdf';
 import { QRCodeCanvas } from 'qrcode.react';
+import { useUserRole } from '../hooks/useUserRole';
 
 interface OfferPDFDownloadProps {
   feedbackId: string;
@@ -20,6 +21,7 @@ const OfferPDFDownload: React.FC<OfferPDFDownloadProps> = ({
   companyName = 'Cafe LaVia',
 }) => {
   const qrRef = useRef<HTMLDivElement>(null);
+  const { viewOnly } = useUserRole();
 
   const generatePDF = async () => {
     const doc = new jsPDF({ unit: 'pt', format: 'a4' });
@@ -86,6 +88,7 @@ const OfferPDFDownload: React.FC<OfferPDFDownloadProps> = ({
       <button
         onClick={generatePDF}
         className="px-4 py-2 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition"
+        disabled={viewOnly}
       >
         Download Offer PDF
       </button>

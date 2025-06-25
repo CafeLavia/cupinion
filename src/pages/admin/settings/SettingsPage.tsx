@@ -3,6 +3,7 @@ import { Settings, Percent, RefreshCw, QrCode, Plus, Download, Trash2, Edit, Eye
 import { QRCodeService } from '../../../services/qrCodeService';
 import { AuthService } from '../../../services/authService';
 import type { QRCodeRecord } from '../../../services/qrCodeService';
+import { useUserRole } from '../../../hooks/useUserRole';
 
 const Modal = ({ isOpen, onClose, title, children }: { isOpen: boolean; onClose: () => void; title: string; children: React.ReactNode }) => {
     if (!isOpen) return null;
@@ -37,6 +38,7 @@ const SettingsPage: React.FC = () => {
   const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
 
   const appBaseUrl = useMemo(() => import.meta.env.VITE_APP_BASE_URL || window.location.origin, []);
+  const { viewOnly, loading: userLoading } = useUserRole();
 
   // Effect to auto-generate feedback URL for new QR codes
   useEffect(() => {
@@ -253,7 +255,8 @@ const SettingsPage: React.FC = () => {
             <h2 className="text-lg font-semibold text-gray-900">Table QR Codes</h2>
           </div>
           <button
-            onClick={openCreateModal}
+            onClick={() => setShowCreateModal(true)}
+            disabled={viewOnly || loading}
             className="flex items-center justify-center px-4 py-2 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 w-full sm:w-auto mt-2 sm:mt-0"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -288,10 +291,10 @@ const SettingsPage: React.FC = () => {
                     </td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(qrCode.created_at).toLocaleDateString()}</td>
                     <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2 flex flex-wrap gap-2">
-                      <button onClick={() => downloadQRCode(qrCode)} className="text-blue-600 hover:text-blue-900" title="Download QR Code"><Download className="w-4 h-4" /></button>
-                      <button onClick={() => openEditModal(qrCode)} className="text-green-600 hover:text-green-900" title="Edit QR Code"><Edit className="w-4 h-4" /></button>
-                      <button onClick={() => toggleQRCodeStatus(qrCode.id, qrCode.is_active)} className={`${qrCode.is_active ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'}`} title={qrCode.is_active ? 'Deactivate' : 'Activate'}><Eye className="w-4 h-4" /></button>
-                      <button onClick={() => deleteQRCode(qrCode.id)} className="text-red-600 hover:text-red-900" title="Delete QR Code"><Trash2 className="w-4 h-4" /></button>
+                      <button onClick={() => downloadQRCode(qrCode)} className="text-blue-600 hover:text-blue-900" title="Download QR Code" disabled={viewOnly}><Download className="w-4 h-4" /></button>
+                      <button onClick={() => openEditModal(qrCode)} className="text-green-600 hover:text-green-900" title="Edit QR Code" disabled={viewOnly}><Edit className="w-4 h-4" /></button>
+                      <button onClick={() => toggleQRCodeStatus(qrCode.id, qrCode.is_active)} className={`${qrCode.is_active ? 'text-yellow-600 hover:text-yellow-900' : 'text-green-600 hover:text-green-900'}`} title={qrCode.is_active ? 'Deactivate' : 'Activate'} disabled={viewOnly}><Eye className="w-4 h-4" /></button>
+                      <button onClick={() => deleteQRCode(qrCode.id)} className="text-red-600 hover:text-red-900" title="Delete QR Code" disabled={viewOnly}><Trash2 className="w-4 h-4" /></button>
                     </td>
                   </tr>
                 ))}
@@ -354,7 +357,7 @@ const SettingsPage: React.FC = () => {
           <div className="flex space-x-3 pt-4">
             <button
               onClick={createQRCode}
-              disabled={loading}
+              disabled={viewOnly || loading}
               className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50"
             >
               {loading ? 'Creating...' : 'Create QR Code'}
@@ -419,7 +422,7 @@ const SettingsPage: React.FC = () => {
           <div className="flex space-x-3 pt-4">
             <button
               onClick={updateQRCode}
-              disabled={loading}
+              disabled={viewOnly || loading}
               className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50"
             >
               {loading ? 'Updating...' : 'Update QR Code'}

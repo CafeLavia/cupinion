@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Download } from 'lucide-react';
 import { FeedbackService } from '../../../services/feedbackService';
+import { useUserRole } from '../../../hooks/useUserRole';
 
 const AllEmailsPage: React.FC = () => {
   const [feedback, setFeedback] = useState<any[]>([]);
@@ -11,6 +12,7 @@ const AllEmailsPage: React.FC = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const pageSize = 20;
+  const { viewOnly } = useUserRole();
 
   useEffect(() => {
     setLoading(true);
@@ -78,7 +80,7 @@ const AllEmailsPage: React.FC = () => {
                 <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="border border-blue-200 rounded-full px-3 py-1 text-sm focus:ring-2 focus:ring-blue-200 outline-none transition w-full sm:w-auto" />
               </div>
             </div>
-            <button onClick={downloadCSV} className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 text-sm font-semibold transition w-full sm:w-auto">
+            <button onClick={downloadCSV} className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-full shadow hover:bg-blue-700 text-sm font-semibold transition w-full sm:w-auto" disabled={viewOnly}>
               <Download className="w-4 h-4 mr-2" /> Download CSV
             </button>
           </div>

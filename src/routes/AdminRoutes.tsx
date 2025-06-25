@@ -15,6 +15,7 @@ import FeedbackTrendsPage from '../pages/admin/analytics/FeedbackTrendsPage';
 import EmailStatsPage from '../pages/admin/analytics/EmailStatsPage';
 import AllEmailsPage from '../pages/admin/analytics/all-emails';
 import AllRedemptionsPage from '../pages/admin/offers/AllRedemptionsPage';
+import UserPermissionsPage from '../pages/admin/settings/UserPermissionsPage';
 
 const router = createBrowserRouter([
   {
@@ -39,6 +40,7 @@ const router = createBrowserRouter([
         children: [
           { path: 'dashboard', element: <DashboardPage /> },
           { path: 'settings', element: <SettingsPage /> },
+          { path: 'settings/user-permissions', element: <UserPermissionsPage /> },
           { path: 'feedback', element: <AllFeedbackPage /> },
           { path: 'feedback/export', element: <ExportDataPage /> },
           { path: 'offers', element: <FeedbackOffersPage /> },

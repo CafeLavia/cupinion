@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../../services/supabaseClient';
 import { Save, CheckCircle } from 'lucide-react';
+import { useUserRole } from '../../../hooks/useUserRole';
 
 const RATINGS = [
   { label: 'Love it', key: 'love_it' },
@@ -16,6 +17,7 @@ const OfferSettingsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [role, setRole] = useState<string | null>(null);
   const [roleLoading, setRoleLoading] = useState(true);
+  const { viewOnly } = useUserRole();
 
   useEffect(() => {
     // Fetch user role from Supabase profiles
@@ -107,6 +109,7 @@ const OfferSettingsPage: React.FC = () => {
                       onChange={e => handleChange(rating.key, e.target.value)}
                       className="w-24 px-4 py-2 border-2 border-gray-200 rounded-lg text-right text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition"
                       required
+                      disabled={viewOnly}
                     />
                     <span className="text-gray-500 text-lg font-medium">%</span>
                   </div>
@@ -117,7 +120,7 @@ const OfferSettingsPage: React.FC = () => {
             <button
               type="submit"
               className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-lg shadow hover:bg-blue-700 transition disabled:opacity-50"
-              disabled={saving}
+              disabled={saving || viewOnly}
             >
               {success ? <CheckCircle className="w-6 h-6 text-green-300 animate-bounce" /> : <Save className="w-6 h-6" />}
               {saving ? 'Saving...' : success ? 'Saved!' : 'Save Settings'}

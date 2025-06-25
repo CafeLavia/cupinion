@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Mail, TrendingUp, Calendar, Target, Download } from 'lucide-react';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { FeedbackService } from '../../../services/feedbackService';
+import { useUserRole } from '../../../hooks/useUserRole';
 
 const RATING_LABELS = [
   { name: 'Love it', value: 'loveit', color: '#16a34a' },
@@ -27,6 +28,7 @@ const EmailStatsPage: React.FC = () => {
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month');
   const [emailDateStart, setEmailDateStart] = useState('');
   const [emailDateEnd, setEmailDateEnd] = useState('');
+  const { viewOnly } = useUserRole();
 
   useEffect(() => {
     setLoading(true);
@@ -270,9 +272,11 @@ const EmailStatsPage: React.FC = () => {
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-4">
           <h2 className="text-lg font-semibold text-gray-900">Today's Collected Emails</h2>
           <div className="flex gap-2 items-center">
-            <button onClick={downloadCSV} className="flex items-center px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
-              <Download className="w-4 h-4 mr-2" /> Download CSV
-            </button>
+            {!viewOnly && (
+              <button onClick={downloadCSV} className="flex items-center px-3 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm">
+                <Download className="w-4 h-4 mr-2" /> Download CSV
+              </button>
+            )}
             <a href="/admin/analytics/all-emails" className="ml-4 text-blue-600 hover:underline text-sm">View All</a>
           </div>
         </div>

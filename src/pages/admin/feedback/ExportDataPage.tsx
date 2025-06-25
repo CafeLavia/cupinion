@@ -2,12 +2,14 @@ import React from 'react';
 import { Calendar, Download } from 'lucide-react';
 import { FeedbackService } from '../../../services/feedbackService';
 import * as XLSX from 'xlsx';
+import { useUserRole } from '../../../hooks/useUserRole';
 
 const ExportDataPage: React.FC = () => {
   const [startDate, setStartDate] = React.useState('');
   const [endDate, setEndDate] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
+  const { viewOnly } = useUserRole();
 
   const handleExport = async () => {
     setLoading(true);
@@ -97,7 +99,7 @@ const ExportDataPage: React.FC = () => {
           <button
             className="flex items-center px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
             onClick={handleExport}
-            disabled={loading}
+            disabled={loading || viewOnly}
           >
             {loading ? (
               <span className="mr-2">Exporting...</span>
