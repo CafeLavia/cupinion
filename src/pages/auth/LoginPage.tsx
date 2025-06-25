@@ -50,22 +50,17 @@ const LoginPage: React.FC = () => {
 
   return (
     <div 
-      className="flex items-center justify-center min-h-screen bg-gray-50"
-      style={{
-        backgroundImage: "radial-gradient(circle at 1px 1px, #d1d5db 1px, transparent 0)",
-        backgroundSize: "20px 20px"
-      }}
+      className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100"
     >
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-xl shadow-lg">
-        <div className="text-center">
-          <img src={logo} alt="Cafe LaVia Logo" className="w-24 h-24 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-gray-800" style={{ fontFamily: "'Cherry Swash', cursive" }}>
-            Admin Login
-          </h1>
-          <p className="text-gray-500">Welcome back, please sign in.</p>
+      <div className="w-full max-w-md p-8 md:p-10 space-y-8 bg-white rounded-2xl shadow-2xl border border-gray-100 flex flex-col items-center">
+        <div className="w-20 h-20 mx-auto mb-4 rounded-full shadow-md border border-gray-200 flex items-center justify-center" style={{ background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)' }}>
+          <img src={logo} alt="Cafe LaVia Logo" className="w-14 h-14 object-contain" />
         </div>
-
-        <form onSubmit={handleLogin} className="space-y-6">
+        <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-1 tracking-tight" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+          Admin Login
+        </h1>
+        <p className="text-gray-500 mb-6 text-base">Welcome back, please sign in.</p>
+        <form onSubmit={handleLogin} className="space-y-6 w-full">
           <div className="space-y-2">
             <label htmlFor="email" className="text-sm font-medium text-gray-700">
               Email address
@@ -78,11 +73,10 @@ const LoginPage: React.FC = () => {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 text-gray-800 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              className="w-full px-4 py-2 text-gray-800 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
               placeholder="you@example.com"
             />
           </div>
-
           <div className="space-y-2">
             <label htmlFor="password" className="text-sm font-medium text-gray-700">
               Password
@@ -95,23 +89,20 @@ const LoginPage: React.FC = () => {
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 text-gray-800 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
+              className="w-full px-4 py-2 text-gray-800 bg-gray-100 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition"
               placeholder="••••••••"
             />
           </div>
-
           {error && (
             <div className="p-3 text-sm text-red-700 bg-red-100 border border-red-300 rounded-lg">
               {error}
             </div>
           )}
-
           <div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full px-4 py-3 font-semibold text-white transition-transform duration-200 transform rounded-lg shadow-md disabled:opacity-50"
-              style={{ backgroundColor: '#20b2aa' }}
+              className="w-full px-4 py-3 font-semibold text-white rounded-lg shadow-md transition-all duration-200 disabled:opacity-50 bg-gradient-to-r from-teal-500 to-green-400 hover:from-teal-600 hover:to-green-500 focus:ring-2 focus:ring-green-400 focus:outline-none"
             >
               {loading ? 'Signing in...' : 'Sign In'}
             </button>

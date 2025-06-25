@@ -12,6 +12,7 @@ import google from '../assets/google.png';
 import tripadvisor from '../assets/tripadvisor.png';
 import whatsapp from '../assets/whatsapp.png';
 import background2 from '../assets/background2.png';
+import GOOD from '../assets/GOOD.png';
 import '../index.css';
 import { FeedbackService } from '../services/feedbackService';
 import imageCompression from 'browser-image-compression';
@@ -607,14 +608,20 @@ const LandingPage: React.FC = () => {
         </h2>
 
         <div className="w-full flex justify-center items-center my-4 z-10">
+          <div className="relative flex items-center justify-center" style={{ width: '16rem', height: '16rem' }}>
             <img 
-                src={goodfeed} 
-                alt="Awesome feedback" 
-                className="w-48 h-48"
-                style={{
-                    filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))'
-                }}
+              src={GOOD} 
+              alt="Round background" 
+              className="absolute left-0 top-0 w-full h-full object-contain" 
+              style={{ zIndex: 1 }}
             />
+            <img 
+              src={goodfeed} 
+              alt="Awesome feedback" 
+              className="w-40 h-40 object-contain relative" 
+              style={{ zIndex: 2, filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
+            />
+          </div>
         </div>
 
         <p className="text-white/80 text-lg text-center my-6 z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
@@ -665,14 +672,20 @@ const LandingPage: React.FC = () => {
         </h2>
 
         <div className="w-full flex justify-center items-center my-4 z-10">
+          <div className="relative flex items-center justify-center" style={{ width: '16rem', height: '16rem' }}>
             <img 
-                src={badfeed} 
-                alt="Sad feedback" 
-                className="w-48 h-48"
-                style={{
-                    filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))'
-                }}
+              src={GOOD} 
+              alt="Round background" 
+              className="absolute left-0 top-0 w-full h-full object-contain" 
+              style={{ zIndex: 1 }}
             />
+            <img 
+              src={badfeed} 
+              alt="Sad feedback" 
+              className="w-40 h-40 object-contain relative" 
+              style={{ zIndex: 2, filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
+            />
+          </div>
         </div>
 
         <p className="text-white/80 text-lg text-center my-6 z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
