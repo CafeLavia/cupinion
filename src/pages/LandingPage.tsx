@@ -77,6 +77,8 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
+const FEEDBACK_COOLDOWN = 60 * 1000; // 1 minute in ms
+
 const LandingPage: React.FC = () => {
   const [step, setStep] = useState(0); // 0: initial, 1: good, 2: bad, 3: thank you (good), 4: thank you (bad)
   const [selected, setSelected] = useState(2); // Default to 'Okay'
@@ -100,6 +102,10 @@ const LandingPage: React.FC = () => {
   const [isValid, setIsValid] = useState<null | boolean>(null);
   const table = query.get("table");
 
+  // Add a state to track cooldown
+  const [isCooldown, setIsCooldown] = useState(false);
+  const [showCooldownMsg, setShowCooldownMsg] = useState(false);
+
   useEffect(() => {
     if (!table) {
       setIsValid(false);
@@ -113,6 +119,16 @@ const LandingPage: React.FC = () => {
       setTableNumber(parseInt(table, 10));
     }
   }, [table]);
+
+  useEffect(() => {
+    const lastFeedback = localStorage.getItem('feedback_submitted');
+    if (lastFeedback) {
+      const elapsed = Date.now() - parseInt(lastFeedback, 10);
+      if (elapsed < FEEDBACK_COOLDOWN) {
+        setIsCooldown(true);
+      }
+    }
+  }, []);
 
   const isBillUploadRequired = email.trim() !== '';
 
@@ -200,6 +216,11 @@ const LandingPage: React.FC = () => {
   };
 
   const handleGoodSubmit = async () => {
+    if (isCooldown) {
+      setShowCooldownMsg(true);
+      setTimeout(() => setShowCooldownMsg(false), 2500);
+      return;
+    }
     if (isBillUploadRequired && !billFile) {
       setError('Please upload a bill to proceed.');
       return;
@@ -227,6 +248,8 @@ const LandingPage: React.FC = () => {
       const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
       setOfferPercentage(percent);
       goToStep(3, 'left');
+      localStorage.setItem('feedback_submitted', Date.now().toString());
+      setIsCooldown(true);
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
     } finally {
@@ -235,6 +258,11 @@ const LandingPage: React.FC = () => {
   };
 
   const handleBadSubmit = async () => {
+    if (isCooldown) {
+      setShowCooldownMsg(true);
+      setTimeout(() => setShowCooldownMsg(false), 2500);
+      return;
+    }
     if (isBillUploadRequired && !billFile) {
       setError('Please upload a bill to proceed.');
       return;
@@ -265,6 +293,8 @@ const LandingPage: React.FC = () => {
       const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
       setOfferPercentage(percent);
       goToStep(4, 'left');
+      localStorage.setItem('feedback_submitted', Date.now().toString());
+      setIsCooldown(true);
     } catch (err: any) {
       setError(err.message || 'An unexpected error occurred.');
     } finally {
@@ -469,7 +499,7 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '4rem' }}>
+        <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '4rem', position: 'relative' }}>
           <button
             style={{
               background: '#20b2aa',
@@ -588,7 +618,7 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '4rem' }}>
+        <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '4rem', position: 'relative' }}>
           <button
             disabled={isBadSubmitDisabled}
             style={{
@@ -931,6 +961,32 @@ const LandingPage: React.FC = () => {
           }
         `}</style>
       </div>
+      {showCooldownMsg && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: 'rgba(0,0,0,0.4)',
+          zIndex: 1000,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <div style={{
+            background: '#f87171',
+            color: 'white',
+            padding: '1.5rem 2rem',
+            borderRadius: '1rem',
+            fontSize: '1.1rem',
+            fontWeight: 500,
+            boxShadow: '0 4px 24px rgba(0,0,0,0.15)',
+            textAlign: 'center',
+            maxWidth: 320
+          }}>
+            You have already submitted feedback.<br />
+            Please wait a minute before submitting again.
+          </div>
+        </div>
+      )}
     </>
   );
 };
