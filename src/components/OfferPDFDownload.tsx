@@ -134,7 +134,7 @@ const OfferPDFDownload: React.FC<OfferPDFDownloadProps> = ({
     <div className="flex flex-col items-center gap-3">
       {/* Hidden QR code for PDF rendering */}
       <div ref={qrRef} style={{ display: 'none' }}>
-        <QRCodeCanvas value={verificationUrl} size={128} level="H" includeMargin={true} />
+        <QRCodeCanvas value={feedbackId} size={128} level="H" includeMargin={true} />
       </div>
       <button
         onClick={generatePDF}

@@ -11,6 +11,7 @@ interface Html5QrScannerProps {
 const Html5QrScanner: React.FC<Html5QrScannerProps> = ({ onScan, onError, width = 300, height = 300 }) => {
   const scannerRef = useRef<HTMLDivElement>(null);
   const qrCodeScanner = useRef<Html5Qrcode | null>(null);
+  const scannerRunning = useRef(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -23,17 +24,23 @@ const Html5QrScanner: React.FC<Html5QrScannerProps> = ({ onScan, onError, width 
         (decodedText) => {
           if (isMounted) {
             onScan(decodedText);
-            qrCodeScanner.current?.stop();
+            if (scannerRunning.current) {
+              scannerRunning.current = false;
+              qrCodeScanner.current?.stop();
+            }
           }
         },
         onError
-      ).catch((err) => {
+      ).then(() => {
+        scannerRunning.current = true;
+      }).catch((err) => {
         if (onError) onError(err);
       });
     }
     return () => {
       isMounted = false;
-      if (qrCodeScanner.current) {
+      if (qrCodeScanner.current && scannerRunning.current) {
+        scannerRunning.current = false;
         qrCodeScanner.current.stop().then(() => {
           qrCodeScanner.current?.clear();
         }).catch(() => {});
