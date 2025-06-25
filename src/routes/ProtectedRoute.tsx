@@ -1,28 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { supabase } from '../services/supabaseClient';
 import type { User } from '@supabase/supabase-js';
+import { useUserRole } from '../hooks/useUserRole';
 
 const ALLOWED_ROLES = ['staff', 'manager', 'super_admin'];
 
 const ProtectedRoute: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [role, setRole] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const { role, loading: roleLoading } = useUserRole();
+  const [userLoading, setUserLoading] = useState(true);
 
   useEffect(() => {
     const checkUser = async () => {
       const { data } = await supabase.auth.getUser();
       setUser(data.user);
-      if (data.user) {
-        const { data: profile, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', data.user.id)
-          .single();
-        if (!error && profile) setRole(profile.role);
-      }
-      setLoading(false);
+      setUserLoading(false);
     };
 
     checkUser();
@@ -36,7 +30,7 @@ const ProtectedRoute: React.FC = () => {
     };
   }, []);
 
-  if (loading) {
+  if (userLoading || roleLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-2xl font-semibold">Loading...</div>
@@ -46,6 +40,13 @@ const ProtectedRoute: React.FC = () => {
 
   if (!user) return <Navigate to="/admin/login" />;
   if (!role || !ALLOWED_ROLES.includes(role)) {
+    return <div className="flex items-center justify-center min-h-screen text-red-500 text-xl font-bold">Not authorized</div>;
+  }
+
+  if (
+    role === 'staff' &&
+    !['/admin/offers/redeem', '/admin/offers/all-redemptions'].includes(location.pathname)
+  ) {
     return <div className="flex items-center justify-center min-h-screen text-red-500 text-xl font-bold">Not authorized</div>;
   }
 

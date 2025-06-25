@@ -105,38 +105,29 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
       </div>
       <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
         {/* Dashboard */}
-        <NavLink
-          to="/admin/dashboard"
-          end
-          className={({ isActive }) =>
-            `flex items-center px-3 py-2 text-sm font-medium rounded-md ${
-              isActive ? 'bg-[#1ABC9C] text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white'
-            }`
-          }
-        >
-          <LayoutDashboard className="w-5 h-5 mr-3" />
-          Dashboard
-        </NavLink>
+        {role !== 'staff' && sidebarLink('/admin/dashboard', <LayoutDashboard className="w-5 h-5 mr-3" />, 'Dashboard')}
 
         {/* Feedback Management */}
-        <div>
-          <button
-            onClick={() => toggleSection('feedback')}
-            className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
-          >
-            <span className="flex items-center">
-              <MessageSquare className="w-5 h-5 mr-3" />
-              Feedback Management
-            </span>
-            {isSectionOpen('feedback') ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-          </button>
-          {isSectionOpen('feedback') && (
-            <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
-              {sidebarLink('/admin/feedback', <FileText className="w-4 h-4 mr-3" />, 'All Feedback', true)}
-              {sidebarLink('/admin/feedback/export', <Download className="w-4 h-4 mr-3" />, 'Export Data')}
-            </div>
-          )}
-        </div>
+        {role !== 'staff' && (
+          <div>
+            <button
+              onClick={() => toggleSection('feedback')}
+              className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
+            >
+              <span className="flex items-center">
+                <MessageSquare className="w-5 h-5 mr-3" />
+                Feedback Management
+              </span>
+              {isSectionOpen('feedback') ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            </button>
+            {isSectionOpen('feedback') && (
+              <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
+                {sidebarLink('/admin/feedback', <FileText className="w-4 h-4 mr-3" />, 'All Feedback')}
+                {sidebarLink('/admin/feedback/export', <Download className="w-4 h-4 mr-3" />, 'Export Data')}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Offer Management */}
         <div>
@@ -152,65 +143,68 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           </button>
           {isSectionOpen('offers') && (
             <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
-              {/* Feedback Offers: manager, super_admin */}
-              {(role === 'manager' || role === 'super_admin') &&
-                sidebarLink('/admin/offers', <Gift className="w-4 h-4 mr-3" />, 'Feedback Offers', true)}
               {/* Redeem Offers: staff, manager, super_admin */}
               {(role === 'staff' || role === 'manager' || role === 'super_admin') &&
                 sidebarLink('/admin/offers/redeem', <CheckSquare className="w-4 h-4 mr-3" />, 'Redeem Offers')}
-              {/* Offer Settings: super_admin and manager */}
-              {(role === 'super_admin' || role === 'manager') &&
-                sidebarLink('/admin/offers/settings', <Settings className="w-4 h-4 mr-3" />, 'Offer Settings')}
-              {/* All Redemptions: super_admin and manager */}
-              {(role === 'super_admin' || role === 'manager') &&
+              {/* All Redemptions: staff, manager, super_admin */}
+              {(role === 'staff' || role === 'manager' || role === 'super_admin') &&
                 sidebarLink('/admin/offers/all-redemptions', <CheckCircle className="w-4 h-4 mr-3" />, 'All Redemptions')}
+              {/* The rest only for manager or super_admin */}
+              {(role === 'manager' || role === 'super_admin') &&
+                sidebarLink('/admin/offers', <Gift className="w-4 h-4 mr-3" />, 'Feedback Offers', true)}
+              {(role === 'manager' || role === 'super_admin') &&
+                sidebarLink('/admin/offers/settings', <Settings className="w-4 h-4 mr-3" />, 'Offer Settings')}
             </div>
           )}
         </div>
 
-        {/* Analytics & Reports */}
-        <div>
-          <button
-            onClick={() => toggleSection('analytics')}
-            className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
-          >
-            <span className="flex items-center">
-              <BarChart2 className="w-5 h-5 mr-3" />
-              Analytics & Reports
-            </span>
-            {isSectionOpen('analytics') ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-          </button>
-          {isSectionOpen('analytics') && (
-            <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
-              {sidebarLink('/admin/analytics/ratings', <PieChart className="w-4 h-4 mr-3" />, 'Rating Distribution')}
-              {sidebarLink('/admin/analytics/trends', <TrendingUp className="w-4 h-4 mr-3" />, 'Feedback Trends')}
-              {sidebarLink('/admin/analytics/emails', <Mail className="w-4 h-4 mr-3" />, 'Email Stats')}
-              {sidebarLink('/admin/analytics/all-emails', <Mail className="w-4 h-4 mr-3" />, 'All Emails')}
+        {/* Hide all other admin links for staff */}
+        {role !== 'staff' && (
+          <>
+            {/* Analytics & Reports */}
+            <div>
+              <button
+                onClick={() => toggleSection('analytics')}
+                className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
+              >
+                <span className="flex items-center">
+                  <BarChart2 className="w-5 h-5 mr-3" />
+                  Analytics & Reports
+                </span>
+                {isSectionOpen('analytics') ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+              </button>
+              {isSectionOpen('analytics') && (
+                <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
+                  {sidebarLink('/admin/analytics/ratings', <PieChart className="w-4 h-4 mr-3" />, 'Rating Distribution')}
+                  {sidebarLink('/admin/analytics/trends', <TrendingUp className="w-4 h-4 mr-3" />, 'Feedback Trends')}
+                  {sidebarLink('/admin/analytics/emails', <Mail className="w-4 h-4 mr-3" />, 'Email Stats')}
+                  {sidebarLink('/admin/analytics/all-emails', <Mail className="w-4 h-4 mr-3" />, 'All Emails')}
+                </div>
+              )}
             </div>
-          )}
-        </div>
-
-        {/* Settings */}
-        <div>
-          <button
-            onClick={() => toggleSection('settings')}
-            className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
-          >
-            <span className="flex items-center">
-              <Settings className="w-5 h-5 mr-3" />
-              Settings
-            </span>
-            {isSectionOpen('settings') ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-          </button>
-          {isSectionOpen('settings') && (
-            <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
-              {sidebarLink('/admin/settings', <Settings className="w-4 h-4 mr-3" />, 'Configuration')}
-              {/* User Permissions: only for super_admin */}
-              {role === 'super_admin' &&
-                sidebarLink('/admin/settings/user-permissions', <Settings className="w-4 h-4 mr-3" />, 'User Permissions')}
+            {/* Settings */}
+            <div>
+              <button
+                onClick={() => toggleSection('settings')}
+                className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium text-left text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"
+              >
+                <span className="flex items-center">
+                  <Settings className="w-5 h-5 mr-3" />
+                  Settings
+                </span>
+                {isSectionOpen('settings') ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+              </button>
+              {isSectionOpen('settings') && (
+                <div className="mt-1 ml-4 pl-4 border-l border-gray-600 space-y-1">
+                  {sidebarLink('/admin/settings', <Settings className="w-4 h-4 mr-3" />, 'Configuration')}
+                  {/* User Permissions: only for super_admin */}
+                  {role === 'super_admin' &&
+                    sidebarLink('/admin/settings/user-permissions', <Settings className="w-4 h-4 mr-3" />, 'User Permissions')}
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </>
+        )}
       </nav>
       <div className="px-4 py-4 border-t border-gray-700">
         <button

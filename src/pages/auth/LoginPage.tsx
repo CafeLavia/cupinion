@@ -25,6 +25,21 @@ const LoginPage: React.FC = () => {
         throw error;
       }
 
+      // Fetch user role after login
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        if (!profileError && profile) {
+          if (profile.role === 'staff') {
+            navigate('/admin/offers/redeem');
+            return;
+          }
+        }
+      }
       navigate('/admin/dashboard');
     } catch (error: any) {
       setError(error.message || 'An unexpected error occurred.');
