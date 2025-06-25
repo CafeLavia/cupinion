@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import { AuthService } from '../../services/authService';
 import { supabase } from '../../services/supabaseClient';
+import { useUserRole } from '../../hooks/useUserRole';
 
 // Add props to Sidebar for mobile toggle
 interface SidebarProps {
@@ -32,7 +33,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   const [openSections, setOpenSections] = useState<string[]>(['feedback', 'offers', 'analytics', 'settings']);
   const navigate = useNavigate();
-  const [role, setRole] = useState<string | null>(null);
+  const { role, viewOnly } = useUserRole();
 
   const toggleSection = (section: string) => {
     setOpenSections(prev =>
@@ -57,22 +58,6 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
       navigate('/admin/login');
     }
   };
-
-  useEffect(() => {
-    // Fetch user role from Supabase profiles (mocked for now)
-    const fetchRole = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .single();
-        if (!error && data) setRole(data.role);
-      }
-    };
-    fetchRole();
-  }, []);
 
   // Helper for sidebar links
   const sidebarLink = (to: string, icon: React.ReactNode, label: string, exact: boolean = false) => (
@@ -200,6 +185,9 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
                   {/* User Permissions: only for super_admin */}
                   {role === 'super_admin' &&
                     sidebarLink('/admin/settings/user-permissions', <Settings className="w-4 h-4 mr-3" />, 'User Permissions')}
+                  {/* Manage Staff: super_admin and manager (not view_only) */}
+                  {(role === 'super_admin' || role === 'manager') &&
+                    sidebarLink('/admin/settings/manage-staff', <Settings className="w-4 h-4 mr-3" />, 'Manage Staff')}
                 </div>
               )}
             </div>

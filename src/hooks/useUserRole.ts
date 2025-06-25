@@ -25,7 +25,14 @@ export function useUserRole(): UserRoleInfo {
         if (!error && data) {
           setRole(data.role);
           setViewOnly(!!data.view_only);
+        } else {
+          // Fallback if profile not found
+          setRole('unknown');
+          setViewOnly(false);
         }
+      } else {
+        setRole(null);
+        setViewOnly(false);
       }
       setLoading(false);
     };
