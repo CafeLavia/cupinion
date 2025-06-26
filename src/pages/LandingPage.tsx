@@ -321,44 +321,45 @@ const LandingPage: React.FC = () => {
   if (step === 0) {
     content = (
       <>
-        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>How was your Experience?</h2>
-        <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 360 }}>
-          <div className="flex flex-row justify-center items-center mx-auto" style={{height: SLIDER_HEIGHT + 60, gap: COLUMN_GAP, alignItems: 'flex-start', width: '90%', maxWidth: '32rem'}}>
+        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.3rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3.5rem)' }}>How was your Experience?</h2>
+        <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 0 }}>
+          <div className="flex flex-row justify-center items-center mx-auto" style={{height: 'clamp(260px, 48vh, 600px)', gap: 'clamp(24px, 10vw, 96px)', alignItems: 'flex-start', width: '100%', maxWidth: '38rem'}}>
             {/* Labels */}
-            <div className="flex flex-col justify-between h-full items-center pr-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT, flex: 1}}>
+            <div className="flex flex-col justify-between h-full items-center pr-3" style={{minHeight: 'clamp(200px, 40vh, 540px)', height: 'clamp(200px, 40vh, 540px)', flex: 1}}>
               {FEEDBACK_OPTIONS.map((option, idx) => (
                 <span
                   key={option.label}
-                  className={`text-white text-sm text-center transition-all duration-300 ${selected === idx ? 'scale-105 opacity-100 font-bold' : 'opacity-60 font-normal'} hover:opacity-100 hover:scale-110`}
-                  style={{ minHeight: 52, display: 'flex', alignItems: 'center', height: 52, fontFamily: "'Quattrocento Sans', sans-serif" }}
+                  className={`text-white text-center transition-all duration-300 ${selected === idx ? 'scale-125 opacity-100 font-bold' : 'opacity-60 font-normal'} hover:opacity-100 hover:scale-110`}
+                  style={{ fontSize: 'clamp(1rem, 4vw, 2.2rem)', minHeight: 'clamp(40px, 7vw, 90px)', display: 'flex', alignItems: 'center', height: 'clamp(40px, 7vw, 90px)', fontFamily: "'Quattrocento Sans', sans-serif" }}
                 >
                   {option.label}
                 </span>
               ))}
             </div>
-            {/* Completely custom slider bar, two stacked divs for fill and unfilled (solid color and gray) */}
+            {/* Slider bar */}
             <div
               ref={sliderRef}
-              className="relative flex flex-col items-center justify-between px-3 select-none"
+              className="relative flex flex-col items-center justify-between px-2 select-none"
               style={{
-                height: SLIDER_HEIGHT,
-                minHeight: SLIDER_HEIGHT,
-                minWidth: SLIDER_TRACK_WIDTH,
+                height: 'clamp(200px, 40vh, 540px)',
+                minHeight: 'clamp(200px, 40vh, 540px)',
+                minWidth: 'clamp(32px, 10vw, 96px)',
+                width: 'clamp(32px, 10vw, 96px)',
                 justifyContent: 'space-between',
                 cursor: 'pointer',
                 overflow: 'hidden',
-                borderRadius: 16,
+                borderRadius: 24,
               }}
               onMouseDown={handleInteractionStart}
               onTouchStart={handleInteractionStart}
             >
-              {/* Gradient background: always full height */}
+              {/* Gradient background */}
               <div
                 style={{
                   position: 'absolute',
                   left: '50%',
                   top: 0,
-                  width: SLIDER_TRACK_WIDTH,
+                  width: 'clamp(32px, 10vw, 96px)',
                   height: '100%',
                   background: 'linear-gradient(to bottom, #16a34a 0%, #eab308 50%, #dc2626 100%)',
                   transform: 'translateX(-50%)',
@@ -366,13 +367,13 @@ const LandingPage: React.FC = () => {
                   pointerEvents: 'none',
                 }}
               />
-              {/* Gray overlay: covers unfilled portion from the top */}
+              {/* Gray overlay */}
               <div
                 style={{
                   position: 'absolute',
                   left: '50%',
                   top: 0,
-                  width: SLIDER_TRACK_WIDTH,
+                  width: 'clamp(32px, 10vw, 96px)',
                   height: `${100 - fillPercent}%`,
                   background: '#78717c',
                   opacity: 0.85,
@@ -384,26 +385,26 @@ const LandingPage: React.FC = () => {
               />
             </div>
             {/* Emojis */}
-            <div className="flex flex-col justify-between h-full items-center pl-2" style={{minHeight: SLIDER_HEIGHT, height: SLIDER_HEIGHT, flex: 1}}>
+            <div className="flex flex-col justify-between h-full items-center pl-3" style={{minHeight: 'clamp(200px, 40vh, 540px)', height: 'clamp(200px, 40vh, 540px)', flex: 1}}>
               {FEEDBACK_OPTIONS.map((option, idx) => (
                 <div
                   key={option.label}
                   className="transition-all duration-300"
                   style={{ 
-                    minHeight: 52, 
+                    minHeight: 'clamp(40px, 7vw, 90px)', 
                     display: 'flex', 
                     alignItems: 'center', 
-                    height: 52,
+                    height: 'clamp(40px, 7vw, 90px)',
                     position: 'relative'
                   }}
                 >
                   <img 
                     src={option.image} 
                     alt={option.label}
-                    className={`transition-all duration-300 ${selected === idx ? 'scale-125 opacity-100' : 'opacity-40 grayscale hover:scale-150 hover:opacity-70'}`}
+                    className={`transition-all duration-300 ${selected === idx ? 'scale-125 opacity-100' : 'opacity-40 grayscale hover:scale-125 hover:opacity-70'}`}
                     style={{
-                      width: '40px',
-                      height: '40px',
+                      width: 'clamp(28px, 6vw, 70px)',
+                      height: 'clamp(28px, 6vw, 70px)',
                       objectFit: 'contain'
                     }}
                   />
@@ -411,10 +412,10 @@ const LandingPage: React.FC = () => {
                     <div 
                       className="absolute left-0 top-0 w-full h-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300"
                       style={{
-                        transform: 'translateX(15px)'
+                        transform: 'translateX(12px)'
                       }}
                     >
-                      <span className="text-white text-base font-medium bg-black/50 px-3 py-1.5 rounded">
+                      <span className="text-white font-medium bg-black/50 rounded" style={{ fontSize: 'clamp(1rem, 4vw, 2.2rem)', padding: '0.2em 0.7em', fontFamily: "'Quattrocento Sans', sans-serif" }}>
                         {option.label}
                       </span>
                     </div>
@@ -424,17 +425,17 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '4rem' }}>
+        <div className="w-full flex flex-col items-center z-10" style={{ marginTop: '0.25rem', marginBottom: 0 }}>
           <button
             style={{
               background: '#20b2aa',
               color: 'white',
               fontWeight: 600,
-              fontSize: '0.95rem',
-              padding: '0.8rem 0',
+              fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
+              padding: 'clamp(0.8rem, 2vw, 1.4rem) 0',
               borderRadius: '0.5rem',
               width: '100%',
-              maxWidth: '22rem',
+              maxWidth: 'clamp(12rem, 70vw, 24rem)',
               transition: 'background 0.2s',
             }}
             onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
@@ -449,52 +450,48 @@ const LandingPage: React.FC = () => {
   } else if (step === 1) {
     // Good feedback step
     content = (
-      <div className="w-full max-w-sm z-10 flex flex-col gap-5 items-center px-4">
-        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+      <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
+        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3rem)' }}>
           Want to hear from us<br/>about new offers?
         </h2>
-        <div className="flex-1 flex flex-col gap-4 items-center justify-start w-full">
-          {/* Email Input */}
-          <div className="w-full">
-            <label className="block text-white text-sm mb-1 font-semibold text-left">Email Address</label>
-            <div className="relative">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-              </svg>
-              <input 
-                type="email" 
-                className="w-full rounded-lg py-3 pl-10 pr-3 text-base text-gray-900 bg-white" 
-                placeholder="Enter your email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
+        <div className="flex-1 flex flex-col gap-2 items-center justify-start w-full">
+          <div className="w-full max-w-[22rem] mx-auto flex flex-col gap-2">
+            <div className="w-full">
+              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Email Address</label>
+              <div className="relative">
+                <input 
+                  type="email" 
+                  className="w-full rounded-lg p-2 sm:p-3 text-sm sm:text-base text-gray-900 bg-white" 
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="w-full">
+              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Tell us what you enjoyed most!</label>
+              <textarea 
+                className="w-full rounded-lg p-2 sm:p-3 text-sm sm:text-base text-gray-900 bg-white" 
+                placeholder="Type your feedback here..." 
+                rows={3} 
+                style={{ resize: 'none' }}
+                value={goodFeedback}
+                onChange={e => setGoodFeedback(e.target.value)}
               />
             </div>
-          </div>
-          {/* Feedback Textarea */}
-          <div className="w-full">
-            <label className="block text-white text-sm mb-1 font-semibold text-left">Tell us what you enjoyed most!</label>
-            <textarea 
-              className="w-full rounded-lg p-3 text-base text-gray-900 bg-white" 
-              placeholder="Type your feedback here..." 
-              rows={4} 
-              style={{ resize: 'none' }}
-              value={goodFeedback}
-              onChange={e => setGoodFeedback(e.target.value)}
-            />
           </div>
           {/* Bill Upload */}
           <div className="w-full">
             <div 
-              className="w-full border-2 border-dashed border-white/40 rounded-lg p-4 flex flex-col items-center justify-center text-sm cursor-pointer hover:bg-white/10 transition-all" 
-              style={{ minHeight: 90 }}
+              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all" 
+              style={{ minHeight: 64 }}
               onClick={() => document.getElementById('bill-upload-input')?.click()}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-8 sm:w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
               <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
-              <span className="text-white/60 text-xs mt-1">
+              <span className="text-white/60 text-[10px] sm:text-xs mt-1">
                 JPG, JPEG, PNG less than 5MB. 
                 {isBillUploadRequired && <span className="text-amber-400 font-bold ml-1">(Required)</span>}
               </span>
@@ -502,20 +499,20 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
+        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'clamp(0.7rem, 2vw, 1.2rem)', marginBottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0, maxWidth: '36rem' }}>
           <button
             style={{
               background: '#20b2aa',
               color: 'white',
               fontWeight: 600,
-              fontSize: '1.1rem',
-              padding: '1rem 0',
+              fontSize: 'clamp(1rem, 5vw, 2.5rem)',
+              padding: 'clamp(0.7rem, 2vw, 2rem) 0',
               borderRadius: '0.5rem',
               width: '100%',
-              maxWidth: '22rem',
+              maxWidth: '36rem',
               transition: 'background 0.2s',
             }}
-            className="sm:text-base text-sm sm:py-4 py-3"
+            className="sm:text-xl text-base"
             onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
             onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
             onClick={handleGoodSubmit}
@@ -542,20 +539,20 @@ const LandingPage: React.FC = () => {
       billFile === null;
 
     content = (
-      <div className="w-full max-w-sm z-10 flex flex-col gap-5 items-center px-4">
-        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+      <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
+        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.2rem, 5vw, 2.7rem)', marginBottom: 'clamp(1rem, 5vw, 2.5rem)' }}>
           What aspect of our service<br/>didn't meet expectations?
         </h2>
-        <div className="flex-1 flex flex-col gap-3 items-center justify-start w-full">
+        <div className="flex-1 flex flex-col gap-2 items-center justify-start w-full">
           {/* Category Selection */}
-          <div className="w-full flex flex-wrap justify-center gap-2 mb-1">
+          <div className="w-full flex flex-wrap justify-center gap-1 mb-1">
             {BAD_CATEGORIES.map(category => {
               const isSelected = selectedCategories.includes(category);
               return (
                 <button
                   key={category}
                   onClick={() => handleCategoryClick(category)}
-                  className={`flex items-center justify-center px-3 py-1 rounded-full border-2 transition-all duration-200 text-xs font-semibold ${
+                  className={`flex items-center justify-center px-2.5 py-0.5 rounded-full border-2 transition-all duration-200 text-xs font-semibold ${
                     isSelected
                       ? 'bg-teal-400 border-teal-400 text-black'
                       : 'bg-transparent border-white/50 text-white/80 hover:bg-white/10'
@@ -571,15 +568,11 @@ const LandingPage: React.FC = () => {
           </div>
           {/* Email Input */}
           <div className="w-full">
-            <label className="block text-white text-sm mb-1 font-semibold text-left">Email Address</label>
+            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Email Address</label>
             <div className="relative">
-              <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-              </svg>
               <input
                 type="email"
-                className="w-full rounded-lg py-3 pl-9 pr-2 text-sm text-gray-900 bg-white"
+                className="w-full rounded-lg p-2 sm:p-3 text-sm sm:text-base text-gray-900 bg-white"
                 placeholder="Enter your email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -588,9 +581,9 @@ const LandingPage: React.FC = () => {
           </div>
           {/* Additional Feedback */}
           <div className="w-full">
-            <label className="block text-white text-sm mb-1 font-semibold text-left">Additional feedback</label>
+            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Additional feedback</label>
             <textarea
-              className="w-full rounded-lg p-3 text-sm text-gray-900 bg-white"
+              className="w-full rounded-lg p-2 sm:p-3 text-sm sm:text-base text-gray-900 bg-white"
               placeholder="Type your feedback here..."
               rows={2}
               style={{ resize: 'none' }}
@@ -601,8 +594,8 @@ const LandingPage: React.FC = () => {
           {/* Bill Upload */}
           <div className="w-full">
             <div
-              className="w-full border-2 border-dashed border-white/40 rounded-lg p-4 flex flex-col items-center justify-center text-sm cursor-pointer hover:bg-white/10 transition-all"
-              style={{ minHeight: 90 }}
+              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all"
+              style={{ minHeight: 64 }}
               onClick={() => document.getElementById('bill-upload-input')?.click()}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
@@ -648,32 +641,32 @@ const LandingPage: React.FC = () => {
     const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
-        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3rem)' }}>
           Thanks a Latte for Your<br/>Awesome Feedback!
         </h2>
 
-        <div className="w-full flex justify-center items-center my-4 z-10">
-          <div className="relative flex items-center justify-center" style={{ width: '16rem', height: '16rem' }}>
+        <div className="w-full flex justify-center items-center my-6 z-10">
+          <div className="relative flex items-center justify-center" style={{ width: 'clamp(7rem, 30vw, 18rem)', height: 'clamp(7rem, 30vw, 18rem)' }}>
             <img 
               src={GOOD} 
               alt="Round background" 
-              className="absolute left-0 top-0 w-full h-full object-contain" 
+              className="absolute left-0 top-0 w-full h-full object-contain"
               style={{ zIndex: 1 }}
             />
             <img 
               src={goodfeed} 
               alt="Awesome feedback" 
-              className="w-40 h-40 object-contain relative" 
-              style={{ zIndex: 2, filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
+              className="object-contain relative"
+              style={{ width: 'clamp(6rem, 26vw, 15rem)', height: 'clamp(6rem, 26vw, 15rem)', zIndex: 2, filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
             />
           </div>
         </div>
 
-        <p className="text-white/80 text-lg text-center my-6 z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+        <p className="text-white/80 text-center my-6 z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
           Your feedback helps us serve you better every day.
         </p>
 
-        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: 'auto', marginBottom: '2rem', maxWidth: '24rem' }}>
+        <div className="w-full flex flex-col items-center gap-3 z-10" style={{ marginTop: 'auto', marginBottom: '1rem', maxWidth: '20rem' }}>
           {isValidEmail(submittedFeedback?.customer_email) && submittedFeedback?.rating !== 'Poor' && submittedFeedback?.rating !== 'Terrible' && (
             <OfferPDFDownload
               feedbackId={submittedFeedback.custom_id}
@@ -684,23 +677,25 @@ const LandingPage: React.FC = () => {
           )}
         </div>
 
-        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: '0', marginBottom: '4rem', maxWidth: '24rem' }}>
+        <div className="w-full flex flex-col items-center gap-2 z-10" style={{ marginTop: '0', marginBottom: '2rem', maxWidth: '20rem' }}>
           <a
-            href="https://g.co/kgs/TZVQBZA"
+            href="https://www.google.com/maps/place/Cafe+La+Via/"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full bg-white text-gray-800 font-bold text-lg py-4 px-6 rounded-lg flex items-center justify-center gap-3 transition-transform hover:scale-105"
+            className="w-full bg-white text-gray-900 font-semibold rounded-lg py-2 px-3 text-center shadow-md hover:bg-gray-100 transition-all flex items-center justify-center gap-2"
+            style={{ fontFamily: "'Quattrocento Sans', sans-serif", fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)' }}
           >
-            <img src={google} alt="Google logo" className="w-6 h-6" />
+            <img src={google} alt="Google" className="w-5 h-5" />
             Review us on Google
           </a>
           <a
-            href="https://www.tripadvisor.com/UserReviewEdit-g304138-d25416219-Cafe_Lavia-Kandy_Kandy_District_Central_Province.html"
+            href="https://www.tripadvisor.com/Restaurant_Review-g261654-d725364-Reviews-Cafe_La_Via-Malvern_Stonnington_Greater_Melbourne_Victoria.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full bg-[#34E0A1] text-black font-bold text-lg py-4 px-6 rounded-lg flex items-center justify-center gap-3 transition-transform hover:scale-105"
+            className="w-full bg-teal-400 text-white font-semibold rounded-lg py-2 px-3 text-center shadow-md hover:bg-teal-500 transition-all flex items-center justify-center gap-2"
+            style={{ fontFamily: "'Quattrocento Sans', sans-serif", fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)' }}
           >
-            <img src={tripadvisor} alt="TripAdvisor logo" className="w-6 h-6" />
+            <img src={tripadvisor} alt="TripAdvisor" className="w-5 h-5" />
             Review us on TripAdvisor
           </a>
         </div>
@@ -716,19 +711,19 @@ const LandingPage: React.FC = () => {
           Thanks for Helping Us<br/>Brew a Better Experience!
         </h2>
 
-        <div className="w-full flex justify-center items-center my-4 z-10">
-          <div className="relative flex items-center justify-center" style={{ width: '16rem', height: '16rem' }}>
+        <div className="w-full flex justify-center items-center my-6 z-10">
+          <div className="relative flex items-center justify-center" style={{ width: 'clamp(7rem, 30vw, 18rem)', height: 'clamp(7rem, 30vw, 18rem)' }}>
             <img 
               src={GOOD} 
               alt="Round background" 
-              className="absolute left-0 top-0 w-full h-full object-contain" 
+              className="absolute left-0 top-0 w-full h-full object-contain"
               style={{ zIndex: 1 }}
             />
             <img 
-              src={badfeed} 
-              alt="Sad feedback" 
-              className="w-40 h-40 object-contain relative" 
-              style={{ zIndex: 2, filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
+              src={goodfeed} 
+              alt="Awesome feedback" 
+              className="object-contain relative"
+              style={{ width: 'clamp(6rem, 26vw, 15rem)', height: 'clamp(6rem, 26vw, 15rem)', zIndex: 2, filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
             />
           </div>
         </div>
