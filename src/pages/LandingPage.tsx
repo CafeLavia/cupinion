@@ -884,8 +884,8 @@ const LandingPage: React.FC = () => {
       {/* Main content wrapper: center on desktop, natural flow on mobile */}
       <div
         ref={contentWrapperRef}
-        className="flex-1 flex flex-col items-center justify-between w-full max-w-lg mx-auto px-2 sm:px-4 py-4 relative z-10 overflow-hidden"
-        style={{ minHeight: '100dvh' }}
+        className="flex-1 flex flex-col items-center justify-between w-full max-w-lg mx-auto px-2 sm:px-4 py-2 relative z-10 overflow-hidden"
+        style={{ minHeight: '100dvh', paddingTop: '0.25rem' }}
       >
         {/* Progress bar, logo, etc. */}
         <div className="w-full flex flex-col items-center mt-8 mb-2">
