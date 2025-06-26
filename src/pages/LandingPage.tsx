@@ -704,12 +704,12 @@ const LandingPage: React.FC = () => {
       </>
     );
   } else if (step === 4) {
-    // Thank you page for bad feedback
+    // Thank you page for bad feedback (match good thank you page)
     const customTimestamp = submittedFeedback?.created_at ? new Date(submittedFeedback.created_at).toLocaleString() : new Date().toLocaleString();
     const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
-        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3rem)' }}>
           Thanks for Helping Us<br/>Brew a Better Experience!
         </h2>
 
@@ -730,7 +730,7 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <p className="text-white/80 text-lg text-center my-6 z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+        <p className="text-white/80 text-center my-6 z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
           Thank you for sharing – we'll use<br/>this to improve your next visit.
         </p>
 
@@ -788,19 +788,7 @@ const LandingPage: React.FC = () => {
   // Lock vertical scroll on mount, restore on unmount
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
-
-    function updateScrollLock() {
-      if (window.innerHeight < 783) {
-        document.body.style.overflow = 'auto';
-        setIsScrollUnlocked(true);
-      } else {
-        document.body.style.overflow = 'hidden';
-        setIsScrollUnlocked(false);
-      }
-    }
-
-    updateScrollLock();
-    window.addEventListener('resize', updateScrollLock);
+    document.body.style.overflow = 'hidden';
 
     // Dynamic viewport height fix for mobile browsers
     function setVh() {
@@ -812,7 +800,6 @@ const LandingPage: React.FC = () => {
 
     return () => {
       document.body.style.overflow = originalOverflow;
-      window.removeEventListener('resize', updateScrollLock);
       window.removeEventListener('resize', setVh);
     };
   }, []);
@@ -897,7 +884,7 @@ const LandingPage: React.FC = () => {
       {/* Main content wrapper: center on desktop, natural flow on mobile */}
       <div
         ref={contentWrapperRef}
-        className={`flex-1 flex flex-col items-center justify-between w-full max-w-lg mx-auto px-2 sm:px-4 py-4 relative z-10 ${isOverflow ? 'overflow-y-auto' : 'overflow-hidden'}`}
+        className="flex-1 flex flex-col items-center justify-between w-full max-w-lg mx-auto px-2 sm:px-4 py-4 relative z-10 overflow-hidden"
         style={{ minHeight: '100dvh' }}
       >
         {/* Progress bar, logo, etc. */}

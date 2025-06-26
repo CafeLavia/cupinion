@@ -5,6 +5,8 @@ html, body {
   background: linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%);
   margin: 0;
   padding: 0;
+  max-width: 100vw;
+  overflow-x: hidden;
   
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
