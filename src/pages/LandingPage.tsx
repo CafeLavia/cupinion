@@ -110,6 +110,9 @@ const LandingPage: React.FC = () => {
   // Add a state to track scroll lock
   const [isScrollUnlocked, setIsScrollUnlocked] = useState(false);
 
+  const contentWrapperRef = useRef<HTMLDivElement>(null);
+  const [isOverflow, setIsOverflow] = useState(false);
+
   useEffect(() => {
     if (!table) {
       setIsValid(false);
@@ -817,6 +820,17 @@ const LandingPage: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    function checkOverflow() {
+      if (contentWrapperRef.current) {
+        setIsOverflow(contentWrapperRef.current.scrollHeight > window.innerHeight);
+      }
+    }
+    checkOverflow();
+    window.addEventListener('resize', checkOverflow);
+    return () => window.removeEventListener('resize', checkOverflow);
+  }, []);
+
   if (isValid === null) return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50" style={{background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)'}}>
       <div className="flex flex-col items-center">
@@ -845,7 +859,7 @@ const LandingPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-gradient-to-b from-[#186863] via-[#084040] to-[#011217] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+    <div className="min-h-screen w-full flex flex-col justify-between bg-gradient-to-b from-[#186863] via-[#084040] to-[#011217] overflow-hidden">
       {/* Watermark and background images */}
       <img
         src={logo}
@@ -884,7 +898,11 @@ const LandingPage: React.FC = () => {
         }}
       />
       {/* Main content wrapper: center on desktop, natural flow on mobile */}
-      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto px-2 sm:px-4 py-4 relative z-10">
+      <div
+        ref={contentWrapperRef}
+        className={`flex-1 flex flex-col items-center justify-between w-full max-w-lg mx-auto px-2 sm:px-4 py-4 relative z-10 ${isOverflow ? 'overflow-y-auto' : 'overflow-hidden'}`}
+        style={{ minHeight: '100dvh' }}
+      >
         {/* Progress bar, logo, etc. */}
         <div className="w-full flex flex-col items-center mt-8 mb-2">
           <div className="w-full max-w-lg flex justify-center items-center relative mb-4 px-4">
