@@ -845,199 +845,164 @@ const LandingPage: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-[#186863] via-[#084040] to-[#011217]">
-      <div style={{
-        transform: 'scale(0.8)',
-        transformOrigin: 'center',
-        width: '100vw',
-        height: '100vh',
-        display: 'flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
-      }}>
-        {/* Add font style */}
-        <style>{fontStyle}</style>
-        {/* Main content container (remove background and padding from here) */}
-        <div
-          className={
-            `w-full flex flex-col items-center px-4 sm:px-6 py-4 relative` +
-            (step === 2 ? ' overflow-y-auto' : ' overflow-hidden')
-          }
-          style={{
-            boxSizing: 'border-box',
-            zIndex: 1,
-            paddingTop: 'env(safe-area-inset-top, 0px)',
-            paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-            ...(step === 2
-              ? {} // No fixed height, allow scroll
-              : isScrollUnlocked
-                ? {}
-                : {
-                    height: 'calc(var(--vh, 1vh) * 100)',
-                    minHeight: 'calc(var(--vh, 1vh) * 100)',
-                    maxHeight: 'calc(var(--vh, 1vh) * 100)',
-                  }),
-          }}
-        >
-          <div style={{ transform: 'scale(0.75)', transformOrigin: 'top center', width: '100%', height: '100%' }}>
-            {/* Watermark */}
-            <img
-              src={logo}
-              alt="Cafe LaVia watermark"
-              className="pointer-events-none select-none"
-              style={{
-                position: 'fixed',
-                left: step === 0 ? '0%' : '-100%',
-                right: 'auto',
-                top: '50%',
-                width: '171vw',
-                height: 'auto',
-                opacity: (step === 3 || step === 4) ? 0 : 0.13,
-                zIndex: 0,
-                objectFit: 'contain',
-                objectPosition: step !== 0 ? 'right center' : 'left center',
-                transform: 'translateY(-50%)',
-                maxWidth: 'none',
-                transition: 'left 0.8s cubic-bezier(.77,0,.18,1), right 0.8s cubic-bezier(.77,0,.18,1), object-position 0.8s cubic-bezier(.77,0,.18,1), opacity 0.5s ease-in-out',
-              }}
-            />
-            {/* Watermark for Thank You Pages */}
-            <img
-              src={background2}
-              alt="Thank you background"
-              className="pointer-events-none select-none"
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                width: '100vw',
-                height: '100vh',
-                objectFit: 'cover',
-                opacity: (step === 3 || step === 4) ? 0.07 : 0,
-                zIndex: 0,
-                transition: 'opacity 0.8s ease-in-out',
-              }}
-            />
-            {/* Static Logo and Progress Bar */}
-            <div className="w-full flex flex-col items-center z-10 mt-8 mb-2">
-              <div className="w-full max-w-lg flex justify-center items-center relative mb-4 px-4">
-                {step !== 0 && (
-                    <button
-                        onClick={handleBack}
-                        className="absolute left-4 p-2"
-                        style={{ top: '50%', transform: 'translateY(-50%)', zIndex: 20 }}
-                    >
-                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                            <path d="M20 24L12 16L20 8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                        </svg>
-                    </button>
-                )}
-                <div className="w-40 sm:w-56 md:w-72 h-2 rounded-full flex overflow-hidden" style={{ background: BAR_BG }}>
-                    <div style={{ width: getProgressBarWidth(), background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
-                </div>
-              </div>
-              <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-6" style={{ height: '8rem', maxHeight: '25vw', minHeight: '5rem', width: 'auto' }} />
+    <div className="min-h-screen w-full flex flex-col bg-gradient-to-b from-[#186863] via-[#084040] to-[#011217] pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]">
+      {/* Watermark and background images */}
+      <img
+        src={logo}
+        alt="Cafe LaVia watermark"
+        className="pointer-events-none select-none"
+        style={{
+          position: 'fixed',
+          left: step === 0 ? '0%' : '-100%',
+          right: 'auto',
+          top: '50%',
+          width: '171vw',
+          height: 'auto',
+          opacity: (step === 3 || step === 4) ? 0 : 0.13,
+          zIndex: 0,
+          objectFit: 'contain',
+          objectPosition: step !== 0 ? 'right center' : 'left center',
+          transform: 'translateY(-50%)',
+          maxWidth: 'none',
+          transition: 'left 0.8s cubic-bezier(.77,0,.18,1), right 0.8s cubic-bezier(.77,0,.18,1), object-position 0.8s cubic-bezier(.77,0,.18,1), opacity 0.5s ease-in-out',
+        }}
+      />
+      <img
+        src={background2}
+        alt="Thank you background"
+        className="pointer-events-none select-none"
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          objectFit: 'cover',
+          opacity: (step === 3 || step === 4) ? 0.07 : 0,
+          zIndex: 0,
+          transition: 'opacity 0.8s ease-in-out',
+        }}
+      />
+      {/* Main content wrapper: center on desktop, natural flow on mobile */}
+      <div className="flex-1 flex flex-col items-center justify-center w-full max-w-lg mx-auto px-2 sm:px-4 py-4 relative z-10">
+        {/* Progress bar, logo, etc. */}
+        <div className="w-full flex flex-col items-center mt-8 mb-2">
+          <div className="w-full max-w-lg flex justify-center items-center relative mb-4 px-4">
+            {step !== 0 && (
+              <button
+                onClick={handleBack}
+                className="absolute left-4 p-2"
+                style={{ top: '50%', transform: 'translateY(-50%)', zIndex: 20 }}
+              >
+                <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                  <path d="M20 24L12 16L20 8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            )}
+            <div className="w-40 sm:w-56 md:w-72 h-2 rounded-full flex overflow-hidden" style={{ background: BAR_BG }}>
+              <div style={{ width: getProgressBarWidth(), background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
             </div>
-            {/* Content: slides left/right */}
-            <div className="w-full flex flex-col items-center z-10 relative max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto flex-1" style={{...contentSlide}}>
-              {content}
-            </div>
-            {/* Custom slider styles and responsive tweaks */}
-            <style>{`
-              .watermark-img {
-                width: 540vw !important;
-              }
-              @media (min-width: 600px) {
-                .watermark-img {
-                  width: 198vw !important;
-                }
-              }
-              @media (max-width: 600px) {
-                .watermark-img {
-                  width: 315vw !important;
-                }
-              }
-              input[type='range'].custom-vertical-slider {
-                -webkit-appearance: slider-vertical;
-                appearance: none;
-                width: 22px;
-                height: 380px;
-                background: ${BAR_BG};
-                border-radius: 999px;
-                margin: 0;
-                padding: 0;
-                position: relative;
-                display: block;
-              }
-              @media (max-width: 600px) {
-                input[type='range'].custom-vertical-slider {
-                  width: 16px;
-                  height: 260px;
-                }
-              }
-              input[type='range'].custom-vertical-slider::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                appearance: none;
-                width: 1px;
-                height: 1px;
-                background: transparent;
-                border: none;
-                box-shadow: none;
-                cursor: pointer;
-              }
-              input[type='range'].custom-vertical-slider::-webkit-slider-thumb:hover {
-                transform: none;
-              }
-              input[type='range'].custom-vertical-slider::-webkit-slider-runnable-track {
-                width: 100%;
-                height: 100%;
-                background: transparent;
-                border-radius: 999px;
-              }
-              input[type='range'].custom-vertical-slider:focus {
-                outline: none;
-              }
-              input[type='range'].custom-vertical-slider::-moz-range-thumb {
-                width: 1px;
-                height: 1px;
-                background: transparent;
-                border: none;
-                box-shadow: none;
-                cursor: pointer;
-              }
-              input[type='range'].custom-vertical-slider::-moz-range-thumb:hover {
-                transform: none;
-              }
-              input[type='range'].custom-vertical-slider::-moz-range-track {
-                width: 100%;
-                height: 100%;
-                background: transparent;
-                border-radius: 999px;
-              }
-              input[type='range'].custom-vertical-slider::-ms-thumb {
-                width: 1px;
-                height: 1px;
-                background: transparent;
-                border: none;
-                box-shadow: none;
-                cursor: pointer;
-              }
-              input[type='range'].custom-vertical-slider::-ms-thumb:hover {
-                transform: none;
-              }
-              input[type='range'].custom-vertical-slider::-ms-fill-lower,
-              input[type='range'].custom-vertical-slider::-ms-fill-upper {
-                background: transparent;
-                border-radius: 999px;
-              }
-              input[type='range'].custom-vertical-slider:focus::-ms-fill-lower,
-              input[type='range'].custom-vertical-slider:focus::-ms-fill-upper {
-                background: transparent;
-              }
-            `}</style>
           </div>
+          <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-6" style={{ height: '8rem', maxHeight: '25vw', minHeight: '5rem', width: 'auto' }} />
+        </div>
+        {/* Content: slides left/right */}
+        <div className="w-full flex flex-col items-center relative max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto flex-1" style={{...contentSlide}}>
+          {content}
         </div>
       </div>
+      {/* Custom slider styles and responsive tweaks */}
+      <style>{`
+        .watermark-img {
+          width: 540vw !important;
+        }
+        @media (min-width: 600px) {
+          .watermark-img {
+            width: 198vw !important;
+          }
+        }
+        @media (max-width: 600px) {
+          .watermark-img {
+            width: 315vw !important;
+          }
+        }
+        input[type='range'].custom-vertical-slider {
+          -webkit-appearance: slider-vertical;
+          appearance: none;
+          width: 22px;
+          height: 380px;
+          background: ${BAR_BG};
+          border-radius: 999px;
+          margin: 0;
+          padding: 0;
+          position: relative;
+          display: block;
+        }
+        @media (max-width: 600px) {
+          input[type='range'].custom-vertical-slider {
+            width: 16px;
+            height: 260px;
+          }
+        }
+        input[type='range'].custom-vertical-slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 1px;
+          height: 1px;
+          background: transparent;
+          border: none;
+          box-shadow: none;
+          cursor: pointer;
+        }
+        input[type='range'].custom-vertical-slider::-webkit-slider-thumb:hover {
+          transform: none;
+        }
+        input[type='range'].custom-vertical-slider::-webkit-slider-runnable-track {
+          width: 100%;
+          height: 100%;
+          background: transparent;
+          border-radius: 999px;
+        }
+        input[type='range'].custom-vertical-slider:focus {
+          outline: none;
+        }
+        input[type='range'].custom-vertical-slider::-moz-range-thumb {
+          width: 1px;
+          height: 1px;
+          background: transparent;
+          border: none;
+          box-shadow: none;
+          cursor: pointer;
+        }
+        input[type='range'].custom-vertical-slider::-moz-range-thumb:hover {
+          transform: none;
+        }
+        input[type='range'].custom-vertical-slider::-moz-range-track {
+          width: 100%;
+          height: 100%;
+          background: transparent;
+          border-radius: 999px;
+        }
+        input[type='range'].custom-vertical-slider::-ms-thumb {
+          width: 1px;
+          height: 1px;
+          background: transparent;
+          border: none;
+          box-shadow: none;
+          cursor: pointer;
+        }
+        input[type='range'].custom-vertical-slider::-ms-thumb:hover {
+          transform: none;
+        }
+        input[type='range'].custom-vertical-slider::-ms-fill-lower,
+        input[type='range'].custom-vertical-slider::-ms-fill-upper {
+          background: transparent;
+          border-radius: 999px;
+        }
+        input[type='range'].custom-vertical-slider:focus::-ms-fill-lower,
+        input[type='range'].custom-vertical-slider:focus::-ms-fill-upper {
+          background: transparent;
+        }
+      `}</style>
       {showCooldownMsg && (
         <div style={{
           position: 'fixed',
@@ -1060,7 +1025,6 @@ const LandingPage: React.FC = () => {
             maxWidth: 320
           }}>
             You have already submitted feedback.<br />
-            
           </div>
         </div>
       )}
