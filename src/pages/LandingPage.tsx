@@ -107,6 +107,9 @@ const LandingPage: React.FC = () => {
   const [isCooldown, setIsCooldown] = useState(false);
   const [showCooldownMsg, setShowCooldownMsg] = useState(false);
 
+  // Add a state to track scroll lock
+  const [isScrollUnlocked, setIsScrollUnlocked] = useState(false);
+
   useEffect(() => {
     if (!table) {
       setIsValid(false);
@@ -785,7 +788,20 @@ const LandingPage: React.FC = () => {
   // Lock vertical scroll on mount, restore on unmount
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+
+    function updateScrollLock() {
+      if (window.innerHeight < 783) {
+        document.body.style.overflow = 'auto';
+        setIsScrollUnlocked(true);
+      } else {
+        document.body.style.overflow = 'hidden';
+        setIsScrollUnlocked(false);
+      }
+    }
+
+    updateScrollLock();
+    window.addEventListener('resize', updateScrollLock);
+
     // Dynamic viewport height fix for mobile browsers
     function setVh() {
       const vh = window.innerHeight * 0.01;
@@ -793,8 +809,10 @@ const LandingPage: React.FC = () => {
     }
     setVh();
     window.addEventListener('resize', setVh);
+
     return () => {
       document.body.style.overflow = originalOverflow;
+      window.removeEventListener('resize', updateScrollLock);
       window.removeEventListener('resize', setVh);
     };
   }, []);
@@ -837,9 +855,13 @@ const LandingPage: React.FC = () => {
           background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)',
           boxSizing: 'border-box',
           zIndex: 1,
-          height: 'calc(var(--vh, 1vh) * 100)',
-          minHeight: 'calc(var(--vh, 1vh) * 100)',
-          maxHeight: 'calc(var(--vh, 1vh) * 100)',
+          ...(isScrollUnlocked
+            ? {}
+            : {
+                height: 'calc(var(--vh, 1vh) * 100)',
+                minHeight: 'calc(var(--vh, 1vh) * 100)',
+                maxHeight: 'calc(var(--vh, 1vh) * 100)',
+              }),
         }}
       >
         {/* Watermark */}
