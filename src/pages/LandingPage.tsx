@@ -318,7 +318,7 @@ const LandingPage: React.FC = () => {
   if (step === 0) {
     content = (
       <>
-        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>How was your Experience?</h2>
+        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>How was your Experience?</h2>
         <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 360 }}>
           <div className="flex flex-row justify-center items-center mx-auto" style={{height: SLIDER_HEIGHT + 60, gap: COLUMN_GAP, alignItems: 'flex-start', width: '90%', maxWidth: '32rem'}}>
             {/* Labels */}
@@ -446,14 +446,14 @@ const LandingPage: React.FC = () => {
   } else if (step === 1) {
     // Good feedback step
     content = (
-      <div className="flex flex-col flex-1 h-full min-h-0 w-full max-w-sm z-10 px-2 mx-auto">
-        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+      <div className="w-full max-w-sm z-10 flex flex-col gap-5 items-center px-4">
+        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           Want to hear from us<br/>about new offers?
         </h2>
         <div className="flex-1 flex flex-col gap-4 items-center justify-start w-full">
           {/* Email Input */}
           <div className="w-full">
-            <label className="block text-white text-xs mb-1 font-semibold text-left">Email Address</label>
+            <label className="block text-white text-sm mb-1 font-semibold text-left">Email Address</label>
             <div className="relative">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -461,7 +461,7 @@ const LandingPage: React.FC = () => {
               </svg>
               <input 
                 type="email" 
-                className="w-full rounded-lg py-2 pl-10 pr-3 text-base text-gray-900 bg-white" 
+                className="w-full rounded-lg py-3 pl-10 pr-3 text-base text-gray-900 bg-white" 
                 placeholder="Enter your email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -470,11 +470,11 @@ const LandingPage: React.FC = () => {
           </div>
           {/* Feedback Textarea */}
           <div className="w-full">
-            <label className="block text-white text-xs mb-1 font-semibold text-left">Tell us what you enjoyed most!</label>
+            <label className="block text-white text-sm mb-1 font-semibold text-left">Tell us what you enjoyed most!</label>
             <textarea 
-              className="w-full rounded-lg p-2 text-base text-gray-900 bg-white" 
+              className="w-full rounded-lg p-3 text-base text-gray-900 bg-white" 
               placeholder="Type your feedback here..." 
-              rows={3} 
+              rows={4} 
               style={{ resize: 'none' }}
               value={goodFeedback}
               onChange={e => setGoodFeedback(e.target.value)}
@@ -483,8 +483,8 @@ const LandingPage: React.FC = () => {
           {/* Bill Upload */}
           <div className="w-full">
             <div 
-              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 flex flex-col items-center justify-center text-xs cursor-pointer hover:bg-white/10 transition-all" 
-              style={{ minHeight: 60 }}
+              className="w-full border-2 border-dashed border-white/40 rounded-lg p-4 flex flex-col items-center justify-center text-sm cursor-pointer hover:bg-white/10 transition-all" 
+              style={{ minHeight: 90 }}
               onClick={() => document.getElementById('bill-upload-input')?.click()}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
@@ -499,20 +499,20 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.2rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
+        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
           <button
             style={{
               background: '#20b2aa',
               color: 'white',
               fontWeight: 600,
-              fontSize: '0.95rem',
-              padding: '0.7rem 0',
+              fontSize: '1.1rem',
+              padding: '1rem 0',
               borderRadius: '0.5rem',
               width: '100%',
-              maxWidth: '16rem',
+              maxWidth: '22rem',
               transition: 'background 0.2s',
             }}
-            className="sm:text-base text-xs sm:py-3 py-2"
+            className="sm:text-base text-sm sm:py-4 py-3"
             onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
             onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
             onClick={handleGoodSubmit}
@@ -539,8 +539,8 @@ const LandingPage: React.FC = () => {
       billFile === null;
 
     content = (
-      <div className="flex flex-col flex-1 h-full min-h-0 w-full max-w-sm z-10 px-2 mx-auto">
-        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+      <div className="w-full max-w-sm z-10 flex flex-col gap-5 items-center px-4">
+        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           What aspect of our service<br/>didn't meet expectations?
         </h2>
         <div className="flex-1 flex flex-col gap-3 items-center justify-start w-full">
@@ -568,7 +568,7 @@ const LandingPage: React.FC = () => {
           </div>
           {/* Email Input */}
           <div className="w-full">
-            <label className="block text-white text-xs mb-1 font-semibold text-left">Email Address</label>
+            <label className="block text-white text-sm mb-1 font-semibold text-left">Email Address</label>
             <div className="relative">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -576,7 +576,7 @@ const LandingPage: React.FC = () => {
               </svg>
               <input
                 type="email"
-                className="w-full rounded-lg py-2 pl-9 pr-2 text-sm text-gray-900 bg-white"
+                className="w-full rounded-lg py-3 pl-9 pr-2 text-sm text-gray-900 bg-white"
                 placeholder="Enter your email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -585,9 +585,9 @@ const LandingPage: React.FC = () => {
           </div>
           {/* Additional Feedback */}
           <div className="w-full">
-            <label className="block text-white text-xs mb-1 font-semibold text-left">Additional feedback</label>
+            <label className="block text-white text-sm mb-1 font-semibold text-left">Additional feedback</label>
             <textarea
-              className="w-full rounded-lg p-2 text-sm text-gray-900 bg-white"
+              className="w-full rounded-lg p-3 text-sm text-gray-900 bg-white"
               placeholder="Type your feedback here..."
               rows={2}
               style={{ resize: 'none' }}
@@ -598,8 +598,8 @@ const LandingPage: React.FC = () => {
           {/* Bill Upload */}
           <div className="w-full">
             <div
-              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 flex flex-col items-center justify-center text-xs cursor-pointer hover:bg-white/10 transition-all"
-              style={{ minHeight: 60 }}
+              className="w-full border-2 border-dashed border-white/40 rounded-lg p-4 flex flex-col items-center justify-center text-sm cursor-pointer hover:bg-white/10 transition-all"
+              style={{ minHeight: 90 }}
               onClick={() => document.getElementById('bill-upload-input')?.click()}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
@@ -614,22 +614,22 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.2rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
+        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
           <button
             disabled={isBadSubmitDisabled}
             style={{
               background: '#20b2aa',
               color: 'white',
               fontWeight: 600,
-              fontSize: '0.95rem',
-              padding: '0.7rem 0',
+              fontSize: '1.1rem',
+              padding: '1rem 0',
               borderRadius: '0.5rem',
               width: '100%',
-              maxWidth: '16rem',
+              maxWidth: '22rem',
               transition: 'background 0.2s, opacity 0.2s',
               opacity: isBadSubmitDisabled ? 0.5 : 1,
             }}
-            className="sm:text-base text-xs sm:py-3 py-2"
+            className="sm:text-base text-sm sm:py-4 py-3"
             onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
             onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
             onClick={handleBadSubmit}
@@ -645,7 +645,7 @@ const LandingPage: React.FC = () => {
     const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
-        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           Thanks a Latte for Your<br/>Awesome Feedback!
         </h2>
 
@@ -709,7 +709,7 @@ const LandingPage: React.FC = () => {
     const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
-        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           Thanks for Helping Us<br/>Brew a Better Experience!
         </h2>
 
@@ -845,188 +845,197 @@ const LandingPage: React.FC = () => {
   );
 
   return (
-    <>
-      {/* Add font style */}
-      <style>{fontStyle}</style>
-      {/* Main content container */}
-      <div
-        className={
-          `w-full flex flex-col items-center px-2 sm:px-4 py-2 relative` +
-          (step === 2 ? ' overflow-y-auto' : ' overflow-hidden')
-        }
-        style={{
-          background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)',
-          boxSizing: 'border-box',
-          zIndex: 1,
-          paddingTop: 'env(safe-area-inset-top, 0px)',
-          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-          ...(step === 2
-            ? {} // No fixed height, allow scroll
-            : isScrollUnlocked
-              ? {}
-              : {
-                  height: 'calc(var(--vh, 1vh) * 100)',
-                  minHeight: 'calc(var(--vh, 1vh) * 100)',
-                  maxHeight: 'calc(var(--vh, 1vh) * 100)',
-                }),
-        }}
-      >
-        <div style={{ transform: 'scale(0.75)', transformOrigin: 'top center', width: '100%', height: '100%' }}>
-          {/* Watermark */}
-          <img
-            src={logo}
-            alt="Cafe LaVia watermark"
-            className="pointer-events-none select-none"
-            style={{
-              position: 'fixed',
-              left: step === 0 ? '0%' : '-100%',
-              right: 'auto',
-              top: '50%',
-              width: '171vw',
-              height: 'auto',
-              opacity: (step === 3 || step === 4) ? 0 : 0.13,
-              zIndex: 0,
-              objectFit: 'contain',
-              objectPosition: step !== 0 ? 'right center' : 'left center',
-              transform: 'translateY(-50%)',
-              maxWidth: 'none',
-              transition: 'left 0.8s cubic-bezier(.77,0,.18,1), right 0.8s cubic-bezier(.77,0,.18,1), object-position 0.8s cubic-bezier(.77,0,.18,1), opacity 0.5s ease-in-out',
-            }}
-          />
-          {/* Watermark for Thank You Pages */}
-          <img
-            src={background2}
-            alt="Thank you background"
-            className="pointer-events-none select-none"
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              objectFit: 'cover',
-              opacity: (step === 3 || step === 4) ? 0.07 : 0,
-              zIndex: 0,
-              transition: 'opacity 0.8s ease-in-out',
-            }}
-          />
-          {/* Static Logo and Progress Bar */}
-          <div className="w-full flex flex-col items-center z-10 mt-8 mb-2">
-            <div className="w-full max-w-lg flex justify-center items-center relative mb-4 px-4">
-              {step !== 0 && (
-                  <button
-                      onClick={handleBack}
-                      className="absolute left-4 p-2"
-                      style={{ top: '50%', transform: 'translateY(-50%)', zIndex: 20 }}
-                  >
-                      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
-                          <path d="M20 24L12 16L20 8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                  </button>
-              )}
-              <div className="w-40 sm:w-56 md:w-72 h-2 rounded-full flex overflow-hidden" style={{ background: BAR_BG }}>
-                  <div style={{ width: getProgressBarWidth(), background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
+    <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-[#186863] via-[#084040] to-[#011217]">
+      <div style={{
+        transform: 'scale(0.8)',
+        transformOrigin: 'center',
+        width: '100vw',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}>
+        {/* Add font style */}
+        <style>{fontStyle}</style>
+        {/* Main content container (remove background and padding from here) */}
+        <div
+          className={
+            `w-full flex flex-col items-center px-4 sm:px-6 py-4 relative` +
+            (step === 2 ? ' overflow-y-auto' : ' overflow-hidden')
+          }
+          style={{
+            boxSizing: 'border-box',
+            zIndex: 1,
+            paddingTop: 'env(safe-area-inset-top, 0px)',
+            paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+            ...(step === 2
+              ? {} // No fixed height, allow scroll
+              : isScrollUnlocked
+                ? {}
+                : {
+                    height: 'calc(var(--vh, 1vh) * 100)',
+                    minHeight: 'calc(var(--vh, 1vh) * 100)',
+                    maxHeight: 'calc(var(--vh, 1vh) * 100)',
+                  }),
+          }}
+        >
+          <div style={{ transform: 'scale(0.75)', transformOrigin: 'top center', width: '100%', height: '100%' }}>
+            {/* Watermark */}
+            <img
+              src={logo}
+              alt="Cafe LaVia watermark"
+              className="pointer-events-none select-none"
+              style={{
+                position: 'fixed',
+                left: step === 0 ? '0%' : '-100%',
+                right: 'auto',
+                top: '50%',
+                width: '171vw',
+                height: 'auto',
+                opacity: (step === 3 || step === 4) ? 0 : 0.13,
+                zIndex: 0,
+                objectFit: 'contain',
+                objectPosition: step !== 0 ? 'right center' : 'left center',
+                transform: 'translateY(-50%)',
+                maxWidth: 'none',
+                transition: 'left 0.8s cubic-bezier(.77,0,.18,1), right 0.8s cubic-bezier(.77,0,.18,1), object-position 0.8s cubic-bezier(.77,0,.18,1), opacity 0.5s ease-in-out',
+              }}
+            />
+            {/* Watermark for Thank You Pages */}
+            <img
+              src={background2}
+              alt="Thank you background"
+              className="pointer-events-none select-none"
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                width: '100vw',
+                height: '100vh',
+                objectFit: 'cover',
+                opacity: (step === 3 || step === 4) ? 0.07 : 0,
+                zIndex: 0,
+                transition: 'opacity 0.8s ease-in-out',
+              }}
+            />
+            {/* Static Logo and Progress Bar */}
+            <div className="w-full flex flex-col items-center z-10 mt-8 mb-2">
+              <div className="w-full max-w-lg flex justify-center items-center relative mb-4 px-4">
+                {step !== 0 && (
+                    <button
+                        onClick={handleBack}
+                        className="absolute left-4 p-2"
+                        style={{ top: '50%', transform: 'translateY(-50%)', zIndex: 20 }}
+                    >
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                            <path d="M20 24L12 16L20 8" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                        </svg>
+                    </button>
+                )}
+                <div className="w-40 sm:w-56 md:w-72 h-2 rounded-full flex overflow-hidden" style={{ background: BAR_BG }}>
+                    <div style={{ width: getProgressBarWidth(), background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
+                </div>
               </div>
+              <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-6" style={{ height: '8rem', maxHeight: '25vw', minHeight: '5rem', width: 'auto' }} />
             </div>
-            <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-6" style={{ height: '8rem', maxHeight: '25vw', minHeight: '5rem', width: 'auto' }} />
-          </div>
-          {/* Content: slides left/right */}
-          <div className="w-full flex flex-col items-center z-10 relative max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto flex-1" style={{...contentSlide}}>
-            {content}
-          </div>
-          {/* Custom slider styles and responsive tweaks */}
-          <style>{`
-            .watermark-img {
-              width: 540vw !important;
-            }
-            @media (min-width: 600px) {
+            {/* Content: slides left/right */}
+            <div className="w-full flex flex-col items-center z-10 relative max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto flex-1" style={{...contentSlide}}>
+              {content}
+            </div>
+            {/* Custom slider styles and responsive tweaks */}
+            <style>{`
               .watermark-img {
-                width: 198vw !important;
+                width: 540vw !important;
               }
-            }
-            @media (max-width: 600px) {
-              .watermark-img {
-                width: 315vw !important;
+              @media (min-width: 600px) {
+                .watermark-img {
+                  width: 198vw !important;
+                }
               }
-            }
-            input[type='range'].custom-vertical-slider {
-              -webkit-appearance: slider-vertical;
-              appearance: none;
-              width: 22px;
-              height: 380px;
-              background: ${BAR_BG};
-              border-radius: 999px;
-              margin: 0;
-              padding: 0;
-              position: relative;
-              display: block;
-            }
-            @media (max-width: 600px) {
+              @media (max-width: 600px) {
+                .watermark-img {
+                  width: 315vw !important;
+                }
+              }
               input[type='range'].custom-vertical-slider {
-                width: 16px;
-                height: 260px;
+                -webkit-appearance: slider-vertical;
+                appearance: none;
+                width: 22px;
+                height: 380px;
+                background: ${BAR_BG};
+                border-radius: 999px;
+                margin: 0;
+                padding: 0;
+                position: relative;
+                display: block;
               }
-            }
-            input[type='range'].custom-vertical-slider::-webkit-slider-thumb {
-              -webkit-appearance: none;
-              appearance: none;
-              width: 1px;
-              height: 1px;
-              background: transparent;
-              border: none;
-              box-shadow: none;
-              cursor: pointer;
-            }
-            input[type='range'].custom-vertical-slider::-webkit-slider-thumb:hover {
-              transform: none;
-            }
-            input[type='range'].custom-vertical-slider::-webkit-slider-runnable-track {
-              width: 100%;
-              height: 100%;
-              background: transparent;
-              border-radius: 999px;
-            }
-            input[type='range'].custom-vertical-slider:focus {
-              outline: none;
-            }
-            input[type='range'].custom-vertical-slider::-moz-range-thumb {
-              width: 1px;
-              height: 1px;
-              background: transparent;
-              border: none;
-              box-shadow: none;
-              cursor: pointer;
-            }
-            input[type='range'].custom-vertical-slider::-moz-range-thumb:hover {
-              transform: none;
-            }
-            input[type='range'].custom-vertical-slider::-moz-range-track {
-              width: 100%;
-              height: 100%;
-              background: transparent;
-              border-radius: 999px;
-            }
-            input[type='range'].custom-vertical-slider::-ms-thumb {
-              width: 1px;
-              height: 1px;
-              background: transparent;
-              border: none;
-              box-shadow: none;
-              cursor: pointer;
-            }
-            input[type='range'].custom-vertical-slider::-ms-thumb:hover {
-              transform: none;
-            }
-            input[type='range'].custom-vertical-slider::-ms-fill-lower,
-            input[type='range'].custom-vertical-slider::-ms-fill-upper {
-              background: transparent;
-              border-radius: 999px;
-            }
-            input[type='range'].custom-vertical-slider:focus::-ms-fill-lower,
-            input[type='range'].custom-vertical-slider:focus::-ms-fill-upper {
-              background: transparent;
-            }
-          `}</style>
+              @media (max-width: 600px) {
+                input[type='range'].custom-vertical-slider {
+                  width: 16px;
+                  height: 260px;
+                }
+              }
+              input[type='range'].custom-vertical-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 1px;
+                height: 1px;
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                cursor: pointer;
+              }
+              input[type='range'].custom-vertical-slider::-webkit-slider-thumb:hover {
+                transform: none;
+              }
+              input[type='range'].custom-vertical-slider::-webkit-slider-runnable-track {
+                width: 100%;
+                height: 100%;
+                background: transparent;
+                border-radius: 999px;
+              }
+              input[type='range'].custom-vertical-slider:focus {
+                outline: none;
+              }
+              input[type='range'].custom-vertical-slider::-moz-range-thumb {
+                width: 1px;
+                height: 1px;
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                cursor: pointer;
+              }
+              input[type='range'].custom-vertical-slider::-moz-range-thumb:hover {
+                transform: none;
+              }
+              input[type='range'].custom-vertical-slider::-moz-range-track {
+                width: 100%;
+                height: 100%;
+                background: transparent;
+                border-radius: 999px;
+              }
+              input[type='range'].custom-vertical-slider::-ms-thumb {
+                width: 1px;
+                height: 1px;
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                cursor: pointer;
+              }
+              input[type='range'].custom-vertical-slider::-ms-thumb:hover {
+                transform: none;
+              }
+              input[type='range'].custom-vertical-slider::-ms-fill-lower,
+              input[type='range'].custom-vertical-slider::-ms-fill-upper {
+                background: transparent;
+                border-radius: 999px;
+              }
+              input[type='range'].custom-vertical-slider:focus::-ms-fill-lower,
+              input[type='range'].custom-vertical-slider:focus::-ms-fill-upper {
+                background: transparent;
+              }
+            `}</style>
+          </div>
         </div>
       </div>
       {showCooldownMsg && (
@@ -1055,7 +1064,7 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 
