@@ -322,7 +322,7 @@ const LandingPage: React.FC = () => {
     content = (
       <>
         <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.3rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3.5rem)' }}>How was your Experience?</h2>
-        <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 0 }}>
+        <div className="flex flex-col justify-center items-center w-full z-10" style={{ minHeight: 0 }}>
           <div className="flex flex-row justify-center items-center mx-auto" style={{height: 'clamp(260px, 48vh, 600px)', gap: 'clamp(24px, 10vw, 96px)', alignItems: 'flex-start', width: '100%', maxWidth: '38rem'}}>
             {/* Labels */}
             <div className="flex flex-col justify-between h-full items-center pr-3" style={{minHeight: 'clamp(200px, 40vh, 540px)', height: 'clamp(200px, 40vh, 540px)', flex: 1}}>
@@ -424,26 +424,28 @@ const LandingPage: React.FC = () => {
               ))}
             </div>
           </div>
-        </div>
-        <div className="w-full flex flex-col items-center z-10" style={{ marginTop: '0.25rem', marginBottom: 0 }}>
-          <button
-            style={{
-              background: '#20b2aa',
-              color: 'white',
-              fontWeight: 600,
-              fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
-              padding: 'clamp(0.8rem, 2vw, 1.4rem) 0',
-              borderRadius: '0.5rem',
-              width: '100%',
-              maxWidth: 'clamp(12rem, 70vw, 24rem)',
-              transition: 'background 0.2s',
-            }}
-            onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
-            onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
-            onClick={handleNext}
-          >
-            NEXT
-          </button>
+          {/* NEXT button immediately after slider, with small gap */}
+          <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 8, marginBottom: 0, padding: 0 }}>
+            <button
+              style={{
+                background: '#20b2aa',
+                color: 'white',
+                fontWeight: 600,
+                fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
+                padding: 'clamp(0.8rem, 2vw, 1.4rem) 0',
+                borderRadius: '0.5rem',
+                width: '100%',
+                maxWidth: 'clamp(12rem, 70vw, 24rem)',
+                transition: 'background 0.2s',
+                margin: 0,
+              }}
+              onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
+              onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
+              onClick={handleNext}
+            >
+              NEXT
+            </button>
+          </div>
         </div>
       </>
     );
