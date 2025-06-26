@@ -786,8 +786,16 @@ const LandingPage: React.FC = () => {
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    // Dynamic viewport height fix for mobile browsers
+    function setVh() {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty('--vh', `${vh}px`);
+    }
+    setVh();
+    window.addEventListener('resize', setVh);
     return () => {
       document.body.style.overflow = originalOverflow;
+      window.removeEventListener('resize', setVh);
     };
   }, []);
 
@@ -824,13 +832,14 @@ const LandingPage: React.FC = () => {
       <style>{fontStyle}</style>
       {/* Main content container */}
       <div
-        className="min-h-[100dvh] max-h-[100dvh] w-full flex flex-col items-center px-4 sm:px-6 py-4 relative overflow-hidden"
+        className="w-full flex flex-col items-center px-4 sm:px-6 py-4 relative overflow-hidden"
         style={{
           background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)',
           boxSizing: 'border-box',
           zIndex: 1,
-          minHeight: '100dvh',
-          maxHeight: '100dvh',
+          height: 'calc(var(--vh, 1vh) * 100)',
+          minHeight: 'calc(var(--vh, 1vh) * 100)',
+          maxHeight: 'calc(var(--vh, 1vh) * 100)',
         }}
       >
         {/* Watermark */}
