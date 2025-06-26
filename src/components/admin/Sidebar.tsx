@@ -45,7 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
 
   const isSectionOpen = (section: string) => openSections.includes(section);
 
-  const baseLinkClasses = "flex items-center w-full px-3 py-2 text-xs font-medium rounded-md";
+  const baseLinkClasses = "flex items-center w-full px-3 py-2 md:px-2 md:py-1 text-xs md:text-sm font-medium rounded-md";
   const linkClasses = `${baseLinkClasses} text-gray-400 hover:bg-gray-700 hover:text-white`;
   const activeLinkClasses = "bg-gray-700 text-white";
 
@@ -79,16 +79,25 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
   );
 
   return (
-    <div className={`fixed inset-y-0 left-0 z-40 w-64 bg-[linear-gradient(to_bottom,#186863_0%,#084040_50%,#011217_100%)] transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-200 md:relative md:translate-x-0 md:block`}>
+    <div className={`
+      fixed inset-y-0 left-0 z-40
+      w-64 md:w-56 sm:w-48 w-40
+      max-w-[90vw] min-w-[10rem]
+      bg-[linear-gradient(to_bottom,#186863_0%,#084040_50%,#011217_100%)]
+      transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      transition-transform duration-200
+      md:relative md:translate-x-0 md:block
+      max-h-screen overflow-y-auto
+    `}>
       {/* Close button for mobile */}
-      <button className="absolute top-4 right-4 md:hidden" onClick={() => setSidebarOpen(false)}>
+      <button className="absolute top-4 right-4 md:top-2 md:right-2 md:hidden" onClick={() => setSidebarOpen(false)}>
         {/* Close icon (X) */}
         <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12" /></svg>
       </button>
-      <div className="h-16 flex items-center justify-center text-2xl font-bold border-b border-gray-700 shrink-0 text-white">
+      <div className="h-16 flex items-center justify-center text-xl md:text-2xl font-bold border-b border-gray-700 shrink-0 text-white">
         Cafe LaVia
       </div>
-      <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto">
+      <nav className="flex-1 px-4 py-4 md:px-2 md:py-2 space-y-2 overflow-y-auto">
         {/* Dashboard */}
         {role !== 'staff' && sidebarLink('/admin/dashboard', <LayoutDashboard className="w-5 h-5 mr-3" />, 'Dashboard')}
 
@@ -194,7 +203,7 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
           </>
         )}
       </nav>
-      <div className="px-4 py-4 border-t border-gray-700">
+      <div className="px-4 py-4 md:px-2 md:py-2 border-t border-gray-700">
         <button
           onClick={handleLogout}
           className="flex items-center w-full px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white"

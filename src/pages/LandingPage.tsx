@@ -443,12 +443,11 @@ const LandingPage: React.FC = () => {
   } else if (step === 1) {
     // Good feedback step
     content = (
-      <>
+      <div className="flex flex-col flex-1 h-full min-h-0 w-full max-w-sm z-10 px-4 mx-auto">
         <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           Want to hear from us<br/>about new offers?
         </h2>
-        
-        <div className="w-full max-w-sm z-10 flex flex-col gap-5 items-center px-4">
+        <div className="flex-1 flex flex-col gap-5 items-center justify-start w-full">
           {/* Email Input */}
           <div className="w-full">
             <label className="block text-white text-sm mb-1 font-semibold text-left">Email Address</label>
@@ -466,7 +465,6 @@ const LandingPage: React.FC = () => {
               />
             </div>
           </div>
-
           {/* Feedback Textarea */}
           <div className="w-full">
             <label className="block text-white text-sm mb-1 font-semibold text-left">Tell us what you enjoyed most!</label>
@@ -479,7 +477,6 @@ const LandingPage: React.FC = () => {
               onChange={e => setGoodFeedback(e.target.value)}
             />
           </div>
-          
           {/* Bill Upload */}
           <div className="w-full">
             <div 
@@ -499,20 +496,20 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-
-        <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '4rem', position: 'relative' }}>
+        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '1.5rem', position: 'sticky', bottom: 0 }}>
           <button
             style={{
               background: '#20b2aa',
               color: 'white',
               fontWeight: 600,
               fontSize: '1.1rem',
-              padding: '1rem 0',
+              padding: '0.85rem 0',
               borderRadius: '0.5rem',
               width: '100%',
               maxWidth: '22rem',
               transition: 'background 0.2s',
             }}
+            className="sm:text-base text-sm sm:py-4 py-3"
             onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
             onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
             onClick={handleGoodSubmit}
@@ -520,7 +517,7 @@ const LandingPage: React.FC = () => {
             SUBMIT
           </button>
         </div>
-      </>
+      </div>
     );
   } else if (step === 2) {
     // Bad feedback step
@@ -539,12 +536,11 @@ const LandingPage: React.FC = () => {
       billFile === null;
 
     content = (
-      <>
+      <div className="flex flex-col flex-1 h-full min-h-0 w-full max-w-sm z-10 px-4 mx-auto">
         <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           What aspect of our service<br/>didn't meet expectations?
         </h2>
-
-        <div className="w-full max-w-sm z-10 flex flex-col gap-5 items-center px-4">
+        <div className="flex-1 flex flex-col gap-5 items-center justify-start w-full">
           {/* Category Selection */}
           <div className="w-full flex flex-wrap justify-center gap-3 mb-2">
             {BAD_CATEGORIES.map(category => {
@@ -567,7 +563,6 @@ const LandingPage: React.FC = () => {
               );
             })}
           </div>
-
           {/* Email Input */}
           <div className="w-full">
             <label className="block text-white text-sm mb-1 font-semibold text-left">Email Address</label>
@@ -585,7 +580,6 @@ const LandingPage: React.FC = () => {
               />
             </div>
           </div>
-
           {/* Additional Feedback */}
           <div className="w-full">
             <label className="block text-white text-sm mb-1 font-semibold text-left">Additional feedback</label>
@@ -598,7 +592,6 @@ const LandingPage: React.FC = () => {
               onChange={e => setBadFeedbackText(e.target.value)}
             />
           </div>
-
           {/* Bill Upload */}
           <div className="w-full">
             <div
@@ -618,8 +611,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-
-        <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '4rem', position: 'relative' }}>
+        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '1.5rem', position: 'sticky', bottom: 0 }}>
           <button
             disabled={isBadSubmitDisabled}
             style={{
@@ -627,13 +619,14 @@ const LandingPage: React.FC = () => {
               color: 'white',
               fontWeight: 600,
               fontSize: '1.1rem',
-              padding: '1rem 0',
+              padding: '0.85rem 0',
               borderRadius: '0.5rem',
               width: '100%',
               maxWidth: '22rem',
               transition: 'background 0.2s, opacity 0.2s',
               opacity: isBadSubmitDisabled ? 0.5 : 1,
             }}
+            className="sm:text-base text-sm sm:py-4 py-3"
             onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
             onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
             onClick={handleBadSubmit}
@@ -641,7 +634,7 @@ const LandingPage: React.FC = () => {
             SUBMIT
           </button>
         </div>
-      </>
+      </div>
     );
   } else if (step === 3) {
     // Thank you page for good feedback
@@ -789,6 +782,15 @@ const LandingPage: React.FC = () => {
     );
   };
 
+  // Lock vertical scroll on mount, restore on unmount
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
   if (isValid === null) return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gray-50" style={{background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)'}}>
       <div className="flex flex-col items-center">
@@ -822,12 +824,13 @@ const LandingPage: React.FC = () => {
       <style>{fontStyle}</style>
       {/* Main content container */}
       <div
-        className="min-h-screen w-full flex flex-col items-center px-4 sm:px-6 py-4 relative overflow-hidden"
+        className="min-h-[100dvh] max-h-[100dvh] w-full flex flex-col items-center px-4 sm:px-6 py-4 relative overflow-hidden"
         style={{
           background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)',
           boxSizing: 'border-box',
           zIndex: 1,
           minHeight: '100dvh',
+          maxHeight: '100dvh',
         }}
       >
         {/* Watermark */}
