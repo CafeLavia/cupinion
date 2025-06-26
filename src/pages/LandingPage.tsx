@@ -13,6 +13,7 @@ import tripadvisor from '../assets/tripadvisor.png';
 import whatsapp from '../assets/whatsapp.png';
 import background2 from '../assets/background2.png';
 import GOOD from '../assets/GOOD.png';
+import favicon from '../assets/favicon.png';
 import '../index.css';
 import { FeedbackService } from '../services/feedbackService';
 import imageCompression from 'browser-image-compression';
@@ -788,8 +789,32 @@ const LandingPage: React.FC = () => {
     );
   };
 
-  if (isValid === null) return <div>Loading...</div>;
-  if (!isValid) return <div>Invalid or inactive table QR. Please scan the QR code on your table.</div>;
+  if (isValid === null) return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50" style={{background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)'}}>
+      <div className="flex flex-col items-center">
+        <svg className="animate-spin h-8 w-8 text-teal-500 mb-4" viewBox="0 0 24 24">
+          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"/>
+          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+        </svg>
+        <span className="text-lg text-white font-semibold">Validating QR code...</span>
+      </div>
+    </div>
+  );
+  if (isValid === false) return (
+    <div className="min-h-screen w-full flex items-center justify-center bg-gray-50" style={{background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)'}}>
+      <div className="bg-white rounded-xl shadow-lg p-6 px-4 sm:px-6 flex flex-col items-center max-w-xs w-full border border-gray-200">
+        <img src={favicon} alt="Cafe LaVia Favicon" className="w-32 h-32 mb-4" />
+        <div className="flex items-center mb-2">
+          <svg className="w-6 h-6 text-red-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span className="text-xl font-semibold text-gray-800">Access Denied</span>
+        </div>
+        <p className="text-gray-600 text-center mb-2">Invalid or inactive table QR.</p>
+        <p className="text-gray-500 text-center">Please scan the QR code on your table to access feedback.</p>
+      </div>
+    </div>
+  );
 
   return (
     <>
@@ -983,7 +1008,7 @@ const LandingPage: React.FC = () => {
             maxWidth: 320
           }}>
             You have already submitted feedback.<br />
-            Please wait a minute before submitting again.
+            
           </div>
         </div>
       )}
