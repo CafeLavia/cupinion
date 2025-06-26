@@ -318,7 +318,7 @@ const LandingPage: React.FC = () => {
   if (step === 0) {
     content = (
       <>
-        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>How was your Experience?</h2>
+        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>How was your Experience?</h2>
         <div className="flex flex-1 flex-col justify-center items-center w-full z-10" style={{ minHeight: 360 }}>
           <div className="flex flex-row justify-center items-center mx-auto" style={{height: SLIDER_HEIGHT + 60, gap: COLUMN_GAP, alignItems: 'flex-start', width: '90%', maxWidth: '32rem'}}>
             {/* Labels */}
@@ -326,7 +326,7 @@ const LandingPage: React.FC = () => {
               {FEEDBACK_OPTIONS.map((option, idx) => (
                 <span
                   key={option.label}
-                  className={`text-white text-xl text-center transition-all duration-300 ${selected === idx ? 'scale-105 opacity-100 font-bold' : 'opacity-60 font-normal'} hover:opacity-100 hover:scale-110`}
+                  className={`text-white text-sm text-center transition-all duration-300 ${selected === idx ? 'scale-105 opacity-100 font-bold' : 'opacity-60 font-normal'} hover:opacity-100 hover:scale-110`}
                   style={{ minHeight: 52, display: 'flex', alignItems: 'center', height: 52, fontFamily: "'Quattrocento Sans', sans-serif" }}
                 >
                   {option.label}
@@ -427,8 +427,8 @@ const LandingPage: React.FC = () => {
               background: '#20b2aa',
               color: 'white',
               fontWeight: 600,
-              fontSize: '1.1rem',
-              padding: '1rem 0',
+              fontSize: '0.95rem',
+              padding: '0.8rem 0',
               borderRadius: '0.5rem',
               width: '100%',
               maxWidth: '22rem',
@@ -446,14 +446,14 @@ const LandingPage: React.FC = () => {
   } else if (step === 1) {
     // Good feedback step
     content = (
-      <div className="flex flex-col flex-1 h-full min-h-0 w-full max-w-sm z-10 px-4 mx-auto">
-        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+      <div className="flex flex-col flex-1 h-full min-h-0 w-full max-w-sm z-10 px-2 mx-auto">
+        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           Want to hear from us<br/>about new offers?
         </h2>
-        <div className="flex-1 flex flex-col gap-5 items-center justify-start w-full">
+        <div className="flex-1 flex flex-col gap-4 items-center justify-start w-full">
           {/* Email Input */}
           <div className="w-full">
-            <label className="block text-white text-sm mb-1 font-semibold text-left">Email Address</label>
+            <label className="block text-white text-xs mb-1 font-semibold text-left">Email Address</label>
             <div className="relative">
               <svg className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
@@ -461,7 +461,7 @@ const LandingPage: React.FC = () => {
               </svg>
               <input 
                 type="email" 
-                className="w-full rounded-lg py-3 pl-10 pr-3 text-base text-gray-900 bg-white" 
+                className="w-full rounded-lg py-2 pl-10 pr-3 text-base text-gray-900 bg-white" 
                 placeholder="Enter your email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -470,11 +470,11 @@ const LandingPage: React.FC = () => {
           </div>
           {/* Feedback Textarea */}
           <div className="w-full">
-            <label className="block text-white text-sm mb-1 font-semibold text-left">Tell us what you enjoyed most!</label>
+            <label className="block text-white text-xs mb-1 font-semibold text-left">Tell us what you enjoyed most!</label>
             <textarea 
-              className="w-full rounded-lg p-3 text-base text-gray-900 bg-white" 
+              className="w-full rounded-lg p-2 text-base text-gray-900 bg-white" 
               placeholder="Type your feedback here..." 
-              rows={4} 
+              rows={3} 
               style={{ resize: 'none' }}
               value={goodFeedback}
               onChange={e => setGoodFeedback(e.target.value)}
@@ -483,8 +483,8 @@ const LandingPage: React.FC = () => {
           {/* Bill Upload */}
           <div className="w-full">
             <div 
-              className="w-full border-2 border-dashed border-white/40 rounded-lg p-4 flex flex-col items-center justify-center text-sm cursor-pointer hover:bg-white/10 transition-all" 
-              style={{ minHeight: 90 }}
+              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 flex flex-col items-center justify-center text-xs cursor-pointer hover:bg-white/10 transition-all" 
+              style={{ minHeight: 60 }}
               onClick={() => document.getElementById('bill-upload-input')?.click()}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
@@ -499,20 +499,20 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
+        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.2rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
           <button
             style={{
               background: '#20b2aa',
               color: 'white',
               fontWeight: 600,
-              fontSize: '1.1rem',
-              padding: '0.85rem 0',
+              fontSize: '0.95rem',
+              padding: '0.7rem 0',
               borderRadius: '0.5rem',
               width: '100%',
-              maxWidth: '22rem',
+              maxWidth: '16rem',
               transition: 'background 0.2s',
             }}
-            className="sm:text-base text-sm sm:py-4 py-3"
+            className="sm:text-base text-xs sm:py-3 py-2"
             onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
             onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
             onClick={handleGoodSubmit}
@@ -540,7 +540,7 @@ const LandingPage: React.FC = () => {
 
     content = (
       <div className="flex flex-col flex-1 h-full min-h-0 w-full max-w-sm z-10 px-2 mx-auto">
-        <h2 className="text-white text-xl text-center mb-4 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           What aspect of our service<br/>didn't meet expectations?
         </h2>
         <div className="flex-1 flex flex-col gap-3 items-center justify-start w-full">
@@ -621,11 +621,11 @@ const LandingPage: React.FC = () => {
               background: '#20b2aa',
               color: 'white',
               fontWeight: 600,
-              fontSize: '1rem',
+              fontSize: '0.95rem',
               padding: '0.7rem 0',
               borderRadius: '0.5rem',
               width: '100%',
-              maxWidth: '20rem',
+              maxWidth: '16rem',
               transition: 'background 0.2s, opacity 0.2s',
               opacity: isBadSubmitDisabled ? 0.5 : 1,
             }}
@@ -645,7 +645,7 @@ const LandingPage: React.FC = () => {
     const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
-        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           Thanks a Latte for Your<br/>Awesome Feedback!
         </h2>
 
@@ -709,7 +709,7 @@ const LandingPage: React.FC = () => {
     const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
-        <h2 className="text-white text-2xl text-center mb-8 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
+        <h2 className="text-white text-xl text-center mb-6 font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive" }}>
           Thanks for Helping Us<br/>Brew a Better Experience!
         </h2>
 
@@ -851,7 +851,7 @@ const LandingPage: React.FC = () => {
       {/* Main content container */}
       <div
         className={
-          `w-full flex flex-col items-center px-4 sm:px-6 py-4 relative` +
+          `w-full flex flex-col items-center px-2 sm:px-4 py-2 relative` +
           (step === 2 ? ' overflow-y-auto' : ' overflow-hidden')
         }
         style={{
