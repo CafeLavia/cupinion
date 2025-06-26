@@ -871,7 +871,7 @@ const LandingPage: React.FC = () => {
                 }),
         }}
       >
-        <div style={{ transform: 'scale(0.9)', transformOrigin: 'top center', width: '100%', height: '100%' }}>
+        <div style={{ transform: 'scale(0.75)', transformOrigin: 'top center', width: '100%', height: '100%' }}>
           {/* Watermark */}
           <img
             src={logo}
