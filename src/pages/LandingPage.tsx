@@ -499,7 +499,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '1.5rem', position: 'sticky', bottom: 0 }}>
+        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
           <button
             style={{
               background: '#20b2aa',
@@ -614,7 +614,7 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: '1.5rem', position: 'sticky', bottom: 0 }}>
+        <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
           <button
             disabled={isBadSubmitDisabled}
             style={{
@@ -850,18 +850,25 @@ const LandingPage: React.FC = () => {
       <style>{fontStyle}</style>
       {/* Main content container */}
       <div
-        className="w-full flex flex-col items-center px-4 sm:px-6 py-4 relative overflow-hidden"
+        className={
+          `w-full flex flex-col items-center px-4 sm:px-6 py-4 relative` +
+          (step === 2 ? ' overflow-y-auto' : ' overflow-hidden')
+        }
         style={{
           background: 'linear-gradient(to bottom, #186863 0%, #084040 50%, #011217 100%)',
           boxSizing: 'border-box',
           zIndex: 1,
-          ...(isScrollUnlocked
-            ? {}
-            : {
-                height: 'calc(var(--vh, 1vh) * 100)',
-                minHeight: 'calc(var(--vh, 1vh) * 100)',
-                maxHeight: 'calc(var(--vh, 1vh) * 100)',
-              }),
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+          ...(step === 2
+            ? {} // No fixed height, allow scroll
+            : isScrollUnlocked
+              ? {}
+              : {
+                  height: 'calc(var(--vh, 1vh) * 100)',
+                  minHeight: 'calc(var(--vh, 1vh) * 100)',
+                  maxHeight: 'calc(var(--vh, 1vh) * 100)',
+                }),
         }}
       >
         {/* Watermark */}
