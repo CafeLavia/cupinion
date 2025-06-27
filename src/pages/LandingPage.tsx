@@ -425,20 +425,21 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
           {/* NEXT button immediately after slider, with small gap */}
-          <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 8, marginBottom: 0, padding: 0 }}>
+          <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 0, marginBottom: 0, padding: 0 }}>
             <button
               style={{
                 background: '#20b2aa',
                 color: 'white',
                 fontWeight: 600,
-                fontSize: 'clamp(1.1rem, 3vw, 1.5rem)',
-                padding: 'clamp(0.8rem, 2vw, 1.4rem) 0',
+                fontSize: 'clamp(1rem, 5vw, 2.5rem)',
+                padding: 'clamp(0.7rem, 2vw, 2rem) 0',
                 borderRadius: '0.5rem',
                 width: '100%',
-                maxWidth: 'clamp(12rem, 70vw, 24rem)',
+                maxWidth: '36rem',
                 transition: 'background 0.2s',
                 margin: 0,
               }}
+              className="sm:text-xl text-base"
               onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
               onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
               onClick={handleNext}
@@ -453,7 +454,7 @@ const LandingPage: React.FC = () => {
     // Good feedback step
     content = (
       <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
-        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3rem)' }}>
+        <h2 className="text-white text-center font-normal z-10 mb-6" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
           Want to hear from us<br/>about new offers?
         </h2>
         <div className="flex-1 flex flex-col gap-2 items-center justify-start w-full">
@@ -551,12 +552,12 @@ const LandingPage: React.FC = () => {
 
     content = (
       <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
-        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3rem)' }}>
+        <h2 className="text-white text-center font-normal z-10 mb-2" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
           What aspect of our service<br/>didn't meet expectations?
         </h2>
         <div className="flex-1 flex flex-col gap-2 items-center justify-start w-full">
           {/* Category Selection */}
-          <div className="w-full flex flex-wrap justify-center gap-1 mb-1">
+          <div className="w-full flex flex-wrap justify-center gap-1 mt-0 mb-4">
             {BAD_CATEGORIES.map(category => {
               const isSelected = selectedCategories.includes(category);
               return (
@@ -706,8 +707,24 @@ const LandingPage: React.FC = () => {
             href="https://www.tripadvisor.com/Restaurant_Review-g304138-d25416219-Reviews-Cafe_Lavia-Kandy_Kandy_District_Central_Province.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full bg-teal-400 text-white font-semibold rounded-lg py-2 px-3 text-center shadow-md hover:bg-teal-500 transition-all flex items-center justify-center gap-2"
-            style={{ fontFamily: "'Quattrocento Sans', sans-serif", fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)' }}
+            className="w-full"
+            style={{
+              background: '#01ae87',
+              color: '#000',
+              fontFamily: "'Quattrocento Sans', sans-serif",
+              fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
+              fontWeight: 600,
+              borderRadius: '0.5rem',
+              padding: '0.5rem 0.75rem',
+              textAlign: 'center',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              transition: 'background 0.2s',
+              marginTop: '0.5rem',
+            }}
           >
             <img src={tripadvisor} alt="TripAdvisor" className="w-5 h-5" />
             Review us on TripAdvisor
@@ -728,8 +745,8 @@ const LandingPage: React.FC = () => {
         <div className="w-full flex justify-center items-center my-6 z-10">
           <div className="relative flex items-center justify-center" style={{ width: 'clamp(9rem, 32vw, 18rem)', height: 'clamp(9rem, 32vw, 18rem)' }}>
             <img 
-              src={goodfeed} 
-              alt="Awesome feedback" 
+              src={badfeed} 
+              alt="Bad feedback" 
               className="object-contain"
               style={{ width: 'clamp(7rem, 28vw, 14rem)', height: 'clamp(7rem, 28vw, 14rem)', filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
             />
@@ -745,10 +762,25 @@ const LandingPage: React.FC = () => {
             href="https://wa.me/+94702557567"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full bg-[#25D366] text-white font-bold text-lg py-4 px-6 rounded-lg flex items-center justify-center gap-3 transition-transform hover:scale-105"
+            className="w-full"
+            style={{
+              background: '#64B161',
+              color: '#000',
+              fontWeight: 'bold',
+              fontSize: '1.125rem',
+              padding: '1rem 1.5rem',
+              borderRadius: '0.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.75rem',
+              transition: 'background 0.2s',
+              marginTop: '2rem',
+              boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
+            }}
           >
             <img src={whatsapp} alt="WhatsApp logo" className="w-7 h-7" />
-            Chat with us on WhatsApp
+            Chat with us on Whatsapp
           </a>
         </div>
       </>
@@ -808,6 +840,19 @@ const LandingPage: React.FC = () => {
     checkOverflow();
     window.addEventListener('resize', checkOverflow);
     return () => window.removeEventListener('resize', checkOverflow);
+  }, []);
+
+  useEffect(() => {
+    // Inject Cherry Swash and Quattrocento Sans fonts if not already present
+    if (!document.getElementById('cherry-swash-font')) {
+      const style = document.createElement('style');
+      style.id = 'cherry-swash-font';
+      style.innerText = `
+        @import url('https://fonts.googleapis.com/css2?family=Cherry+Swash:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Quattrocento+Sans:wght@400;700&display=swap');
+      `;
+      document.head.appendChild(style);
+    }
   }, []);
 
   if (isValid === null) return (
@@ -900,7 +945,7 @@ const LandingPage: React.FC = () => {
               <div style={{ width: getProgressBarWidth(), background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
             </div>
           </div>
-          <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-6" style={{ height: '8rem', maxHeight: '25vw', minHeight: '5rem', width: 'auto' }} />
+          <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-4" style={{ height: '8rem', maxHeight: '25vw', minHeight: '5rem', width: 'auto' }} />
         </div>
         {/* Content: slides left/right */}
         <div className="w-full flex flex-col items-center relative max-w-lg sm:max-w-xl md:max-w-2xl lg:max-w-3xl mx-auto flex-1" style={{...contentSlide}}>
