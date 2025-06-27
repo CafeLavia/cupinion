@@ -78,7 +78,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-const FEEDBACK_COOLDOWN = 10 * 1000; // 5 minute in ms
+const FEEDBACK_COOLDOWN = 300 * 1000; // 5 minute in ms
 
 const LandingPage: React.FC = () => {
   const [step, setStep] = useState(0); // 0: initial, 1: good, 2: bad, 3: thank you (good), 4: thank you (bad)
@@ -528,7 +528,7 @@ const LandingPage: React.FC = () => {
         </h2>
         <div className="w-full max-w-[22rem] flex flex-col gap-1 mx-auto">
           {/* Category Selection */}
-          <div className="w-full flex flex-wrap justify-center gap-1 mt-0 mb-4">
+          <div className="w-full flex flex-wrap justify-center gap-1 mt-0 mb-1">
             {BAD_CATEGORIES.map(category => {
               const isSelected = selectedCategories.includes(category);
               return (
