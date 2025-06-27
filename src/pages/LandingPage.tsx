@@ -485,18 +485,27 @@ const LandingPage: React.FC = () => {
           {/* Bill Upload */}
           <div className="w-full">
             <div 
-              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all" 
+              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[64px]" 
               style={{ minHeight: 64 }}
               onClick={() => document.getElementById('bill-upload-input')?.click()}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-8 sm:w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
-              <span className="text-white/60 text-[10px] sm:text-xs mt-1">
-                JPG, JPEG, PNG less than 5MB. 
-                {isBillUploadRequired && <span className="text-amber-400 font-bold ml-1">(Required)</span>}
-              </span>
+              {billFile ? (
+                <div className="flex flex-col items-center justify-center w-full">
+                  <span className="text-green-400 text-2xl mb-1">✔️</span>
+                  <span className="text-white text-xs truncate w-full text-center">{billFile.name}</span>
+                </div>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-8 sm:w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
+                  <span className="text-white/60 text-[10px] sm:text-xs mt-1">
+                    JPG, JPEG, PNG less than 5MB.
+                    {isBillUploadRequired && <span className="text-amber-400 font-bold ml-1">(Required)</span>}
+                  </span>
+                </>
+              )}
               <input type="file" id="bill-upload-input" className="hidden" accept=".jpg,.jpeg,.png" onChange={e => setBillFile(e.target.files ? e.target.files[0] : null)} />
             </div>
           </div>
@@ -542,7 +551,7 @@ const LandingPage: React.FC = () => {
 
     content = (
       <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
-        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.2rem, 5vw, 2.7rem)', marginBottom: 'clamp(1rem, 5vw, 2.5rem)' }}>
+        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3rem)' }}>
           What aspect of our service<br/>didn't meet expectations?
         </h2>
         <div className="flex-1 flex flex-col gap-2 items-center justify-start w-full">
@@ -596,18 +605,27 @@ const LandingPage: React.FC = () => {
           {/* Bill Upload */}
           <div className="w-full">
             <div
-              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all"
+              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[64px]"
               style={{ minHeight: 64 }}
               onClick={() => document.getElementById('bill-upload-input')?.click()}
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
-              <span className="text-white/60 text-xs mt-1">
-                JPG, JPEG, PNG less than 1MB.
-                <span className="text-amber-400 font-bold ml-1">(Required)</span>
-              </span>
+              {billFile ? (
+                <div className="flex flex-col items-center justify-center w-full">
+                  <span className="text-green-400 text-2xl mb-1">✔️</span>
+                  <span className="text-white text-xs truncate w-full text-center">{billFile.name}</span>
+                </div>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-8 sm:w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
+                  <span className="text-white/60 text-xs mt-1">
+                    JPG, JPEG, PNG less than 1MB.
+                    <span className="text-amber-400 font-bold ml-1">(Required)</span>
+                  </span>
+                </>
+              )}
               <input type="file" id="bill-upload-input" className="hidden" accept=".jpg,.jpeg,.png" onChange={e => setBillFile(e.target.files ? e.target.files[0] : null)} />
             </div>
           </div>
@@ -648,27 +666,21 @@ const LandingPage: React.FC = () => {
         </h2>
 
         <div className="w-full flex justify-center items-center my-6 z-10">
-          <div className="relative flex items-center justify-center" style={{ width: 'clamp(7rem, 30vw, 18rem)', height: 'clamp(7rem, 30vw, 18rem)' }}>
-            <img 
-              src={GOOD} 
-              alt="Round background" 
-              className="absolute left-0 top-0 w-full h-full object-contain"
-              style={{ zIndex: 1 }}
-            />
+          <div className="relative flex items-center justify-center" style={{ width: 'clamp(9rem, 32vw, 18rem)', height: 'clamp(9rem, 32vw, 18rem)' }}>
             <img 
               src={goodfeed} 
               alt="Awesome feedback" 
-              className="object-contain relative"
-              style={{ width: 'clamp(6rem, 26vw, 15rem)', height: 'clamp(6rem, 26vw, 15rem)', zIndex: 2, filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
+              className="object-contain"
+              style={{ width: 'clamp(7rem, 28vw, 14rem)', height: 'clamp(7rem, 28vw, 14rem)', filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
             />
           </div>
         </div>
 
-        <p className="text-white/80 text-center my-6 z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
+        <p className="text-white/80 text-center mb-2 sm:mb-6 mt-2 z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
           Your feedback helps us serve you better every day.
         </p>
 
-        <div className="w-full flex flex-col items-center gap-3 z-10" style={{ marginTop: 'auto', marginBottom: '1rem', maxWidth: '20rem' }}>
+        <div className="w-full flex flex-col items-center gap-1 sm:gap-2 z-10" style={{ marginTop: '0', marginBottom: '0.75rem', maxWidth: '20rem' }}>
           {isValidEmail(submittedFeedback?.customer_email) && submittedFeedback?.rating !== 'Poor' && submittedFeedback?.rating !== 'Terrible' && (
             <OfferPDFDownload
               feedbackId={submittedFeedback.custom_id}
@@ -679,9 +691,9 @@ const LandingPage: React.FC = () => {
           )}
         </div>
 
-        <div className="w-full flex flex-col items-center gap-2 z-10" style={{ marginTop: '0', marginBottom: '2rem', maxWidth: '20rem' }}>
+        <div className="w-full flex flex-col items-center gap-1 sm:gap-2 z-10" style={{ marginTop: '0', marginBottom: '0.75rem', maxWidth: '20rem' }}>
           <a
-            href="https://www.google.com/maps/place/Cafe+La+Via/"
+            href="https://www.google.com/search?q=cafe+laiva+kandy+google+reviews"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full bg-white text-gray-900 font-semibold rounded-lg py-2 px-3 text-center shadow-md hover:bg-gray-100 transition-all flex items-center justify-center gap-2"
@@ -691,7 +703,7 @@ const LandingPage: React.FC = () => {
             Review us on Google
           </a>
           <a
-            href="https://www.tripadvisor.com/Restaurant_Review-g261654-d725364-Reviews-Cafe_La_Via-Malvern_Stonnington_Greater_Melbourne_Victoria.html"
+            href="https://www.tripadvisor.com/Restaurant_Review-g304138-d25416219-Reviews-Cafe_Lavia-Kandy_Kandy_District_Central_Province.html"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full bg-teal-400 text-white font-semibold rounded-lg py-2 px-3 text-center shadow-md hover:bg-teal-500 transition-all flex items-center justify-center gap-2"
@@ -714,40 +726,23 @@ const LandingPage: React.FC = () => {
         </h2>
 
         <div className="w-full flex justify-center items-center my-6 z-10">
-          <div className="relative flex items-center justify-center" style={{ width: 'clamp(7rem, 30vw, 18rem)', height: 'clamp(7rem, 30vw, 18rem)' }}>
-            <img 
-              src={GOOD} 
-              alt="Round background" 
-              className="absolute left-0 top-0 w-full h-full object-contain"
-              style={{ zIndex: 1 }}
-            />
+          <div className="relative flex items-center justify-center" style={{ width: 'clamp(9rem, 32vw, 18rem)', height: 'clamp(9rem, 32vw, 18rem)' }}>
             <img 
               src={goodfeed} 
               alt="Awesome feedback" 
-              className="object-contain relative"
-              style={{ width: 'clamp(6rem, 26vw, 15rem)', height: 'clamp(6rem, 26vw, 15rem)', zIndex: 2, filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
+              className="object-contain"
+              style={{ width: 'clamp(7rem, 28vw, 14rem)', height: 'clamp(7rem, 28vw, 14rem)', filter: 'drop-shadow(0 0 1.5rem rgba(255, 223, 186, 0.5))' }}
             />
           </div>
         </div>
 
-        <p className="text-white/80 text-center my-6 z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
+        <p className="text-white/80 text-center mb-2 sm:mb-6 mt-2 z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
           Thank you for sharing – we'll use<br/>this to improve your next visit.
         </p>
 
-        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: 'auto', marginBottom: '2rem', maxWidth: '24rem' }}>
-          {isValidEmail(submittedFeedback?.customer_email) && submittedFeedback?.rating !== 'Poor' && submittedFeedback?.rating !== 'Terrible' && (
-            <OfferPDFDownload
-              feedbackId={submittedFeedback.custom_id}
-              offerValue={`${offerPercentage}%`}
-              timestamp={customTimestamp}
-              verificationUrl={verificationUrl}
-            />
-          )}
-        </div>
-
-        <div className="w-full flex flex-col items-center gap-4 z-10" style={{ marginTop: '0', marginBottom: '4rem', maxWidth: '24rem' }}>
+        <div className="w-full flex flex-col items-center gap-1 sm:gap-2 z-10 mt-8" style={{ marginTop: '2rem', marginBottom: '0.5rem', maxWidth: '24rem' }}>
           <a
-            href="https://wa.me/94000000000" // Replace with actual WhatsApp number
+            href="https://wa.me/+94702557567"
             target="_blank"
             rel="noopener noreferrer"
             className="w-full bg-[#25D366] text-white font-bold text-lg py-4 px-6 rounded-lg flex items-center justify-center gap-3 transition-transform hover:scale-105"
@@ -885,7 +880,7 @@ const LandingPage: React.FC = () => {
       <div
         ref={contentWrapperRef}
         className="flex-1 flex flex-col items-center justify-between w-full max-w-lg mx-auto px-2 sm:px-4 py-2 relative z-10 overflow-hidden"
-        style={{ minHeight: '100dvh', paddingTop: '0.25rem' }}
+        style={{ minHeight: '100dvh', paddingTop: '0.30rem' }}
       >
         {/* Progress bar, logo, etc. */}
         <div className="w-full flex flex-col items-center mt-8 mb-2">
