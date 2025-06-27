@@ -78,7 +78,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-const FEEDBACK_COOLDOWN = 300 * 1000; // 5 minute in ms
+const FEEDBACK_COOLDOWN = 10 * 1000; // 5 minute in ms
 
 const LandingPage: React.FC = () => {
   const [step, setStep] = useState(0); // 0: initial, 1: good, 2: bad, 3: thank you (good), 4: thank you (bad)
@@ -427,21 +427,8 @@ const LandingPage: React.FC = () => {
           {/* NEXT button immediately after slider, with small gap */}
           <div className="w-full flex flex-col items-center z-10" style={{ marginTop: 0, marginBottom: 0, padding: 0 }}>
             <button
-              style={{
-                background: '#20b2aa',
-                color: 'white',
-                fontWeight: 600,
-                fontSize: 'clamp(1rem, 5vw, 2.5rem)',
-                padding: 'clamp(0.7rem, 2vw, 2rem) 0',
-                borderRadius: '0.5rem',
-                width: '100%',
-                maxWidth: '36rem',
-                transition: 'background 0.2s',
-                margin: 0,
-              }}
-              className="sm:text-xl text-base"
-              onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
-              onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
+              className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold bg-teal-500 text-white shadow-md hover:bg-teal-600 transition-all"
+              style={{ fontSize: '1.125rem' }}
               onClick={handleNext}
             >
               NEXT
@@ -457,76 +444,60 @@ const LandingPage: React.FC = () => {
         <h2 className="text-white text-center font-normal z-10 mb-6" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
           Want to hear from us<br/>about new offers?
         </h2>
-        <div className="flex-1 flex flex-col gap-2 items-center justify-start w-full">
-          <div className="w-full max-w-[22rem] mx-auto flex flex-col gap-2">
-            <div className="w-full">
-              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Email Address</label>
-              <div className="relative">
-                <input 
-                  type="email" 
-                  className="w-full rounded-lg p-2 sm:p-3 text-sm sm:text-base text-gray-900 bg-white" 
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="w-full">
-              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Tell us what you enjoyed most!</label>
-              <textarea 
-                className="w-full rounded-lg p-2 sm:p-3 text-sm sm:text-base text-gray-900 bg-white" 
-                placeholder="Type your feedback here..." 
-                rows={3} 
-                style={{ resize: 'none' }}
-                value={goodFeedback}
-                onChange={e => setGoodFeedback(e.target.value)}
+        <div className="w-full max-w-[22rem] flex flex-col gap-1 mx-auto">
+          <div className="w-full">
+            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Email Address</label>
+            <div className="relative">
+              <input 
+                type="email" 
+                className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition" 
+                placeholder="Enter your email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
               />
             </div>
           </div>
-          {/* Bill Upload */}
           <div className="w-full">
-            <div 
-              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[64px]" 
-              style={{ minHeight: 64 }}
-              onClick={() => document.getElementById('bill-upload-input')?.click()}
-            >
-              {billFile ? (
-                <div className="flex flex-col items-center justify-center w-full">
-                  <span className="text-green-400 text-2xl mb-1">✔️</span>
-                  <span className="text-white text-xs truncate w-full text-center">{billFile.name}</span>
-                </div>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-8 sm:w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
-                  <span className="text-white/60 text-[10px] sm:text-xs mt-1">
-                    JPG, JPEG, PNG less than 5MB.
-                    {isBillUploadRequired && <span className="text-amber-400 font-bold ml-1">(Required)</span>}
-                  </span>
-                </>
-              )}
-              <input type="file" id="bill-upload-input" className="hidden" accept=".jpg,.jpeg,.png" onChange={e => setBillFile(e.target.files ? e.target.files[0] : null)} />
-            </div>
+            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Tell us what you enjoyed most!</label>
+            <textarea 
+              className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition" 
+              placeholder="Type your feedback here..." 
+              rows={3} 
+              style={{ resize: 'none' }}
+              value={goodFeedback}
+              onChange={e => setGoodFeedback(e.target.value)}
+            />
+          </div>
+          {/* Bill Upload */}
+          <div
+            className="w-full max-w-[22rem] border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[64px]"
+            style={{ minHeight: 64 }}
+            onClick={() => document.getElementById('bill-upload-input')?.click()}
+          >
+            {billFile ? (
+              <div className="flex flex-col items-center justify-center w-full">
+                <span className="text-green-400 text-2xl mb-1">✔️</span>
+                <span className="text-white text-xs truncate w-full text-center">{billFile.name}</span>
+              </div>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-8 sm:w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
+                <span className="text-white/60 text-xs mt-1">
+                  JPG, JPEG, PNG less than 1MB.
+                  <span className="text-amber-400 font-bold ml-1">(Required)</span>
+                </span>
+              </>
+            )}
+            <input type="file" id="bill-upload-input" className="hidden" accept=".jpg,.jpeg,.png" onChange={e => setBillFile(e.target.files ? e.target.files[0] : null)} />
           </div>
         </div>
         <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'clamp(0.7rem, 2vw, 1.2rem)', marginBottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0, maxWidth: '36rem' }}>
           <button
-            style={{
-              background: '#20b2aa',
-              color: 'white',
-              fontWeight: 600,
-              fontSize: 'clamp(1rem, 5vw, 2.5rem)',
-              padding: 'clamp(0.7rem, 2vw, 2rem) 0',
-              borderRadius: '0.5rem',
-              width: '100%',
-              maxWidth: '36rem',
-              transition: 'background 0.2s',
-            }}
-            className="sm:text-xl text-base"
-            onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
-            onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
+            className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold bg-teal-500 text-white shadow-md hover:bg-teal-600 transition-all"
+            style={{ fontSize: '1.125rem' }}
             onClick={handleGoodSubmit}
           >
             SUBMIT
@@ -555,7 +526,7 @@ const LandingPage: React.FC = () => {
         <h2 className="text-white text-center font-normal z-10 mb-2" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
           What aspect of our service<br/>didn't meet expectations?
         </h2>
-        <div className="flex-1 flex flex-col gap-2 items-center justify-start w-full">
+        <div className="w-full max-w-[22rem] flex flex-col gap-1 mx-auto">
           {/* Category Selection */}
           <div className="w-full flex flex-wrap justify-center gap-1 mt-0 mb-4">
             {BAD_CATEGORIES.map(category => {
@@ -584,7 +555,7 @@ const LandingPage: React.FC = () => {
             <div className="relative">
               <input
                 type="email"
-                className="w-full rounded-lg p-2 sm:p-3 text-sm sm:text-base text-gray-900 bg-white"
+                className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition"
                 placeholder="Enter your email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -595,7 +566,7 @@ const LandingPage: React.FC = () => {
           <div className="w-full">
             <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Additional feedback</label>
             <textarea
-              className="w-full rounded-lg p-2 sm:p-3 text-sm sm:text-base text-gray-900 bg-white"
+              className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition"
               placeholder="Type your feedback here..."
               rows={2}
               style={{ resize: 'none' }}
@@ -606,7 +577,7 @@ const LandingPage: React.FC = () => {
           {/* Bill Upload */}
           <div className="w-full">
             <div
-              className="w-full border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[64px]"
+              className="w-full max-w-[22rem] border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[64px]"
               style={{ minHeight: 64 }}
               onClick={() => document.getElementById('bill-upload-input')?.click()}
             >
@@ -634,21 +605,8 @@ const LandingPage: React.FC = () => {
         <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
           <button
             disabled={isBadSubmitDisabled}
-            style={{
-              background: '#20b2aa',
-              color: 'white',
-              fontWeight: 600,
-              fontSize: '1.1rem',
-              padding: '1rem 0',
-              borderRadius: '0.5rem',
-              width: '100%',
-              maxWidth: '22rem',
-              transition: 'background 0.2s, opacity 0.2s',
-              opacity: isBadSubmitDisabled ? 0.5 : 1,
-            }}
-            className="sm:text-base text-sm sm:py-4 py-3"
-            onMouseOver={e => (e.currentTarget.style.background = '#178f8a')}
-            onMouseOut={e => (e.currentTarget.style.background = '#20b2aa')}
+            className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold bg-teal-500 text-white shadow-md hover:bg-teal-600 transition-all"
+            style={{ fontSize: '1.125rem' }}
             onClick={handleBadSubmit}
           >
             SUBMIT
@@ -697,8 +655,8 @@ const LandingPage: React.FC = () => {
             href="https://www.google.com/search?q=cafe+laiva+kandy+google+reviews"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full bg-white text-gray-900 font-semibold rounded-lg py-2 px-3 text-center shadow-md hover:bg-gray-100 transition-all flex items-center justify-center gap-2"
-            style={{ fontFamily: "'Quattrocento Sans', sans-serif", fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)' }}
+            className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold flex items-center justify-center gap-2 shadow-md"
+            style={{ background: '#fff', color: '#222', fontSize: '1.125rem' }}
           >
             <img src={google} alt="Google" className="w-5 h-5" />
             Review us on Google
@@ -707,24 +665,8 @@ const LandingPage: React.FC = () => {
             href="https://www.tripadvisor.com/Restaurant_Review-g304138-d25416219-Reviews-Cafe_Lavia-Kandy_Kandy_District_Central_Province.html"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full"
-            style={{
-              background: '#01ae87',
-              color: '#000',
-              fontFamily: "'Quattrocento Sans', sans-serif",
-              fontSize: 'clamp(0.95rem, 2.5vw, 1.1rem)',
-              fontWeight: 600,
-              borderRadius: '0.5rem',
-              padding: '0.5rem 0.75rem',
-              textAlign: 'center',
-              boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              transition: 'background 0.2s',
-              marginTop: '0.5rem',
-            }}
+            className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold flex items-center justify-center gap-2 shadow-md"
+            style={{ background: '#01ae87', color: '#000', fontSize: '1.125rem' }}
           >
             <img src={tripadvisor} alt="TripAdvisor" className="w-5 h-5" />
             Review us on TripAdvisor
@@ -762,22 +704,8 @@ const LandingPage: React.FC = () => {
             href="https://wa.me/+94702557567"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full"
-            style={{
-              background: '#64B161',
-              color: '#000',
-              fontWeight: 'bold',
-              fontSize: '1.125rem',
-              padding: '1rem 1.5rem',
-              borderRadius: '0.5rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.75rem',
-              transition: 'background 0.2s',
-              marginTop: '2rem',
-              boxShadow: '0 1px 4px rgba(0,0,0,0.08)'
-            }}
+            className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold flex items-center justify-center gap-2 shadow-md"
+            style={{ background: '#64B161', color: '#000', fontSize: '1.125rem' }}
           >
             <img src={whatsapp} alt="WhatsApp logo" className="w-7 h-7" />
             Chat with us on Whatsapp
