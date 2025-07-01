@@ -114,6 +114,7 @@ const LandingPage: React.FC = () => {
   const [isOverflow, setIsOverflow] = useState(false);
 
   const [showToast, setShowToast] = useState(false);
+  const [showBillToast, setShowBillToast] = useState(false);
 
   const billInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -288,7 +289,8 @@ const LandingPage: React.FC = () => {
       return;
     }
     if (isBillUploadRequired && !billFile) {
-      setError('Please upload a bill to proceed.');
+      setShowBillToast(true);
+      setTimeout(() => setShowBillToast(false), 1500);
       return;
     }
     setError(null);
@@ -622,8 +624,7 @@ const LandingPage: React.FC = () => {
     const isBadSubmitDisabled =
       selectedCategories.length === 0 ||
       email.trim() === '' || !isValidEmail(email) ||
-      badFeedbackText.trim() === '' || badFeedbackInvalid ||
-      billFile === null;
+      badFeedbackText.trim() === '' || badFeedbackInvalid;
 
     content = (
       <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
@@ -1187,9 +1188,9 @@ const LandingPage: React.FC = () => {
           transform: 'translate(-50%, -50%)',
           background: '#14b8a6',
           color: 'white',
-          padding: '0.75rem 1.5rem',
-          borderRadius: '1.5rem',
-          fontSize: '1.1rem',
+          padding: '0.6rem 1.2rem',
+          borderRadius: '1.2rem',
+          fontSize: '0.88rem',
           fontWeight: 600,
           boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
           zIndex: 2000,
@@ -1198,6 +1199,27 @@ const LandingPage: React.FC = () => {
           whiteSpace: 'nowrap',
         }}>
           Feedback Submitted!
+        </div>
+      )}
+      {showBillToast && (
+        <div style={{
+          position: 'fixed',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: '#ef4444',
+          color: 'white',
+          padding: '0.6rem 1.2rem',
+          borderRadius: '1.2rem',
+          fontSize: '0.88rem',
+          fontWeight: 600,
+          boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
+          zIndex: 2100,
+          pointerEvents: 'none',
+          textAlign: 'center',
+          whiteSpace: 'nowrap',
+        }}>
+          Bill not uploaded. Please upload the bill.
         </div>
       )}
     </div>
