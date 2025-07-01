@@ -52,9 +52,9 @@ const GOOD_QUESTIONS = [
 const BAD_CATEGORIES = [
   'Food',
   'Wait Time',
-  'Environment',
   'Staff',
-  'Cleanliness',
+  'Value',
+  'Environment',
 ];
 
 // Update color map for solid fill colors (green at bottom, red at top)
@@ -70,8 +70,8 @@ const FILL_COLORS = [
 const isValidEmail = (email: string | undefined) => {
   if (!email) return false;
   const trimmed = email.trim();
-  // Simple regex: must have @ and a dot after @
-  return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(trimmed);
+  // Improved regex: must have @, a domain, and a valid TLD
+  return /^[^@\s]+@[^@\s]+\.[a-zA-Z]{2,}$/.test(trimmed);
 };
 
 function useQuery() {
@@ -119,6 +119,11 @@ const LandingPage: React.FC = () => {
 
   const progressBarRef = useRef<HTMLDivElement | null>(null);
 
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [badFeedbackTouched, setBadFeedbackTouched] = useState(false);
+
+  const showBillRequiredLabel = step === 2;
+
   useEffect(() => {
     if (!table) {
       setIsValid(false);
@@ -143,7 +148,8 @@ const LandingPage: React.FC = () => {
     }
   }, []);
 
-  const isBillUploadRequired = email.trim() !== '';
+  // Bill is required only for bad feedback (step 2)
+  const isBillUploadRequired = step === 2;
 
   // Fill is scaled to be 5% at minimum (Terrible) and 100% at maximum (Love it)
   const basePercent = (FEEDBACK_OPTIONS.length - 1 - selected) / (FEEDBACK_OPTIONS.length - 1);
@@ -407,7 +413,7 @@ const LandingPage: React.FC = () => {
                   position: 'absolute',
                   left: 0,
                   width: '100%',
-                  height: 4,
+                  height: 8,
                   background: '#fff',
                   borderRadius: 2,
                   zIndex: 3,
@@ -481,6 +487,7 @@ const LandingPage: React.FC = () => {
   } else if (step === 1) {
     // Good feedback step
     const isOkayOrGreat = selected === 1 || selected === 2;
+    const emailInvalid = !isValidEmail(email) && emailTouched;
     content = (
       <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
         <h2 className="text-white text-center font-normal z-10 mb-6" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
@@ -490,14 +497,18 @@ const LandingPage: React.FC = () => {
           {/* Email field only for Love it */}
           {!isOkayOrGreat && (
             <div className="w-full">
-              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Email Address</label>
+              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>
+                Email Address <span style={{ color: '#ef4444', fontSize: '1.1em', fontWeight: 'bold' }}>*</span>
+              </label>
               <div className="relative">
                 <input 
                   type="email" 
-                  className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition" 
-                  placeholder="Enter your email"
+                  className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border ${emailInvalid ? 'border-red-500' : 'border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`} 
+                  placeholder="Enter your email address"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
+                  onBlur={() => setEmailTouched(true)}
+                  required
                 />
               </div>
             </div>
@@ -509,7 +520,7 @@ const LandingPage: React.FC = () => {
             )}
             <textarea 
               className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition" 
-              placeholder={isOkayOrGreat ? 'How can we improve?' : 'Type your feedback here...'} 
+              placeholder={isOkayOrGreat ? 'Tell us how can we improve?' : 'Type your feedback here...'} 
               rows={3} 
               style={{ resize: 'none' }}
               value={goodFeedback}
@@ -571,8 +582,7 @@ const LandingPage: React.FC = () => {
                 </svg>
                 <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
                 <span className="text-white/60 text-xs mt-1">
-                  JPG, JPEG, PNG less than 1MB.
-                  <span className="text-amber-400 font-bold ml-1">(Required)</span>
+                  JPG, JPEG, PNG {showBillRequiredLabel && <span className="text-amber-400 font-bold ml-1">(Required)</span>}
                 </span>
               </>
             )}
@@ -599,6 +609,8 @@ const LandingPage: React.FC = () => {
     );
   } else if (step === 2) {
     // Bad feedback step
+    const emailInvalid = !isValidEmail(email) && emailTouched;
+    const badFeedbackInvalid = badFeedbackTouched && badFeedbackText.trim() === '';
     const handleCategoryClick = (category: string) => {
       setSelectedCategories(prev =>
         prev.includes(category)
@@ -609,14 +621,14 @@ const LandingPage: React.FC = () => {
 
     const isBadSubmitDisabled =
       selectedCategories.length === 0 ||
-      email.trim() === '' ||
-      badFeedbackText.trim() === '' ||
+      email.trim() === '' || !isValidEmail(email) ||
+      badFeedbackText.trim() === '' || badFeedbackInvalid ||
       billFile === null;
 
     content = (
       <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
         <h2 className="text-white text-center font-normal z-10 mb-2" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
-          What aspect of our service<br/>didn't meet expectations?
+        Help Us Do Better Next Time?
         </h2>
         <div className="w-full max-w-[22rem] flex flex-col gap-1 mx-auto">
           {/* Category Selection */}
@@ -643,27 +655,35 @@ const LandingPage: React.FC = () => {
           </div>
           {/* Email Input */}
           <div className="w-full">
-            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Email Address</label>
+            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>
+              Email Address <span style={{ color: '#ef4444', fontSize: '1.1em', fontWeight: 'bold' }}>*</span>
+            </label>
             <div className="relative">
               <input
                 type="email"
-                className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition"
-                placeholder="Enter your email"
+                className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border ${emailInvalid ? 'border-red-500' : 'border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`}
+                placeholder="Enter your email address"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
+                onBlur={() => setEmailTouched(true)}
+                required
               />
             </div>
           </div>
           {/* Additional Feedback */}
           <div className="w-full">
-            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Additional feedback</label>
+            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>
+              Additional feedback <span style={{ color: '#ef4444', fontSize: '1.1em', fontWeight: 'bold' }}>*</span>
+            </label>
             <textarea
-              className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition"
-              placeholder="Type your feedback here..."
+              className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border ${badFeedbackInvalid ? 'border-red-500' : 'border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`}
+              placeholder="Tell us how can we improve?"
               rows={2}
               style={{ resize: 'none' }}
               value={badFeedbackText}
               onChange={e => setBadFeedbackText(e.target.value)}
+              onBlur={() => setBadFeedbackTouched(true)}
+              required
             />
           </div>
           {/* Bill Upload with remove option */}
@@ -721,8 +741,7 @@ const LandingPage: React.FC = () => {
                 </svg>
                 <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
                 <span className="text-white/60 text-xs mt-1">
-                  JPG, JPEG, PNG less than 1MB.
-                  <span className="text-amber-400 font-bold ml-1">(Required)</span>
+                  JPG, JPEG, PNG {showBillRequiredLabel && <span className="text-amber-400 font-bold ml-1">(Required)</span>}
                 </span>
               </>
             )}
