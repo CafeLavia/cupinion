@@ -17,7 +17,6 @@ import favicon from '../assets/favicon.png';
 import '../index.css';
 import { FeedbackService } from '../services/feedbackService';
 import imageCompression from 'browser-image-compression';
-import OfferPDFDownload from '../components/OfferPDFDownload';
 import { validateTable } from "../services/feedbackService";
 
 // Add Google Fonts import
@@ -113,6 +112,8 @@ const LandingPage: React.FC = () => {
   const contentWrapperRef = useRef<HTMLDivElement>(null);
   const [isOverflow, setIsOverflow] = useState(false);
 
+  const [showToast, setShowToast] = useState(false);
+
   useEffect(() => {
     if (!table) {
       setIsValid(false);
@@ -206,7 +207,10 @@ const LandingPage: React.FC = () => {
 
   // Handlers
   const handleNext = () => {
-    if (selected >= 3) {
+    if (selected === 0) {
+      // If 'Love it' is selected, submit feedback immediately and go to thank you page
+      handleGoodSubmit();
+    } else if (selected >= 3) {
       goToStep(2, 'left'); // Bad feedback
     } else {
       goToStep(1, 'left'); // Good feedback
@@ -234,6 +238,8 @@ const LandingPage: React.FC = () => {
     }
     setError(null);
     setSubmitting(true);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 1500);
 
     try {
       let compressedFile = billFile;
@@ -276,6 +282,8 @@ const LandingPage: React.FC = () => {
     }
     setError(null);
     setSubmitting(true);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 1500);
 
     try {
       let compressedFile = billFile;
@@ -653,17 +661,6 @@ const LandingPage: React.FC = () => {
         </p>
 
         <div className="w-full flex flex-col items-center gap-1 sm:gap-2 z-10" style={{ marginTop: '0', marginBottom: '0.75rem', maxWidth: '20rem' }}>
-          {isValidEmail(submittedFeedback?.customer_email) && submittedFeedback?.rating !== 'Poor' && submittedFeedback?.rating !== 'Terrible' && (
-            <OfferPDFDownload
-              feedbackId={submittedFeedback.custom_id}
-              offerValue={`${offerPercentage}%`}
-              timestamp={customTimestamp}
-              verificationUrl={verificationUrl}
-            />
-          )}
-        </div>
-
-        <div className="w-full flex flex-col items-center gap-1 sm:gap-2 z-10" style={{ marginTop: '0', marginBottom: '0.75rem', maxWidth: '20rem' }}>
           <a
             href="https://www.google.com/search?q=cafe+laiva+kandy+google+reviews"
             target="_blank"
@@ -1009,6 +1006,27 @@ const LandingPage: React.FC = () => {
           }}>
             You have already submitted feedback.<br />
           </div>
+        </div>
+      )}
+      {showToast && (
+        <div style={{
+          position: 'fixed',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          background: '#14b8a6',
+          color: 'white',
+          padding: '0.75rem 1.5rem',
+          borderRadius: '1.5rem',
+          fontSize: '1.1rem',
+          fontWeight: 600,
+          boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
+          zIndex: 2000,
+          pointerEvents: 'none',
+          textAlign: 'center',
+          whiteSpace: 'nowrap',
+        }}>
+          Feedback Submitted!
         </div>
       )}
     </div>
