@@ -327,13 +327,18 @@ const LandingPage: React.FC = () => {
             {/* Labels */}
             <div className="flex flex-col justify-between h-full items-center pr-3" style={{minHeight: 'clamp(200px, 40vh, 540px)', height: 'clamp(200px, 40vh, 540px)', flex: 1}}>
               {FEEDBACK_OPTIONS.map((option, idx) => (
-                <span
-                  key={option.label}
+                <div
+                  key={option.label + '-label'}
                   className={`text-white text-center transition-all duration-300 ${selected === idx ? 'scale-125 opacity-100 font-bold' : 'opacity-60 font-normal'} hover:opacity-100 hover:scale-110`}
-                  style={{ fontSize: 'clamp(1rem, 4vw, 2.2rem)', minHeight: 'clamp(40px, 7vw, 90px)', display: 'flex', alignItems: 'center', height: 'clamp(40px, 7vw, 90px)', fontFamily: "'Quattrocento Sans', sans-serif" }}
+                  style={{ fontSize: 'clamp(1rem, 4vw, 2.2rem)', minHeight: 'clamp(40px, 7vw, 90px)', display: 'flex', alignItems: 'center', height: 'clamp(40px, 7vw, 90px)', fontFamily: "'Quattrocento Sans', sans-serif", cursor: 'pointer', userSelect: 'none' }}
+                  onClick={() => setSelected(idx)}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Select ${option.label}`}
+                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSelected(idx); }}
                 >
                   {option.label}
-                </span>
+                </div>
               ))}
             </div>
             {/* Slider bar */}
@@ -388,15 +393,22 @@ const LandingPage: React.FC = () => {
             <div className="flex flex-col justify-between h-full items-center pl-3" style={{minHeight: 'clamp(200px, 40vh, 540px)', height: 'clamp(200px, 40vh, 540px)', flex: 1}}>
               {FEEDBACK_OPTIONS.map((option, idx) => (
                 <div
-                  key={option.label}
+                  key={option.label + '-emoji'}
                   className="transition-all duration-300"
                   style={{ 
                     minHeight: 'clamp(40px, 7vw, 90px)', 
                     display: 'flex', 
                     alignItems: 'center', 
                     height: 'clamp(40px, 7vw, 90px)',
-                    position: 'relative'
+                    position: 'relative',
+                    cursor: 'pointer',
+                    userSelect: 'none',
                   }}
+                  onClick={() => setSelected(idx)}
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`Select ${option.label}`}
+                  onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') setSelected(idx); }}
                 >
                   <img 
                     src={option.image} 
@@ -405,7 +417,8 @@ const LandingPage: React.FC = () => {
                     style={{
                       width: 'clamp(28px, 6vw, 70px)',
                       height: 'clamp(28px, 6vw, 70px)',
-                      objectFit: 'contain'
+                      objectFit: 'contain',
+                      pointerEvents: 'none', // so the div handles the click
                     }}
                   />
                   {selected !== idx && (
@@ -869,7 +882,7 @@ const LandingPage: React.FC = () => {
                 </svg>
               </button>
             )}
-            <div className="w-40 sm:w-56 md:w-72 h-2 rounded-full flex overflow-hidden" style={{ background: BAR_BG }}>
+            <div className="w-22 sm:w-30 md:w-38 h-2 rounded-full flex overflow-hidden" style={{ background: BAR_BG }}>
               <div style={{ width: getProgressBarWidth(), background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
             </div>
           </div>
