@@ -622,7 +622,6 @@ const LandingPage: React.FC = () => {
     };
 
     const isBadSubmitDisabled =
-      selectedCategories.length === 0 ||
       email.trim() === '' || !isValidEmail(email) ||
       badFeedbackText.trim() === '' || badFeedbackInvalid;
 
