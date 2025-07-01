@@ -503,7 +503,7 @@ const LandingPage: React.FC = () => {
               <div className="relative">
                 <input 
                   type="email" 
-                  className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border ${emailInvalid ? 'border-red-500' : 'border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`} 
+                  className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white ${emailInvalid ? 'border-2 border-red-500' : 'border border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`} 
                   placeholder="Enter your email address"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -661,7 +661,7 @@ const LandingPage: React.FC = () => {
             <div className="relative">
               <input
                 type="email"
-                className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border ${emailInvalid ? 'border-red-500' : 'border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`}
+                className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white ${emailInvalid ? 'border-2 border-red-500' : 'border border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`}
                 placeholder="Enter your email address"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
@@ -676,7 +676,7 @@ const LandingPage: React.FC = () => {
               Additional feedback <span style={{ color: '#ef4444', fontSize: '1.1em', fontWeight: 'bold' }}>*</span>
             </label>
             <textarea
-              className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border ${badFeedbackInvalid ? 'border-red-500' : 'border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`}
+              className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white ${badFeedbackInvalid ? 'border-2 border-red-500' : 'border border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`}
               placeholder="Tell us how can we improve?"
               rows={2}
               style={{ resize: 'none' }}
