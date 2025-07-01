@@ -50,13 +50,6 @@ export class FeedbackService {
       // Generate custom_id (e.g., FD-ABC123)
       const custom_id = 'FD-' + Math.random().toString(36).substr(2, 6).toUpperCase();
 
-      // Debug: Log the data to be inserted
-      console.log('Preparing to insert feedback:', {
-        ...dbData,
-        bill_image_url,
-        custom_id,
-      });
-
       // Ensure table_number is present and valid
       if (dbData.table_number === null || dbData.table_number === undefined || isNaN(Number(dbData.table_number))) {
         throw new Error('Invalid or missing table_number in feedback submission.');

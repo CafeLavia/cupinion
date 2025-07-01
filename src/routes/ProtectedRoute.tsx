@@ -39,7 +39,6 @@ const ProtectedRoute: React.FC = () => {
   }
 
   if (!user) return <Navigate to="/admin/login" />;
-  console.log('ProtectedRoute:', { user, role, path: location.pathname });
   if (!role || !ALLOWED_ROLES.includes(role)) {
     return <div className="flex items-center justify-center min-h-screen text-red-500 text-xl font-bold">Not authorized</div>;
   }

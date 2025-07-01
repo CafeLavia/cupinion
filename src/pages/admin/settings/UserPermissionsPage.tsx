@@ -59,13 +59,11 @@ const UserPermissionsPage: React.FC = () => {
   const handleToggleViewOnly = async (id: string, current: boolean) => {
     setUpdatingId(id);
     const { data: userData } = await supabase.auth.getUser();
-    console.log('Updating manager id:', id, 'Current user id:', userData?.user?.id);
     const { data, error } = await supabase
       .from('profiles')
       .update({ view_only: !current })
       .eq('id', id)
       .select();
-    console.log('Supabase update result:', { data, error });
     if (!error) {
       setManagers((prev) =>
         prev.map((m) => (m.id === id ? { ...m, view_only: !current } : m))

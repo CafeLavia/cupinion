@@ -23,6 +23,7 @@ import { validateTable } from "../services/feedbackService";
 const fontStyle = `
   @import url('https://fonts.googleapis.com/css2?family=Cherry+Swash:wght@400;700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Quattrocento+Sans:wght@400;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Julius+Sans+One&display=swap');
 `;
 
 const FEEDBACK_OPTIONS = [
@@ -50,7 +51,7 @@ const GOOD_QUESTIONS = [
 ];
 const BAD_CATEGORIES = [
   'Food',
-  'Delivery Time',
+  'Wait Time',
   'Environment',
   'Staff',
   'Cleanliness',
@@ -77,7 +78,7 @@ function useQuery() {
   return new URLSearchParams(useLocation().search);
 }
 
-const FEEDBACK_COOLDOWN = 300 * 1000; // 5 minute in ms
+const FEEDBACK_COOLDOWN = 10 * 1000; // 5 minute in ms
 
 const LandingPage: React.FC = () => {
   const [step, setStep] = useState(0); // 0: initial, 1: good, 2: bad, 3: thank you (good), 4: thank you (bad)
@@ -113,6 +114,10 @@ const LandingPage: React.FC = () => {
   const [isOverflow, setIsOverflow] = useState(false);
 
   const [showToast, setShowToast] = useState(false);
+
+  const billInputRef = useRef<HTMLInputElement | null>(null);
+
+  const progressBarRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!table) {
@@ -329,7 +334,7 @@ const LandingPage: React.FC = () => {
   if (step === 0) {
     content = (
       <>
-        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.3rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3.5rem)' }}>How was your Experience?</h2>
+        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.3rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3.5rem)' }}>How was your Experience?</h2>
         <div className="flex flex-col justify-center items-center w-full z-10" style={{ minHeight: 0 }}>
           <div className="flex flex-row justify-center items-center mx-auto" style={{height: 'clamp(260px, 48vh, 600px)', gap: 'clamp(24px, 10vw, 96px)', alignItems: 'flex-start', width: '100%', maxWidth: '38rem'}}>
             {/* Labels */}
@@ -460,43 +465,87 @@ const LandingPage: React.FC = () => {
     );
   } else if (step === 1) {
     // Good feedback step
+    const isOkayOrGreat = selected === 1 || selected === 2;
     content = (
       <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
-        <h2 className="text-white text-center font-normal z-10 mb-6" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
-          Want to hear from us<br/>about new offers?
+        <h2 className="text-white text-center font-normal z-10 mb-6" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
+          {isOkayOrGreat ? 'We Value Your Opinion' : 'Want to hear from us\nabout new offers?'}
         </h2>
         <div className="w-full max-w-[22rem] flex flex-col gap-1 mx-auto">
-          <div className="w-full">
-            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Email Address</label>
-            <div className="relative">
-              <input 
-                type="email" 
-                className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition" 
-                placeholder="Enter your email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-              />
+          {/* Email field only for Love it */}
+          {!isOkayOrGreat && (
+            <div className="w-full">
+              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Email Address</label>
+              <div className="relative">
+                <input 
+                  type="email" 
+                  className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition" 
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
+          )}
+          {/* Textarea for improvement feedback (no label for Okay/Great) */}
           <div className="w-full">
-            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Tell us what you enjoyed most!</label>
+            {!isOkayOrGreat && (
+              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Tell us what you enjoyed most!</label>
+            )}
             <textarea 
               className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition" 
-              placeholder="Type your feedback here..." 
+              placeholder={isOkayOrGreat ? 'How can we improve?' : 'Type your feedback here...'} 
               rows={3} 
               style={{ resize: 'none' }}
               value={goodFeedback}
               onChange={e => setGoodFeedback(e.target.value)}
             />
           </div>
-          {/* Bill Upload */}
+          {/* Bill Upload with remove option */}
           <div
             className="w-full max-w-[22rem] border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[64px]"
-            style={{ minHeight: 64 }}
-            onClick={() => document.getElementById('bill-upload-input')?.click()}
+            style={{ minHeight: 64, position: 'relative' }}
+            onClick={() => !billFile && billInputRef.current && billInputRef.current.click()}
           >
+            {billFile && (
+              <button
+                type="button"
+                aria-label="Remove uploaded bill"
+                onClick={e => {
+                  e.stopPropagation();
+                  setBillFile(null);
+                  if (billInputRef.current) billInputRef.current.value = '';
+                }}
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  background: 'rgba(255,255,255,0.22)',
+                  border: '1.5px solid #fff',
+                  borderRadius: '50%',
+                  width: 32,
+                  height: 32,
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
+                  transition: 'background 0.18s',
+                  padding: 0,
+                  zIndex: 10,
+                }}
+                onMouseOver={e => (e.currentTarget.style.background = 'rgba(20,184,166,0.85)')}
+                onMouseOut={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.22)')}
+              >
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{display: 'block'}}>
+                  <line x1="4.22" y1="4.22" x2="11.78" y2="11.78" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="11.78" y1="4.22" x2="4.22" y2="11.78" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
+            )}
             {billFile ? (
-              <div className="flex flex-col items-center justify-center w-full">
+              <div className="flex flex-col items-center justify-center w-full relative">
                 <span className="text-green-400 text-2xl mb-1">✔️</span>
                 <span className="text-white text-xs truncate w-full text-center">{billFile.name}</span>
               </div>
@@ -512,7 +561,14 @@ const LandingPage: React.FC = () => {
                 </span>
               </>
             )}
-            <input type="file" id="bill-upload-input" className="hidden" accept=".jpg,.jpeg,.png" onChange={e => setBillFile(e.target.files ? e.target.files[0] : null)} />
+            <input
+              type="file"
+              id="bill-upload-input"
+              className="hidden"
+              accept=".jpg,.jpeg,.png"
+              ref={billInputRef}
+              onChange={e => setBillFile(e.target.files ? e.target.files[0] : null)}
+            />
           </div>
         </div>
         <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'clamp(0.7rem, 2vw, 1.2rem)', marginBottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0, maxWidth: '36rem' }}>
@@ -544,7 +600,7 @@ const LandingPage: React.FC = () => {
 
     content = (
       <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
-        <h2 className="text-white text-center font-normal z-10 mb-2" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
+        <h2 className="text-white text-center font-normal z-10 mb-2" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
           What aspect of our service<br/>didn't meet expectations?
         </h2>
         <div className="w-full max-w-[22rem] flex flex-col gap-1 mx-auto">
@@ -595,32 +651,74 @@ const LandingPage: React.FC = () => {
               onChange={e => setBadFeedbackText(e.target.value)}
             />
           </div>
-          {/* Bill Upload */}
-          <div className="w-full">
-            <div
-              className="w-full max-w-[22rem] border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[64px]"
-              style={{ minHeight: 64 }}
-              onClick={() => document.getElementById('bill-upload-input')?.click()}
-            >
-              {billFile ? (
-                <div className="flex flex-col items-center justify-center w-full">
-                  <span className="text-green-400 text-2xl mb-1">✔️</span>
-                  <span className="text-white text-xs truncate w-full text-center">{billFile.name}</span>
-                </div>
-              ) : (
-                <>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-8 sm:w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
-                  <span className="text-white/60 text-xs mt-1">
-                    JPG, JPEG, PNG less than 1MB.
-                    <span className="text-amber-400 font-bold ml-1">(Required)</span>
-                  </span>
-                </>
-              )}
-              <input type="file" id="bill-upload-input" className="hidden" accept=".jpg,.jpeg,.png" onChange={e => setBillFile(e.target.files ? e.target.files[0] : null)} />
-            </div>
+          {/* Bill Upload with remove option */}
+          <div
+            className="w-full max-w-[22rem] border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[64px]"
+            style={{ minHeight: 64, position: 'relative' }}
+            onClick={() => !billFile && billInputRef.current && billInputRef.current.click()}
+          >
+            {billFile && (
+              <button
+                type="button"
+                aria-label="Remove uploaded bill"
+                onClick={e => {
+                  e.stopPropagation();
+                  setBillFile(null);
+                  if (billInputRef.current) billInputRef.current.value = '';
+                }}
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  background: 'rgba(255,255,255,0.22)',
+                  border: '1.5px solid #fff',
+                  borderRadius: '50%',
+                  width: 32,
+                  height: 32,
+                  color: '#fff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
+                  transition: 'background 0.18s',
+                  padding: 0,
+                  zIndex: 10,
+                }}
+                onMouseOver={e => (e.currentTarget.style.background = 'rgba(20,184,166,0.85)')}
+                onMouseOut={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.22)')}
+              >
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{display: 'block'}}>
+                  <line x1="4.22" y1="4.22" x2="11.78" y2="11.78" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="11.78" y1="4.22" x2="4.22" y2="11.78" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                </svg>
+              </button>
+            )}
+            {billFile ? (
+              <div className="flex flex-col items-center justify-center w-full relative">
+                <span className="text-green-400 text-2xl mb-1">✔️</span>
+                <span className="text-white text-xs truncate w-full text-center">{billFile.name}</span>
+              </div>
+            ) : (
+              <>
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-8 sm:w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
+                <span className="text-white/60 text-xs mt-1">
+                  JPG, JPEG, PNG less than 1MB.
+                  <span className="text-amber-400 font-bold ml-1">(Required)</span>
+                </span>
+              </>
+            )}
+            <input
+              type="file"
+              id="bill-upload-input"
+              className="hidden"
+              accept=".jpg,.jpeg,.png"
+              ref={billInputRef}
+              onChange={e => setBillFile(e.target.files ? e.target.files[0] : null)}
+            />
           </div>
         </div>
         <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
@@ -636,12 +734,15 @@ const LandingPage: React.FC = () => {
       </div>
     );
   } else if (step === 3) {
-    // Thank you page for good feedback
+    // Thank you page for good/okay/great feedback
     const customTimestamp = submittedFeedback?.created_at ? new Date(submittedFeedback.created_at).toLocaleString() : new Date().toLocaleString();
     const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
+    const rating = submittedFeedback?.rating;
+    const isOkay = rating === 'Okay';
+    const isGreatOrLoveIt = rating === 'Great' || rating === 'Love it';
     content = (
       <>
-        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3rem)' }}>
+        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3rem)' }}>
           Thanks a Latte for Your<br/>Awesome Feedback!
         </h2>
 
@@ -656,32 +757,50 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <p className="text-white/80 text-center mb-2 sm:mb-6 mt-2 z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
+        <p className="text-white/80 text-center mb-2 sm:mb-6 mt-2 z-10" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
           Your feedback helps us serve you better every day.
         </p>
 
-        <div className="w-full flex flex-col items-center gap-1 sm:gap-2 z-10" style={{ marginTop: '0', marginBottom: '0.75rem', maxWidth: '20rem' }}>
-          <a
-            href="https://www.google.com/search?q=cafe+laiva+kandy+google+reviews"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold flex items-center justify-center gap-2 shadow-md"
-            style={{ background: '#fff', color: '#222', fontSize: '1.125rem' }}
-          >
-            <img src={google} alt="Google" className="w-5 h-5" />
-            Review us on Google
-          </a>
-          <a
-            href="https://www.tripadvisor.com/Restaurant_Review-g304138-d25416219-Reviews-Cafe_Lavia-Kandy_Kandy_District_Central_Province.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold flex items-center justify-center gap-2 shadow-md"
-            style={{ background: '#01ae87', color: '#000', fontSize: '1.125rem' }}
-          >
-            <img src={tripadvisor} alt="TripAdvisor" className="w-5 h-5" />
-            Review us on TripAdvisor
-          </a>
-        </div>
+        {/* Conditional thank you actions */}
+        {isOkay ? (
+          // WhatsApp only for Okay
+          <div className="w-full flex flex-col items-center gap-1 sm:gap-2 z-10 mt-8" style={{ marginTop: '2rem', marginBottom: '0.5rem', maxWidth: '24rem' }}>
+            <a
+              href="https://wa.me/+94702557567"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold flex items-center justify-center gap-2 shadow-md"
+              style={{ background: '#64B161', color: '#000', fontSize: '1.125rem' }}
+            >
+              <img src={whatsapp} alt="WhatsApp logo" className="w-7 h-7" />
+              Chat with us on Whatsapp
+            </a>
+          </div>
+        ) : isGreatOrLoveIt ? (
+          // Google and TripAdvisor review for Great/Love it
+          <div className="w-full flex flex-col items-center gap-1 sm:gap-2 z-10" style={{ marginTop: '0', marginBottom: '0.75rem', maxWidth: '20rem' }}>
+            <a
+              href="https://www.google.com/search?sca_esv=94c780ffd014c36e&q=cafe+lavia&si=AMgyJEtREmoPL4P1I5IDCfuA8gybfVI2d5Uj7QMwYCZHKDZ-EytgvNq2kHIZiVks2Zk8AOok-XY2dVJmbYV1UwSppDWOC4McqlRaMH3yfL7PoWUFqezt2WAcyMM8LRgpi1MEIp0N6kNr&sa=X&ved=2ahUKEwizh_S9-5uOAxV21DgGHdU4EggQrrQLegQIGxAA#lrd=0x3ae3672324d49ce3:0x9399d4fec283ff7f,1,,"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold flex items-center justify-center gap-2 shadow-md"
+              style={{ background: '#fff', color: '#222', fontSize: '1.125rem' }}
+            >
+              <img src={google} alt="Google" className="w-5 h-5" />
+              Review us on Google
+            </a>
+            <a
+              href="https://www.tripadvisor.com/UserReviewEdit-g304138-d25416219-Cafe_Lavia-Kandy_Kandy_District_Central_Province.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold flex items-center justify-center gap-2 shadow-md"
+              style={{ background: '#01ae87', color: '#000', fontSize: '1.125rem' }}
+            >
+              <img src={tripadvisor} alt="TripAdvisor" className="w-5 h-5" />
+              Review us on TripAdvisor
+            </a>
+          </div>
+        ) : null}
       </>
     );
   } else if (step === 4) {
@@ -690,7 +809,7 @@ const LandingPage: React.FC = () => {
     const verificationUrl = submittedFeedback?.custom_id ? `${window.location.origin}/verify?fid=${submittedFeedback.custom_id}` : '';
     content = (
       <>
-        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3rem)' }}>
+        <h2 className="text-white text-center font-normal z-10" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)', marginBottom: 'clamp(1.2rem, 6vw, 3rem)' }}>
           Thanks for Helping Us<br/>Brew a Better Experience!
         </h2>
 
@@ -705,7 +824,7 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
 
-        <p className="text-white/80 text-center mb-2 sm:mb-6 mt-2 z-10" style={{ fontFamily: "'Cherry Swash', cursive", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
+        <p className="text-white/80 text-center mb-2 sm:mb-6 mt-2 z-10" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
           Thank you for sharing – we'll use<br/>this to improve your next visit.
         </p>
 
@@ -737,6 +856,22 @@ const LandingPage: React.FC = () => {
         return '100%';
       default:
         return '25%';
+    }
+  };
+
+  // Helper to get progress as a number (0-1)
+  const getProgressFraction = () => {
+    switch (step) {
+      case 0:
+        return 0.25;
+      case 1:
+      case 2:
+        return 0.5;
+      case 3:
+      case 4:
+        return 1;
+      default:
+        return 0.25;
     }
   };
 
@@ -782,12 +917,13 @@ const LandingPage: React.FC = () => {
 
   useEffect(() => {
     // Inject Cherry Swash and Quattrocento Sans fonts if not already present
-    if (!document.getElementById('cherry-swash-font')) {
+    if (!document.getElementById('julius-sans-font')) {
       const style = document.createElement('style');
-      style.id = 'cherry-swash-font';
+      style.id = 'julius-sans-font';
       style.innerText = `
         @import url('https://fonts.googleapis.com/css2?family=Cherry+Swash:wght@400;700&display=swap');
         @import url('https://fonts.googleapis.com/css2?family=Quattrocento+Sans:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Julius+Sans+One&display=swap');
       `;
       document.head.appendChild(style);
     }
@@ -868,7 +1004,7 @@ const LandingPage: React.FC = () => {
         {/* Progress bar, logo, etc. */}
         <div className="w-full flex flex-col items-center mt-8 mb-2">
           <div className="w-full max-w-lg flex justify-center items-center relative mb-4 px-4">
-            {step !== 0 && (
+            {step !== 0 && step !== 3 && step !== 4 && (
               <button
                 onClick={handleBack}
                 className="absolute left-4 p-2"
@@ -879,8 +1015,26 @@ const LandingPage: React.FC = () => {
                 </svg>
               </button>
             )}
-            <div className="w-22 sm:w-30 md:w-38 h-2 rounded-full flex overflow-hidden" style={{ background: BAR_BG }}>
-              <div style={{ width: getProgressBarWidth(), background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out' }} />
+            <div
+              className="w-20 sm:w-28 md:w-36 h-2 rounded-full flex overflow-hidden" style={{ background: BAR_BG, position: 'relative' }} ref={progressBarRef}>
+              <div style={{ width: getProgressBarWidth(), background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out', position: 'relative' }} />
+              {/* Progress marker line at the end (pixel-based for smoothness) */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: progressBarRef.current
+                    ? `${getProgressFraction() * progressBarRef.current.offsetWidth}px`
+                    : getProgressBarWidth(),
+                  transform: 'translate(-50%, -50%)',
+                  width: 2,
+                  height: 14,
+                  background: '#fff',
+                  borderRadius: 1,
+                  transition: 'left 0.5s ease-in-out',
+                  zIndex: 2,
+                }}
+              />
             </div>
           </div>
           <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-4" style={{ height: '8rem', maxHeight: '25vw', minHeight: '5rem', width: 'auto' }} />

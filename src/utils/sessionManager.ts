@@ -28,7 +28,6 @@ class SessionManager {
         };
 
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(sessionData));
-        console.log('Session created for feedback:', feedbackId);
     }
 
     /**
@@ -59,7 +58,6 @@ class SessionManager {
             const session: SessionData = JSON.parse(sessionStr);
             return session;
         } catch (error) {
-            console.error('Error parsing session data:', error);
             this.clearSession();
             return null;
         }
@@ -102,7 +100,6 @@ class SessionManager {
      */
     clearSession(): void {
         localStorage.removeItem(this.STORAGE_KEY);
-        console.log('Session cleared');
     }
 
     /**
@@ -116,7 +113,6 @@ class SessionManager {
         session.expiresAt = newExpiresAt;
 
         localStorage.setItem(this.STORAGE_KEY, JSON.stringify(session));
-        console.log('Session extended for feedback:', session.feedbackId);
     }
 
     /**
