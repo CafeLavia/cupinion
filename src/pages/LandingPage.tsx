@@ -401,6 +401,21 @@ const LandingPage: React.FC = () => {
                   pointerEvents: 'none',
                 }}
               />
+              {/* White line at the top of the filled area (thicker, fits slider) */}
+              <div
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  width: '100%',
+                  height: 4,
+                  background: '#fff',
+                  borderRadius: 2,
+                  zIndex: 3,
+                  top: `${100 - fillPercent}%`,
+                  transition: 'top 0.2s',
+                  pointerEvents: 'none',
+                }}
+              />
             </div>
             {/* Emojis */}
             <div className="flex flex-col justify-between h-full items-center pl-3" style={{minHeight: 'clamp(200px, 40vh, 540px)', height: 'clamp(200px, 40vh, 540px)', flex: 1}}>
@@ -1016,25 +1031,8 @@ const LandingPage: React.FC = () => {
               </button>
             )}
             <div
-              className="w-20 sm:w-28 md:w-36 h-2 rounded-full flex overflow-hidden" style={{ background: BAR_BG, position: 'relative' }} ref={progressBarRef}>
+              className="w-20 sm:w-28 md:w-36 h-1 rounded-full flex overflow-hidden" style={{ background: BAR_BG, position: 'relative' }} ref={progressBarRef}>
               <div style={{ width: getProgressBarWidth(), background: BAR_COLOR, height: '100%', transition: 'width 0.5s ease-in-out', position: 'relative' }} />
-              {/* Progress marker line at the end (pixel-based for smoothness) */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '50%',
-                  left: progressBarRef.current
-                    ? `${getProgressFraction() * progressBarRef.current.offsetWidth}px`
-                    : getProgressBarWidth(),
-                  transform: 'translate(-50%, -50%)',
-                  width: 2,
-                  height: 14,
-                  background: '#fff',
-                  borderRadius: 1,
-                  transition: 'left 0.5s ease-in-out',
-                  zIndex: 2,
-                }}
-              />
             </div>
           </div>
           <img src={logo} alt="Cafe LaVia logo" className="object-contain mb-4" style={{ height: '8rem', maxHeight: '25vw', minHeight: '5rem', width: 'auto' }} />
