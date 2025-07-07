@@ -245,6 +245,7 @@ const LandingPage: React.FC = () => {
   };
 
   const handleGoodSubmit = async () => {
+    if (submitting) return; // Prevent double submit
     if (isCooldown) {
       setShowCooldownMsg(true);
       setTimeout(() => setShowCooldownMsg(false), 2500);
@@ -259,36 +260,44 @@ const LandingPage: React.FC = () => {
     setShowToast(true);
     setTimeout(() => setShowToast(false), 1500);
 
-    try {
-      let compressedFile = billFile;
-      if (billFile) {
-        compressedFile = await imageCompression(billFile, {
-          maxSizeMB: 0.25,
-          maxWidthOrHeight: 1200,
-          useWebWorker: true,
-        });
-      }
-      const feedback = await FeedbackService.submitFeedback({
-        table_number: tableNumber,
-        rating: FEEDBACK_OPTIONS[selected].label,
-        customer_email: email || undefined,
-        details: { notes: goodFeedback },
-        billFile: compressedFile,
-      });
-      setSubmittedFeedback(feedback);
-      const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
-      setOfferPercentage(percent);
+    // Add a 250ms delay before navigating to thank you page
+    setTimeout(() => {
       goToStepDirect(3, 'left');
       localStorage.setItem('feedback_submitted', Date.now().toString());
       setIsCooldown(true);
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred.');
-    } finally {
-      setSubmitting(false);
-    }
+    }, 250);
+
+    // Submit feedback in the background
+    (async () => {
+      try {
+        let compressedFile = billFile;
+        if (billFile) {
+          compressedFile = await imageCompression(billFile, {
+            maxSizeMB: 0.25,
+            maxWidthOrHeight: 1200,
+            useWebWorker: true,
+          });
+        }
+        const feedback = await FeedbackService.submitFeedback({
+          table_number: tableNumber,
+          rating: FEEDBACK_OPTIONS[selected].label,
+          customer_email: email || undefined,
+          details: { notes: goodFeedback },
+          billFile: compressedFile,
+        });
+        setSubmittedFeedback(feedback);
+        const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
+        setOfferPercentage(percent);
+      } catch (err: any) {
+        setError(err.message || 'An unexpected error occurred.');
+      } finally {
+        setSubmitting(false);
+      }
+    })();
   };
 
   const handleBadSubmit = async () => {
+    if (submitting) return; // Prevent double submit
     if (isCooldown) {
       setShowCooldownMsg(true);
       setTimeout(() => setShowCooldownMsg(false), 2500);
@@ -304,36 +313,43 @@ const LandingPage: React.FC = () => {
     setShowToast(true);
     setTimeout(() => setShowToast(false), 1500);
 
-    try {
-      let compressedFile = billFile;
-      if (billFile) {
-        compressedFile = await imageCompression(billFile, {
-          maxSizeMB: 0.25,
-          maxWidthOrHeight: 1200,
-          useWebWorker: true,
-        });
-      }
-      const feedback = await FeedbackService.submitFeedback({
-        table_number: tableNumber,
-        rating: FEEDBACK_OPTIONS[selected].label,
-        customer_email: email || undefined,
-        details: {
-          categories: selectedCategories,
-          notes: badFeedbackText,
-        },
-        billFile: compressedFile,
-      });
-      setSubmittedFeedback(feedback);
-      const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
-      setOfferPercentage(percent);
+    // Add a 250ms delay before navigating to thank you page
+    setTimeout(() => {
       goToStepDirect(4, 'left');
       localStorage.setItem('feedback_submitted', Date.now().toString());
       setIsCooldown(true);
-    } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred.');
-    } finally {
-      setSubmitting(false);
-    }
+    }, 250);
+
+    // Submit feedback in the background
+    (async () => {
+      try {
+        let compressedFile = billFile;
+        if (billFile) {
+          compressedFile = await imageCompression(billFile, {
+            maxSizeMB: 0.25,
+            maxWidthOrHeight: 1200,
+            useWebWorker: true,
+          });
+        }
+        const feedback = await FeedbackService.submitFeedback({
+          table_number: tableNumber,
+          rating: FEEDBACK_OPTIONS[selected].label,
+          customer_email: email || undefined,
+          details: {
+            categories: selectedCategories,
+            notes: badFeedbackText,
+          },
+          billFile: compressedFile,
+        });
+        setSubmittedFeedback(feedback);
+        const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
+        setOfferPercentage(percent);
+      } catch (err: any) {
+        setError(err.message || 'An unexpected error occurred.');
+      } finally {
+        setSubmitting(false);
+      }
+    })();
   };
 
   // Content slide: next content slides in from the right
@@ -609,6 +625,7 @@ const LandingPage: React.FC = () => {
             className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold bg-teal-500 text-white shadow-md hover:bg-teal-600 transition-all"
             style={{ fontSize: '1.125rem' }}
             onClick={handleGoodSubmit}
+            disabled={submitting}
           >
             SUBMIT
           </button>
@@ -763,7 +780,7 @@ const LandingPage: React.FC = () => {
         </div>
         <div className="w-full flex-shrink-0 flex flex-col items-center z-10" style={{ marginTop: 'auto', marginBottom: 'calc(1.5rem + env(safe-area-inset-bottom, 0px))', position: 'sticky', bottom: 0 }}>
           <button
-            disabled={isBadSubmitDisabled}
+            disabled={isBadSubmitDisabled || submitting}
             className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold bg-teal-500 text-white shadow-md hover:bg-teal-600 transition-all"
             style={{ fontSize: '1.125rem' }}
             onClick={handleBadSubmit}
