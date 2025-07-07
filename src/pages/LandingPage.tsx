@@ -113,7 +113,6 @@ const LandingPage: React.FC = () => {
   const contentWrapperRef = useRef<HTMLDivElement>(null);
   const [isOverflow, setIsOverflow] = useState(false);
 
-  const [showToast, setShowToast] = useState(false);
   const [showBillToast, setShowBillToast] = useState(false);
 
   const billInputRef = useRef<HTMLInputElement | null>(null);
@@ -257,8 +256,6 @@ const LandingPage: React.FC = () => {
     }
     setError(null);
     setSubmitting(true);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 1500);
 
     // Add a 250ms delay before navigating to thank you page
     setTimeout(() => {
@@ -310,8 +307,6 @@ const LandingPage: React.FC = () => {
     }
     setError(null);
     setSubmitting(true);
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 1500);
 
     // Add a 250ms delay before navigating to thank you page
     setTimeout(() => {
@@ -1200,27 +1195,6 @@ const LandingPage: React.FC = () => {
           }}>
             You have already submitted feedback.<br />
           </div>
-        </div>
-      )}
-      {showToast && (
-        <div style={{
-          position: 'fixed',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          background: '#14b8a6',
-          color: 'white',
-          padding: '0.6rem 1.2rem',
-          borderRadius: '1.2rem',
-          fontSize: '0.88rem',
-          fontWeight: 600,
-          boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
-          zIndex: 2000,
-          pointerEvents: 'none',
-          textAlign: 'center',
-          whiteSpace: 'nowrap',
-        }}>
-          Feedback Submitted!
         </div>
       )}
       {showBillToast && (
