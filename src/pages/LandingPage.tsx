@@ -217,6 +217,12 @@ const LandingPage: React.FC = () => {
     }, 500); // match CSS duration
   };
 
+  // Direct step navigation without animation delay (for final submission)
+  const goToStepDirect = (nextStep: number, dir: 'left' | 'right') => {
+    setDirection(dir);
+    setStep(nextStep);
+  };
+
   // Handlers
   const handleNext = () => {
     if (selected === 0) {
@@ -272,7 +278,7 @@ const LandingPage: React.FC = () => {
       setSubmittedFeedback(feedback);
       const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
       setOfferPercentage(percent);
-      goToStep(3, 'left');
+      goToStepDirect(3, 'left');
       localStorage.setItem('feedback_submitted', Date.now().toString());
       setIsCooldown(true);
     } catch (err: any) {
@@ -320,7 +326,7 @@ const LandingPage: React.FC = () => {
       setSubmittedFeedback(feedback);
       const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
       setOfferPercentage(percent);
-      goToStep(4, 'left');
+      goToStepDirect(4, 'left');
       localStorage.setItem('feedback_submitted', Date.now().toString());
       setIsCooldown(true);
     } catch (err: any) {
