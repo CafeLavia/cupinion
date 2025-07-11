@@ -28,14 +28,30 @@ const Header: React.FC<HeaderProps> = ({ setSidebarOpen }) => {
   ];
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
+    <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-6 relative z-20 font-quattrocento"
+    style={{
+      WebkitTransform: 'translateZ(0)',
+      transform: 'translateZ(0)'
+    }}>
       <div className="flex items-center">
-        <button className="text-gray-500 mr-4 md:hidden" onClick={() => setSidebarOpen(true)}>
+        <button 
+          className="text-gray-500 mr-4 md:hidden p-2" 
+          onClick={() => setSidebarOpen(true)}
+          style={{
+            WebkitTapHighlightColor: 'transparent'
+          }}
+        >
           <Menu className="w-6 h-6" />
         </button>
       </div>
       <div className="flex items-center space-x-5">
-        <Link to="/admin/profile" className="text-gray-500 hover:text-gray-700">
+        <Link 
+          to="/admin/profile" 
+          className="text-gray-500 hover:text-gray-700 p-2"
+          style={{
+            WebkitTapHighlightColor: 'transparent'
+          }}
+        >
           <User className="w-6 h-6" />
         </Link>
       </div>

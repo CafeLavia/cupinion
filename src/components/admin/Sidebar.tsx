@@ -85,16 +85,30 @@ const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, setSidebarOpen }) => {
       max-w-[90vw] min-w-[10rem]
       bg-[linear-gradient(to_bottom,#186863_0%,#084040_50%,#011217_100%)]
       transform ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
-      transition-transform duration-200
+      transition-transform duration-200 ease-in-out
       md:relative md:translate-x-0 md:block
       max-h-screen overflow-y-auto
-    `}>
+      font-quattrocento
+    `}
+    style={{
+      WebkitTransform: 'translateZ(0)',
+      transform: 'translateZ(0)',
+      WebkitOverflowScrolling: 'touch'
+    }}>
       {/* Close button for mobile */}
-      <button className="absolute top-4 right-4 md:top-2 md:right-2 md:hidden" onClick={() => setSidebarOpen(false)}>
+      <button 
+        className="absolute top-4 right-4 md:top-2 md:right-2 md:hidden z-50" 
+        onClick={() => setSidebarOpen(false)}
+        style={{
+          WebkitTapHighlightColor: 'transparent'
+        }}
+      >
         {/* Close icon (X) */}
-        <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 18L18 6M6 6l12 12" /></svg>
+        <svg width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
-      <div className="h-16 flex items-center justify-center text-xl md:text-2xl font-bold border-b border-gray-700 shrink-0 text-white">
+      <div className="h-16 flex items-center justify-center text-xl md:text-2xl font-bold border-b border-gray-700 shrink-0 text-white font-cherry-swash">
         Cafe LaVia
       </div>
       <nav className="flex-1 px-4 py-4 md:px-2 md:py-2 space-y-2 overflow-y-auto">
