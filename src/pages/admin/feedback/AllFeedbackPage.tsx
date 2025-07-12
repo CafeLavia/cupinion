@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Filter, MoreHorizontal, X, Image as ImageIcon, Save, Info, CheckCircle } from 'lucide-react';
+import { Search, Filter, MoreHorizontal, X, Image as ImageIcon, Save, Info, CheckCircle, Trash2 } from 'lucide-react';
 import { FeedbackService } from '../../../services/feedbackService';
 import { createPortal } from 'react-dom';
 import { useUserRole } from '../../../hooks/useUserRole';
@@ -133,6 +133,16 @@ const AllFeedbackPage: React.FC = () => {
     }
   };
 
+  const handleDeleteFeedback = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this feedback?')) return;
+    try {
+      await FeedbackService.deleteFeedback(id);
+      setFeedbackData(prev => prev.filter(fb => fb.id !== id));
+    } catch (err) {
+      alert('Failed to delete feedback');
+    }
+  };
+
   const handleActionMenu = (id: string, event: React.MouseEvent<HTMLButtonElement>) => {
     if (activeMenu === id) {
       setActiveMenu(null);
@@ -221,6 +231,7 @@ const AllFeedbackPage: React.FC = () => {
                   <th className="px-4 py-3">Table</th>
                   <th className="px-4 py-3">Location</th>
                   <th className="px-4 py-3">User</th>
+                  <th className="px-4 py-3">Phone</th>
                   <th className="px-4 py-3">Rating</th>
                   <th className="px-4 py-3">Comment</th>
                   <th className="px-4 py-3">Date</th>
@@ -237,6 +248,7 @@ const AllFeedbackPage: React.FC = () => {
                     <td className="px-4 py-3 text-gray-700">{item.table_number}</td>
                     <td className="px-4 py-3 text-gray-700">{item.location || '-'}</td>
                     <td className="px-4 py-3 text-gray-700">{item.customer_email}</td>
+                    <td className="px-4 py-3 text-gray-700">{item.phone_number || '-'}</td>
                     <td className="px-4 py-3 text-gray-700">{item.rating}</td>
                     <td className="px-4 py-3 text-gray-700">{item.details && item.details.notes ? item.details.notes : ''}</td>
                     <td className="px-4 py-3 text-gray-700">{item.created_at ? new Date(item.created_at).toLocaleString() : ''}</td>
@@ -319,6 +331,12 @@ const AllFeedbackPage: React.FC = () => {
                                   <CheckCircle className="w-4 h-4" /> Mark as Reviewed
                                 </button>
                               )}
+                             <button
+                               className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
+                               onClick={() => { handleDeleteFeedback(item.id); setActiveMenu(null); setDropdownPos(null); }}
+                             >
+                               <Trash2 className="w-4 h-4" /> Delete
+                             </button>
                               </>
                             )}
                           </div>,
@@ -356,6 +374,7 @@ const AllFeedbackPage: React.FC = () => {
                     <div><span className="font-semibold">Table:</span> {detailsModal.table_number}</div>
                     <div><span className="font-semibold">Location:</span> {detailsModal.location || '-'}</div>
                     <div><span className="font-semibold">User:</span> {detailsModal.customer_email}</div>
+                    <div><span className="font-semibold">Phone:</span> {detailsModal.phone_number || '-'}</div>
                     <div><span className="font-semibold">Rating:</span> {detailsModal.rating}</div>
                     <div><span className="font-semibold">Comment:</span> {detailsModal.details && detailsModal.details.notes ? detailsModal.details.notes : '-'}</div>
                     <div><span className="font-semibold">Date:</span> {detailsModal.created_at ? new Date(detailsModal.created_at).toLocaleString() : ''}</div>

@@ -6,6 +6,7 @@ export interface FeedbackData {
   customer_email?: string;
   details?: any;
   billFile?: File | null;
+  phone_number?: string;
 }
 
 export class FeedbackService {
@@ -61,6 +62,7 @@ export class FeedbackService {
           ...dbData,
           bill_image_url,
           custom_id,
+          phone_number: dbData.phone_number,
         })
         .select()
         .single();
@@ -218,6 +220,14 @@ export class FeedbackService {
       .single();
     if (error) return 0;
     return data?.offer_percentage || 0;
+  }
+
+  /**
+   * Delete a feedback entry by id
+   */
+  static async deleteFeedback(id: string): Promise<void> {
+    const { error } = await supabase.from('feedback').delete().eq('id', id);
+    if (error) throw error;
   }
 }
 

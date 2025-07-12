@@ -97,6 +97,7 @@ const LandingPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [submittedFeedback, setSubmittedFeedback] = useState<any>(null);
   const [offerPercentage, setOfferPercentage] = useState<number>(0);
+  const [phone, setPhone] = useState('');
 
   const [searchParams] = useSearchParams();
   const query = useQuery();
@@ -300,11 +301,6 @@ const LandingPage: React.FC = () => {
       setTimeout(() => setShowCooldownMsg(false), 2500);
       return;
     }
-    if (isBillUploadRequired && !billFile) {
-      setShowBillToast(true);
-      setTimeout(() => setShowBillToast(false), 1500);
-      return;
-    }
     setError(null);
     setSubmitting(true);
 
@@ -335,6 +331,7 @@ const LandingPage: React.FC = () => {
             notes: badFeedbackText,
           },
           billFile: compressedFile,
+          phone_number: phone || undefined,
         });
         setSubmittedFeedback(feedback);
         const percent = await FeedbackService.fetchOfferPercentage(feedback.rating);
@@ -646,46 +643,66 @@ const LandingPage: React.FC = () => {
     content = (
       <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
         <h2 className="text-white text-center font-normal z-10 mb-2" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
-        Help Us Do Better Next Time?
+        Tell Us What Went Wrong?
         </h2>
+        {/* Category Selection - moved directly under heading */}
+        <div className="w-full flex flex-wrap justify-center gap-1 mt-1 mb-2">
+          {BAD_CATEGORIES.map(category => {
+            const isSelected = selectedCategories.includes(category);
+            return (
+              <button
+                key={category}
+                onClick={() => handleCategoryClick(category)}
+                className={`flex items-center justify-center px-2.5 py-0.5 rounded-full border-2 transition-all duration-200 text-xs font-semibold ${
+                  isSelected
+                    ? 'bg-teal-400 border-teal-400 text-black'
+                    : 'bg-transparent border-white/50 text-white/80 hover:bg-white/10'
+                }`}
+              >
+                {isSelected && (
+                  <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
+                )}
+                {category}
+              </button>
+            );
+          })}
+        </div>
         <div className="w-full max-w-[22rem] flex flex-col gap-1 mx-auto">
-          {/* Category Selection */}
-          <div className="w-full flex flex-wrap justify-center gap-1 mt-0 mb-1">
-            {BAD_CATEGORIES.map(category => {
-              const isSelected = selectedCategories.includes(category);
-              return (
-                <button
-                  key={category}
-                  onClick={() => handleCategoryClick(category)}
-                  className={`flex items-center justify-center px-2.5 py-0.5 rounded-full border-2 transition-all duration-200 text-xs font-semibold ${
-                    isSelected
-                      ? 'bg-teal-400 border-teal-400 text-black'
-                      : 'bg-transparent border-white/50 text-white/80 hover:bg-white/10'
-                  }`}
-                >
-                  {isSelected && (
-                    <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
-                  )}
-                  {category}
-                </button>
-              );
-            })}
-          </div>
-          {/* Email Input */}
-          <div className="w-full">
-            <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>
-              Email Address <span style={{ color: '#ef4444', fontSize: '1.1em', fontWeight: 'bold' }}>*</span>
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white ${emailInvalid ? 'border-2 border-red-500' : 'border border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`}
-                placeholder="Enter your email address"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                onBlur={() => setEmailTouched(true)}
-                required
-              />
+          {/* Email and Phone Inputs Side by Side */}
+          <div className="w-full flex flex-col sm:flex-row gap-2">
+            {/* Email Input */}
+            <div className="flex-1">
+              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>
+                Email Address <span style={{ color: '#ef4444', fontSize: '1.1em', fontWeight: 'bold' }}>*</span>
+              </label>
+              <div className="relative">
+                <input
+                  type="email"
+                  className={`w-full rounded-lg p-2 text-base text-gray-900 bg-white ${emailInvalid ? 'border-2 border-red-500' : 'border border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition text-sm`}
+                  placeholder="Email address"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  onBlur={() => setEmailTouched(true)}
+                  required
+                />
+              </div>
+            </div>
+            {/* Phone Input */}
+            <div className="flex-1">
+              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>
+                Phone Number
+              </label>
+              <div className="relative">
+                <input
+                  type="tel"
+                  className="w-full rounded-lg p-2 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition text-sm"
+                  placeholder="Mobile (optional)"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  maxLength={15}
+                  inputMode="tel"
+                />
+              </div>
             </div>
           </div>
           {/* Additional Feedback */}
@@ -694,20 +711,20 @@ const LandingPage: React.FC = () => {
               Additional feedback <span style={{ color: '#ef4444', fontSize: '1.1em', fontWeight: 'bold' }}>*</span>
             </label>
             <textarea
-              className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white ${badFeedbackInvalid ? 'border-2 border-red-500' : 'border border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`}
+              className={`w-full max-w-[22rem] rounded-lg p-2 text-base text-gray-900 bg-white ${badFeedbackInvalid ? 'border-2 border-red-500' : 'border border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition text-sm`}
               placeholder="Tell us how can we improve?"
               rows={2}
-              style={{ resize: 'none' }}
+              style={{ resize: 'none', minHeight: 48, maxHeight: 72 }}
               value={badFeedbackText}
               onChange={e => setBadFeedbackText(e.target.value)}
               onBlur={() => setBadFeedbackTouched(true)}
               required
             />
           </div>
-          {/* Bill Upload with remove option */}
+          {/* Bill Upload with remove option - reduced height */}
           <div
-            className="w-full max-w-[22rem] border-2 border-dashed border-white/40 rounded-lg p-2 sm:p-4 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[64px]"
-            style={{ minHeight: 64, position: 'relative' }}
+            className="w-full max-w-[22rem] border-2 border-dashed border-white/40 rounded-lg p-2 flex flex-col items-center justify-center text-xs sm:text-sm cursor-pointer hover:bg-white/10 transition-all min-h-[40px]"
+            style={{ minHeight: 40, position: 'relative', height: 56 }}
             onClick={() => !billFile && billInputRef.current && billInputRef.current.click()}
           >
             {billFile && (
@@ -726,8 +743,8 @@ const LandingPage: React.FC = () => {
                   background: 'rgba(255,255,255,0.22)',
                   border: '1.5px solid #fff',
                   borderRadius: '50%',
-                  width: 32,
-                  height: 32,
+                  width: 24,
+                  height: 24,
                   color: '#fff',
                   display: 'flex',
                   alignItems: 'center',
@@ -741,7 +758,7 @@ const LandingPage: React.FC = () => {
                 onMouseOver={e => (e.currentTarget.style.background = 'rgba(20,184,166,0.85)')}
                 onMouseOut={e => (e.currentTarget.style.background = 'rgba(255,255,255,0.22)')}
               >
-                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{display: 'block'}}>
+                <svg width="10" height="10" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" style={{display: 'block'}}>
                   <line x1="4.22" y1="4.22" x2="11.78" y2="11.78" stroke="white" strokeWidth="2" strokeLinecap="round"/>
                   <line x1="11.78" y1="4.22" x2="4.22" y2="11.78" stroke="white" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
@@ -749,17 +766,17 @@ const LandingPage: React.FC = () => {
             )}
             {billFile ? (
               <div className="flex flex-col items-center justify-center w-full relative">
-                <span className="text-green-400 text-2xl mb-1">✔️</span>
+                <span className="text-green-400 text-xl mb-1">✔️</span>
                 <span className="text-white text-xs truncate w-full text-center">{billFile.name}</span>
               </div>
             ) : (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-8 sm:w-8 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 sm:h-6 sm:w-6 text-white/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
                 <span className="text-teal-300 font-semibold mt-1">Click to upload your Bill</span>
                 <span className="text-white/60 text-xs mt-1">
-                  JPG, JPEG, PNG {showBillRequiredLabel && <span className="text-amber-400 font-bold ml-1">(Required)</span>}
+                  JPG, JPEG, PNG
                 </span>
               </>
             )}

@@ -114,6 +114,9 @@ const DashboardPage: React.FC = () => {
                     <div className="flex-1 min-w-0">
                       <p className="truncate text-sm font-medium text-gray-900">{f.details?.notes || 'No comment'}</p>
                       <p className="truncate text-xs text-gray-500">{f.customer_email || 'Anonymous'}</p>
+                      {f.phone_number && (
+                        <p className="truncate text-xs text-gray-400">{f.phone_number}</p>
+                      )}
                     </div>
                     <div className="flex items-center text-xs">
                       {f.status === 'Reviewed' ? <CheckCircle className='w-4 h-4 text-green-600 mr-1'/> : <XCircle className='w-4 h-4 text-yellow-600 mr-1'/>}
