@@ -712,7 +712,7 @@ const LandingPage: React.FC = () => {
             </label>
             <textarea
               className={`w-full max-w-[22rem] rounded-lg p-2 text-base text-gray-900 bg-white ${badFeedbackInvalid ? 'border-2 border-red-500' : 'border border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition text-sm`}
-              placeholder="Tell us how can we improve?"
+              placeholder="Share your experience..."
               rows={2}
               style={{ resize: 'none', minHeight: 48, maxHeight: 72 }}
               value={badFeedbackText}
@@ -894,7 +894,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         <p className="text-white/80 text-center mb-2 sm:mb-6 mt-2 z-10" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
-        We’ll use your feedback to improve your next visit.
+        Your feedback helps us improve future visits.
         </p>
 
         <div className="w-full flex flex-col items-center gap-1 sm:gap-2 z-10 mt-8" style={{ marginTop: '2rem', marginBottom: '0.5rem', maxWidth: '24rem' }}>
