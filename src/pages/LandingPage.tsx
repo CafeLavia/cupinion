@@ -894,7 +894,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         <p className="text-white/80 text-center mb-2 sm:mb-6 mt-2 z-10" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.1rem, 4vw, 2rem)' }}>
-          Thank you for sharing – we'll use<br/>this to improve your next visit.
+        We’ll use your feedback to improve your next visit.
         </p>
 
         <div className="w-full flex flex-col items-center gap-1 sm:gap-2 z-10 mt-8" style={{ marginTop: '2rem', marginBottom: '0.5rem', maxWidth: '24rem' }}>
