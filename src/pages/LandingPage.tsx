@@ -122,6 +122,7 @@ const LandingPage: React.FC = () => {
 
   const [emailTouched, setEmailTouched] = useState(false);
   const [badFeedbackTouched, setBadFeedbackTouched] = useState(false);
+  const [goodFeedbackTouched, setGoodFeedbackTouched] = useState(false);
 
   const showBillRequiredLabel = step === 2;
 
@@ -504,6 +505,9 @@ const LandingPage: React.FC = () => {
     // Good feedback step
     const isOkayOrGreat = selected === 1 || selected === 2;
     const emailInvalid = !isValidEmail(email) && emailTouched;
+    const isOkay = selected === 2; // "Okay" rating
+    const goodFeedbackInvalid = isOkay && goodFeedbackTouched && goodFeedback.trim() === '';
+    const isGoodSubmitDisabled = isOkay && (goodFeedback.trim() === '' || goodFeedbackInvalid);
     content = (
       <div className="w-full max-w-sm z-10 flex flex-col gap-3 items-center px-2 sm:px-4">
         <h2 className="text-white text-center font-normal z-10 mb-6" style={{ fontFamily: "'Julius Sans One', sans-serif", fontSize: 'clamp(1.5rem, 6vw, 3.5rem)' }}>
@@ -534,13 +538,20 @@ const LandingPage: React.FC = () => {
             {!isOkayOrGreat && (
               <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>Tell us what you enjoyed most!</label>
             )}
+            {isOkay && (
+              <label className="block text-white text-xs sm:text-sm mb-1 font-semibold text-left" style={{ fontFamily: "'Quattrocento Sans', sans-serif" }}>
+                Tell us how can we improve? <span style={{ color: '#ef4444', fontSize: '1.1em', fontWeight: 'bold' }}>*</span>
+              </label>
+            )}
             <textarea 
-              className="w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white border border-gray-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition" 
+              className={`w-full max-w-[22rem] rounded-lg p-3 text-base text-gray-900 bg-white ${goodFeedbackInvalid ? 'border-2 border-red-500' : 'border border-gray-300'} focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition`} 
               placeholder={isOkayOrGreat ? 'Tell us how can we improve?' : 'Type your feedback here...'} 
               rows={3} 
               style={{ resize: 'none' }}
               value={goodFeedback}
               onChange={e => setGoodFeedback(e.target.value)}
+              onBlur={() => setGoodFeedbackTouched(true)}
+              required={isOkay}
             />
           </div>
           {/* Bill Upload with remove option */}
@@ -617,7 +628,7 @@ const LandingPage: React.FC = () => {
             className="w-full max-w-[22rem] rounded-lg py-3 text-base font-semibold bg-teal-500 text-white shadow-md hover:bg-teal-600 transition-all"
             style={{ fontSize: '1.125rem' }}
             onClick={handleGoodSubmit}
-            disabled={submitting}
+            disabled={submitting || isGoodSubmitDisabled}
           >
             SUBMIT
           </button>
